@@ -4,46 +4,53 @@
 
 	const plans = [
 		{
-			name: 'Free',
+			name: 'Starter',
 			price: '$0',
 			period: 'forever',
-			description: 'Perfect for getting started',
-			cta: 'Get started',
+			description: 'Try it out, see if it fits',
+			cta: 'Get started free',
 			href: '/auth/register',
 			variant: 'outline' as const,
+			credits: '3',
+			creditLabel: 'one-time',
 			features: [
-				'Up to 3 students',
-				'5 weekly plans',
-				'Basic AI scheduling',
+				'3 AI credits (one-time, never expire)',
+				'Up to 2 students',
+				'Up to 2 weekly plans',
+				'Basic AI schedule generation',
 				'Manual plan editing',
-				'Email support'
+				'Email support (48h response)',
 			],
 			missing: [
 				'Day plans',
 				'Resource search',
-				'Plan adjustment',
-				'Priority AI generation'
+				'Plan adjustment / regeneration',
+				'Priority AI generation',
+				'Refreshing monthly credits',
 			]
 		},
 		{
 			name: 'Pro',
 			price: '$19',
 			period: 'per month',
-			description: 'For serious tutors who want it all',
-			cta: 'Start Pro trial',
+			description: 'For tutors who mean business',
+			cta: 'Start free trial',
 			href: '/auth/register?tier=pro',
 			variant: 'gradient' as const,
 			highlighted: true,
+			credits: '30',
+			creditLabel: 'per month',
 			features: [
-				'Unlimited students',
-				'Unlimited weekly plans',
+				'30 AI credits / month (refreshes monthly)',
+				'Up to 15 students',
+				'Up to 20 weekly plans',
 				'Advanced AI scheduling',
-				'Day plans with AI',
-				'Plan adjustment & regeneration',
+				'Day plans with time-blocked AI',
 				'Resource search (Khan Academy, IXL, W3Schools, etc.)',
-				'Manual plan editing',
-				'Priority AI generation',
-				'Priority support'
+				'Plan adjustment & AI regeneration',
+				'Priority AI generation queue',
+				'Priority support (4h response)',
+				'Bonus credits on pay-as-you-go',
 			]
 		},
 		{
@@ -51,30 +58,66 @@
 			price: '$49',
 			period: 'per month',
 			description: 'For tutoring centers and teams',
-			cta: 'Contact us',
+			cta: 'Contact sales',
 			href: 'mailto:enterprise@tutoros.com',
 			variant: 'outline' as const,
+			credits: '100',
+			creditLabel: 'per month',
 			features: [
+				'100 AI credits / month (refreshes monthly)',
+				'Up to 50 students',
+				'Unlimited weekly plans',
 				'Everything in Pro',
-				'Unlimited tutors',
-				'Team dashboard',
+				'Up to 5 tutor accounts',
+				'Team dashboard & analytics',
 				'Shared student profiles',
 				'Custom AI model tuning',
 				'API access',
-				'Dedicated support',
-				'Custom integrations'
+				'Dedicated support (1h response)',
+				'Best pay-as-you-go rates',
 			]
+		}
+	];
+
+	const payAsYouGoPacks = [
+		{
+			amount: '$5',
+			creditsFree: '4 credits',
+			creditsPro: '7 credits',
+			creditsEnterprise: '8 credits',
+			rateFree: '$1.25/credit',
+			ratePro: '$0.71/credit',
+			rateEnterprise: '$0.63/credit',
+		},
+		{
+			amount: '$10',
+			creditsFree: '9 credits',
+			creditsPro: '15 credits',
+			creditsEnterprise: '18 credits',
+			rateFree: '$1.11/credit',
+			ratePro: '$0.67/credit',
+			rateEnterprise: '$0.56/credit',
+		},
+		{
+			amount: '$20',
+			creditsFree: '20 credits',
+			creditsPro: '35 credits',
+			creditsEnterprise: '40 credits',
+			rateFree: '$1.00/credit',
+			ratePro: '$0.57/credit',
+			rateEnterprise: '$0.50/credit',
 		}
 	];
 </script>
 
+<!-- Plan cards -->
 <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
 	{#each plans as plan}
 		<Card padding={false} hover={plan.highlighted}>
 			<div class={plan.highlighted ? 'p-0.5 rounded-xl bg-gradient-to-b from-[var(--color-primary-500)] to-[var(--color-accent-500)]' : ''}>
 				<div class={`p-6 ${plan.highlighted ? 'bg-[var(--color-surface-elevated)] rounded-[0.625rem]' : ''}`}>
 					{#if plan.highlighted}
-						<div class="inline-block px-2.5 py-0.5 rounded-full bg-[var(--color-primary-100)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)] text-[var(--color-primary-700)] text-xs font-medium mb-3">Most popular</div>
+						<div class="inline-block px-2.5 py-0.5 rounded-full bg-[var(--color-primary-100)] text-[var(--color-primary-700)] text-xs font-medium mb-3">Most popular</div>
 					{/if}
 					<h3 class="text-lg font-semibold text-[var(--color-text-primary)]">{plan.name}</h3>
 					<p class="text-sm text-[var(--color-text-secondary)] mt-1">{plan.description}</p>
@@ -82,6 +125,14 @@
 						<span class="text-4xl font-bold text-[var(--color-text-primary)]">{plan.price}</span>
 						<span class="text-sm text-[var(--color-text-secondary)]">/{plan.period}</span>
 					</div>
+
+					<!-- Credit badge -->
+					<div class="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg {plan.highlighted ? 'bg-[var(--color-accent-100)] text-[var(--color-accent-700)]' : 'bg-[var(--color-surface-tertiary)] text-[var(--color-text-secondary)]'}">
+						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+						<span class="text-sm font-bold">{plan.credits} AI credits</span>
+						<span class="text-xs opacity-75">{plan.creditLabel}</span>
+					</div>
+
 					<div class="mt-6">
 						<Button variant={plan.variant} size="lg" fullWidth href={plan.href}>{plan.cta}</Button>
 					</div>
@@ -105,4 +156,100 @@
 			</div>
 		</Card>
 	{/each}
+</div>
+
+<!-- ═══════════════ PAY-AS-YOU-GO ═══════════════ -->
+<div class="mt-24 max-w-3xl mx-auto">
+	<div class="text-center mb-10">
+		<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-accent-100)] text-[var(--color-accent-700)] text-xs font-medium mb-4">Flexible</div>
+		<h2 class="text-2xl md:text-3xl font-bold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">Pay-as-you-go credit packs</h2>
+		<p class="mt-3 text-base text-[var(--color-text-secondary)] max-w-lg mx-auto">Need more credits? Top up anytime. Credits never expire. Pro & Enterprise members get <strong class="text-[var(--color-accent-600)]">25–40% more credits</strong> per pack.</p>
+	</div>
+
+	<div class="clay-card p-6 md:p-8">
+		<div class="overflow-x-auto">
+			<table class="w-full text-sm">
+				<thead>
+					<tr class="border-b-2 border-[var(--color-border)]">
+						<th class="text-left py-3 px-4 font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">Pack</th>
+						<th class="text-center py-3 px-4 font-semibold text-[var(--color-text-secondary)]">Starter</th>
+						<th class="text-center py-3 px-4 font-semibold text-[var(--color-text-primary)]">
+							<span class="inline-flex items-center gap-1">
+								Pro
+								<span class="px-1.5 py-0.5 text-[10px] rounded-md bg-[var(--color-primary-100)] text-[var(--color-primary-700)]">Best value</span>
+							</span>
+						</th>
+						<th class="text-center py-3 px-4 font-semibold text-[var(--color-text-secondary)]">Enterprise</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each payAsYouGoPacks as pack}
+						<tr class="border-b border-[var(--color-border)] last:border-0">
+							<td class="py-4 px-4">
+								<div class="font-bold text-[var(--color-text-primary)] text-base">{pack.amount}</div>
+								<div class="text-xs text-[var(--color-text-tertiary)] mt-0.5">one-time purchase</div>
+							</td>
+							<td class="py-4 px-4 text-center">
+								<div class="font-medium text-[var(--color-text-primary)]">{pack.creditsFree}</div>
+								<div class="text-xs text-[var(--color-text-tertiary)]">{pack.rateFree}</div>
+							</td>
+							<td class="py-4 px-4 text-center bg-[var(--color-primary-50)]/50">
+								<div class="font-bold text-[var(--color-primary-700)]">{pack.creditsPro}</div>
+								<div class="text-xs text-[var(--color-primary-600)]">{pack.ratePro}</div>
+							</td>
+							<td class="py-4 px-4 text-center">
+								<div class="font-medium text-[var(--color-text-primary)]">{pack.creditsEnterprise}</div>
+								<div class="text-xs text-[var(--color-text-tertiary)]">{pack.rateEnterprise}</div>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+
+		<div class="mt-6 pt-6 border-t border-[var(--color-border)]">
+			<div class="grid sm:grid-cols-3 gap-4 text-center text-xs text-[var(--color-text-tertiary)]">
+				<div>
+					<span class="block font-medium text-[var(--color-text-secondary)]">1 credit =</span>
+					1 AI plan generation<br>or 1 day plan generation<br>or 1 resource search
+				</div>
+				<div>
+					<span class="block font-medium text-[var(--color-text-secondary)]">Credits</span>
+					never expire<br>use anytime<br>no monthly commitment
+				</div>
+				<div>
+					<span class="block font-medium text-[var(--color-text-secondary)]">Powered by</span>
+					DeepSeek & Groq<br>~$0.01 cost per generation<br>$0.99+ margin reinvested
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- ═══════════════ HOW CREDITS WORK ═══════════════ -->
+<div class="mt-20 max-w-2xl mx-auto">
+	<h3 class="text-lg font-bold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)] mb-6 text-center">How credits work</h3>
+	<div class="grid sm:grid-cols-3 gap-6">
+		<div class="text-center">
+			<div class="h-12 w-12 rounded-2xl bg-[var(--color-primary-100)] flex items-center justify-center mx-auto mb-3">
+				<svg class="h-6 w-6 text-[var(--color-primary-600)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+			</div>
+			<p class="text-sm font-medium text-[var(--color-text-primary)]">Generate</p>
+			<p class="text-xs text-[var(--color-text-secondary)] mt-1">Each AI plan, day plan, or resource search costs <strong>1 credit</strong></p>
+		</div>
+		<div class="text-center">
+			<div class="h-12 w-12 rounded-2xl bg-[var(--color-accent-100)] flex items-center justify-center mx-auto mb-3">
+				<svg class="h-6 w-6 text-[var(--color-accent-600)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+			</div>
+			<p class="text-sm font-medium text-[var(--color-text-primary)]">Refresh</p>
+			<p class="text-xs text-[var(--color-text-secondary)] mt-1">Pro & Enterprise credits <strong>refresh monthly</strong>. Unused credits do not roll over</p>
+		</div>
+		<div class="text-center">
+			<div class="h-12 w-12 rounded-2xl bg-[var(--color-success-bg)] flex items-center justify-center mx-auto mb-3">
+				<svg class="h-6 w-6 text-[var(--color-success)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+			</div>
+			<p class="text-sm font-medium text-[var(--color-text-primary)]">Top up</p>
+			<p class="text-xs text-[var(--color-text-secondary)] mt-1">Buy extra credit packs anytime. <strong>Never expire.</strong> Pro members get bonus credits</p>
+		</div>
+	</div>
 </div>
