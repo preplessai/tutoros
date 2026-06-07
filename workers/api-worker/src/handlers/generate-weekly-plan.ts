@@ -26,7 +26,7 @@ export async function handleGenerateWeeklyPlan(request: Request): Promise<Respon
 			learningStyle: input.learningStyle
 		}, null, 2);
 
-		const response = await callAI({
+		const result = await callAI({
 			systemPrompt,
 			userMessage,
 			maxTokens: 8192,
@@ -34,17 +34,17 @@ export async function handleGenerateWeeklyPlan(request: Request): Promise<Respon
 		});
 
 		// Extract JSON from AI response (it may be wrapped in markdown code blocks)
-		const jsonMatch = response.match(/```(?:json)?\s*([\s\S]*?)```/) || response.match(/(\{[\s\S]*\})/);
-		const jsonStr = jsonMatch ? jsonMatch[1].trim() : response.trim();
+		const jsonMatch = result.text.match(/```(?:json)?\s*([\s\S]*?)```/) || result.text.match(/(\{[\s\S]*\})/);
+		const jsonStr = jsonMatch ? jsonMatch[1].trim() : result.text.trim();
 
 		let plan;
 		try {
 			plan = JSON.parse(jsonStr);
 		} catch {
-			return Response.json({ error: 'Failed to parse AI response', raw: response.slice(0, 500) }, { status: 500 });
+			return Response.json({ error: 'Failed to parse AI response', raw: result.text.slice(0, 500) }, { status: 500 });
 		}
 
-		return Response.json({ plan: plan.plan || plan, rawPrompt: `${systemPrompt.slice(0, 200)}...` });
+		return Response.json({ plan: plan.plan || plan, provider: result.provider });
 	} catch (err: any) {
 		return Response.json({ error: err.message || 'Internal error' }, { status: 500 });
 	}

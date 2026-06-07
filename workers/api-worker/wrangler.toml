@@ -1,9 +1,9 @@
-name = "tutoros-api"
+name = "api"
 main = "src/index.ts"
 compatibility_date = "2025-06-01"
 
-[vars]
-ANTHROPIC_API_KEY = ""
-
-[env.production]
-vars = { ANTHROPIC_API_KEY = "" }
+# Secrets — set via `wrangler secret put <NAME>`
+# Required:
+#   wrangler secret put GROQ_API_KEY_1       # Groq API key (primary AI)
+#   wrangler secret put SK_API_KEY_DEV       # DeepSeek API key (fallback AI)
+#   wrangler secret put SUPABASE_URL         # Supabase project URL (for JWKS verification)

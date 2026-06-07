@@ -31,24 +31,24 @@ Be specific — link to actual topics, not just homepages. For Khan Academy, lin
 			maxResults: input.maxResults || 5
 		}, null, 2);
 
-		const response = await callAI({
+		const result = await callAI({
 			systemPrompt,
 			userMessage,
 			maxTokens: 2048,
 			temperature: 0.5
 		});
 
-		const jsonMatch = response.match(/```(?:json)?\s*([\s\S]*?)```/) || response.match(/(\{[\s\S]*\})/);
-		const jsonStr = jsonMatch ? jsonMatch[1].trim() : response.trim();
+		const jsonMatch = result.text.match(/```(?:json)?\s*([\s\S]*?)```/) || result.text.match(/(\{[\s\S]*\})/);
+		const jsonStr = jsonMatch ? jsonMatch[1].trim() : result.text.trim();
 
 		let data;
 		try {
 			data = JSON.parse(jsonStr);
 		} catch {
-			return Response.json({ error: 'Failed to parse AI response', raw: response.slice(0, 500) }, { status: 500 });
+			return Response.json({ error: 'Failed to parse AI response', raw: result.text.slice(0, 500) }, { status: 500 });
 		}
 
-		return Response.json({ resources: data.resources || [] });
+		return Response.json({ resources: data.resources || [], provider: result.provider });
 	} catch (err: any) {
 		return Response.json({ error: err.message || 'Internal error' }, { status: 500 });
 	}
