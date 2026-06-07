@@ -1,4 +1,5 @@
 import { PUBLIC_WORKER_API_URL } from '$env/static/public';
+import { supabase } from './supabase';
 import type {
 	GenerateWeeklyPlanRequest,
 	AdjustPlanRequest,
@@ -11,10 +12,23 @@ import type {
 
 const BASE_URL = PUBLIC_WORKER_API_URL || 'http://localhost:8787';
 
+async function getAuthHeaders(): Promise<Record<string, string>> {
+	const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+	try {
+		const { data } = await supabase.auth.getSession();
+		const token = data.session?.access_token;
+		if (token) {
+			headers['Authorization'] = `Bearer ${token}`;
+		}
+	} catch { /* unauthenticated — let worker reject if required */ }
+	return headers;
+}
+
 async function post<T>(path: string, body: unknown): Promise<T> {
+	const headers = await getAuthHeaders();
 	const res = await fetch(`${BASE_URL}${path}`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+		headers,
 		body: JSON.stringify(body)
 	});
 
