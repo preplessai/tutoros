@@ -2,7 +2,7 @@
 	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 </script>
 
-<svelte:head><title>Resources — TutorOS</title></svelte:head>
+<svelte:head><title>Resources — Prepless AI</title></svelte:head>
 
 <div>
 	<h1 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">Resources</h1>

@@ -26,7 +26,7 @@
 	}
 </script>
 
-<svelte:head><title>{studentStore.current?.name || 'Student'} — TutorOS</title></svelte:head>
+<svelte:head><title>{studentStore.current?.name || 'Student'} — Prepless AI</title></svelte:head>
 
 {#if studentStore.loading}
 	<div class="flex justify-center py-12"><Spinner size="lg" /></div>

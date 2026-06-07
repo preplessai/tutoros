@@ -5,7 +5,7 @@
 	import Badge from '$lib/components/ui/Badge.svelte';
 </script>
 
-<svelte:head><title>Settings — TutorOS</title></svelte:head>
+<svelte:head><title>Settings — Prepless AI</title></svelte:head>
 
 <div class="space-y-6 max-w-2xl">
 	<div>

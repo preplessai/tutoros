@@ -10,7 +10,7 @@ const app = new Hono();
 
 // CORS — allow requests from the static site
 app.use('*', cors({
-	origin: ['http://localhost:5173', 'http://localhost:4173', 'https://tutoros.pages.dev'],
+	origin: ['http://localhost:5173', 'http://localhost:4173', 'https://prepless-ai.pages.dev'],
 	allowMethods: ['GET', 'POST', 'OPTIONS'],
 	allowHeaders: ['Content-Type', 'Authorization'],
 	maxAge: 86400

@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<svelte:head><title>Terms of Service — TutorOS</title></svelte:head>
+<svelte:head><title>Terms of Service — Prepless AI</title></svelte:head>
 
 <section class="py-16 md:py-24 bg-[var(--color-surface)]">
   <div class="container-page max-w-3xl">
@@ -17,12 +17,12 @@
     <div class="prose prose-lg max-w-none space-y-8 text-[var(--color-text-secondary)]">
       <div class="animate-fade-in-up" style="animation-delay:0.05s">
         <h2 class="text-xl font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">1. Acceptance of Terms</h2>
-        <p>By accessing or using TutorOS ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.</p>
+        <p>By accessing or using Prepless AI ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.</p>
       </div>
 
       <div class="animate-fade-in-up" style="animation-delay:0.1s">
         <h2 class="text-xl font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">2. Description of Service</h2>
-        <p>TutorOS is an AI-powered tutoring schedule platform that helps tutors create, manage, and adjust weekly tutoring plans for their students. The Service generates schedule recommendations using artificial intelligence based on inputs you provide.</p>
+        <p>Prepless AI is an AI-powered tutoring schedule platform that helps tutors create, manage, and adjust weekly tutoring plans for their students. The Service generates schedule recommendations using artificial intelligence based on inputs you provide.</p>
       </div>
 
       <div class="animate-fade-in-up" style="animation-delay:0.15s">
@@ -43,12 +43,12 @@
 
       <div class="animate-fade-in-up" style="animation-delay:0.25s">
         <h2 class="text-xl font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">5. Intellectual Property</h2>
-        <p>The TutorOS platform, including its design, code, logos, and branding, is protected by copyright and other intellectual property laws. Content you create (plans, student data) remains yours.</p>
+        <p>The Prepless AI platform, including its design, code, logos, and branding, is protected by copyright and other intellectual property laws. Content you create (plans, student data) remains yours.</p>
       </div>
 
       <div class="animate-fade-in-up" style="animation-delay:0.3s">
         <h2 class="text-xl font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">6. Limitation of Liability</h2>
-        <p>TutorOS is provided "as is" without warranties of any kind. We are not liable for any damages arising from your use of the Service, including but not limited to errors in AI-generated scheduling content.</p>
+        <p>Prepless AI is provided "as is" without warranties of any kind. We are not liable for any damages arising from your use of the Service, including but not limited to errors in AI-generated scheduling content.</p>
       </div>
 
       <div class="animate-fade-in-up" style="animation-delay:0.35s">
@@ -63,7 +63,7 @@
 
       <div class="animate-fade-in-up" style="animation-delay:0.45s">
         <h2 class="text-xl font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">9. Contact</h2>
-        <p>Questions about these Terms? Contact us at <a href="mailto:legal@tutoros.com" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] underline underline-offset-2">legal@tutoros.com</a>.</p>
+        <p>Questions about these Terms? Contact us at <a href="mailto:legal@prepless.ai" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] underline underline-offset-2">legal@prepless.ai</a>.</p>
       </div>
     </div>
   </div>

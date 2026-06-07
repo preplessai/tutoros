@@ -2,7 +2,7 @@
 	import PricingGrid from '$lib/components/subscription/PricingGrid.svelte';
 </script>
 
-<svelte:head><title>Pricing — TutorOS</title></svelte:head>
+<svelte:head><title>Pricing — Prepless AI</title></svelte:head>
 
 <section class="py-20 md:py-28 bg-[var(--color-surface)]">
 	<div class="container-page">

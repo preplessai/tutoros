@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<svelte:head><title>Disclaimer — TutorOS</title></svelte:head>
+<svelte:head><title>Disclaimer — Prepless AI</title></svelte:head>
 
 <section class="py-16 md:py-24 bg-[var(--color-surface)]">
   <div class="container-page max-w-3xl">
@@ -20,14 +20,14 @@
           <svg class="h-6 w-6 text-[var(--color-warning)] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
           <div>
             <h2 class="text-lg font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)] mt-0">Important Notice</h2>
-            <p class="text-sm">All statistics, user counts, satisfaction ratings, and testimonials displayed on this website are fictional and presented for demonstration purposes only. Please <a href="mailto:contact@tutoros.com" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] underline underline-offset-2">contact us</a> for actual, current values.</p>
+            <p class="text-sm">All statistics, user counts, satisfaction ratings, and testimonials displayed on this website are fictional and presented for demonstration purposes only. Please <a href="mailto:contact@prepless.ai" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] underline underline-offset-2">contact us</a> for actual, current values.</p>
           </div>
         </div>
       </div>
 
       <div class="animate-fade-in-up" style="animation-delay:0.05s">
         <h2 class="text-xl font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">1. General Disclaimer</h2>
-        <p>The information provided by TutorOS ("the Service") is for general informational and educational purposes only. All information on the site is provided in good faith; however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information.</p>
+        <p>The information provided by Prepless AI ("the Service") is for general informational and educational purposes only. All information on the site is provided in good faith; however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information.</p>
       </div>
 
       <div class="animate-fade-in-up" style="animation-delay:0.1s">
@@ -36,7 +36,7 @@
         <ul>
           <li>AI-generated schedules are suggestions, not professional educational advice</li>
           <li>You should review all AI output before applying it to real tutoring sessions</li>
-          <li>TutorOS is not responsible for educational outcomes resulting from AI-generated plans</li>
+          <li>Prepless AI is not responsible for educational outcomes resulting from AI-generated plans</li>
         </ul>
       </div>
 
@@ -52,12 +52,12 @@
 
       <div class="animate-fade-in-up" style="animation-delay:0.25s">
         <h2 class="text-xl font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">5. No Professional Relationship</h2>
-        <p>Use of the Service does not create a professional tutoring or educational consulting relationship. TutorOS is a tool to assist tutors — it does not replace professional judgment, educational expertise, or individualized student assessment.</p>
+        <p>Use of the Service does not create a professional tutoring or educational consulting relationship. Prepless AI is a tool to assist tutors — it does not replace professional judgment, educational expertise, or individualized student assessment.</p>
       </div>
 
       <div class="animate-fade-in-up" style="animation-delay:0.3s">
         <h2 class="text-xl font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">6. Contact for Real Values</h2>
-        <p>For accurate, up-to-date information about TutorOS's user base, platform statistics, or any other factual claims, please reach out to us at <a href="mailto:contact@tutoros.com" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] underline underline-offset-2">contact@tutoros.com</a>. We are happy to provide current data.</p>
+        <p>For accurate, up-to-date information about Prepless AI's user base, platform statistics, or any other factual claims, please reach out to us at <a href="mailto:contact@prepless.ai" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] underline underline-offset-2">contact@prepless.ai</a>. We are happy to provide current data.</p>
       </div>
     </div>
   </div>

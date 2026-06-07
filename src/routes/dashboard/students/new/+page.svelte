@@ -2,7 +2,7 @@
 	import StudentForm from '$lib/components/students/StudentForm.svelte';
 </script>
 
-<svelte:head><title>Add Student — TutorOS</title></svelte:head>
+<svelte:head><title>Add Student — Prepless AI</title></svelte:head>
 
 <div>
 	<h1 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">Add Student</h1>

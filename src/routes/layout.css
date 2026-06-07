@@ -2,6 +2,9 @@
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
+
+/* Use class-based dark mode (toggled via theme store) instead of prefers-color-scheme */
+@custom-variant dark (&:where(.dark, .dark *));
 /* ── Design Tokens: Claymorphism Cream/Pastel ── */
 :root {
   /* Primary — warm clay brown */
@@ -96,6 +99,88 @@
   --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --font-body: 'DM Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+}
+/* ── Dark Mode Tokens ── */
+:root.dark {
+  /* Surfaces — dark charcoal/brown hierarchy */
+  --color-surface: #1A1816;
+  --color-surface-secondary: #211E1B;
+  --color-surface-tertiary: #2A2520;
+  --color-surface-elevated: #302A24;
+
+  /* Borders — darker warm tones */
+  --color-border: #3A322C;
+  --color-border-strong: #4A4038;
+  --color-border-hover: #5A4E44;
+
+  /* Text — light cream tones */
+  --color-text-primary: #EAE4DC;
+  --color-text-secondary: #A89B90;
+  --color-text-tertiary: #70655C;
+  --color-text-inverse: #1A1816;
+
+  /* Feedback — dark backgrounds with desaturated accents */
+  --color-success: #6B9E7A;
+  --color-success-bg: #1A2A1E;
+  --color-success-border: #2A4A2E;
+  --color-error: #D9655B;
+  --color-error-bg: #2A1A1A;
+  --color-error-border: #4A2A2A;
+  --color-warning: #E8A840;
+  --color-warning-bg: #2A2510;
+  --color-warning-border: #4A3E18;
+  --color-info: #7BA5B8;
+  --color-info-bg: #1A2428;
+  --color-info-border: #2A3A40;
+
+  /* Primary — slightly lighter on dark bg for contrast */
+  --color-primary-50: #2A221E;
+  --color-primary-100: #3A302A;
+  --color-primary-200: #4A3E36;
+  --color-primary-300: #6B5A4E;
+  --color-primary-400: #8B7564;
+  --color-primary-500: #A18072;
+  --color-primary-600: #B89580;
+  --color-primary-700: #C9A895;
+  --color-primary-800: #DCC5B6;
+  --color-primary-900: #EDE0D7;
+
+  /* Accent — desaturated for dark */
+  --color-accent-50: #2A2018;
+  --color-accent-100: #3A2A1E;
+  --color-accent-200: #4A3424;
+  --color-accent-300: #6B4A32;
+  --color-accent-400: #8B5E3E;
+  --color-accent-500: #E8924E;
+  --color-accent-600: #F29D50;
+  --color-accent-700: #FBB97E;
+  --color-accent-800: #FDD5AB;
+  --color-accent-900: #FFECD5;
+
+  /* Sage — dark green tones */
+  --color-sage-50: #1A2218;
+  --color-sage-100: #243222;
+  --color-sage-200: #2E422C;
+  --color-sage-300: #3D5838;
+  --color-sage-400: #4A6F4A;
+  --color-sage-500: #7CA37C;
+  --color-sage-600: #8DB37B;
+  --color-sage-700: #AEC99F;
+  --color-sage-800: #CCE0C2;
+  --color-sage-900: #E5EFE0;
+
+  /* Claymorphism shadows — inverted for dark surfaces */
+  --shadow-clay-sm: inset 1px 1px 2px rgba(255,255,255,0.04), 2px 2px 6px rgba(0,0,0,0.30);
+  --shadow-clay-md: inset 1px 1px 3px rgba(255,255,255,0.05), 4px 4px 12px rgba(0,0,0,0.35);
+  --shadow-clay-lg: inset 1px 1px 4px rgba(255,255,255,0.06), 6px 6px 20px rgba(0,0,0,0.40);
+  --shadow-clay-xl: inset 1px 1px 6px rgba(255,255,255,0.06), 8px 8px 28px rgba(0,0,0,0.45);
+  --shadow-clay-pressed: inset 3px 3px 8px rgba(0,0,0,0.35), inset -1px -1px 2px rgba(255,255,255,0.04);
+
+  /* Standard shadows — use pure black */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.20);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.25);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.30);
+  --shadow-xl: 0 12px 36px rgba(0,0,0,0.35);
 }
 
 /* ── Base Styles ── */
@@ -300,6 +385,26 @@
   to { transform: translateX(0); }
 }
 
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.015); }
+}
+
+@keyframes breathe-glow {
+  0%, 100% { box-shadow: var(--shadow-clay-md); }
+  50% { box-shadow: var(--shadow-clay-lg), 0 0 20px rgba(161,128,114,0.08); }
+}
+
+@keyframes breathe-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes breathe-border {
+  0%, 100% { border-color: var(--color-border); }
+  50% { border-color: var(--color-border-hover); }
+}
+
 /* ── Animation Utilities ── */
 @utility animate-fade-in {
   animation: fade-in 0.3s ease-out;
@@ -345,6 +450,23 @@
 
 @utility animate-pulse-soft {
   animation: pulse-soft 2s ease-in-out infinite;
+}
+
+@utility animate-breathe {
+  animation: breathe 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@utility animate-breathe-glow {
+  animation: breathe-glow 6s ease-in-out infinite;
+}
+
+@utility animate-breathe-soft {
+  animation: breathe-soft 4s ease-in-out infinite;
+}
+
+@utility animate-breathe-border {
+  animation: breathe-border 5s ease-in-out infinite;
 }
 
 /* Stagger children animation */

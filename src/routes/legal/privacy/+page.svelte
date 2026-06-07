@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<svelte:head><title>Privacy Policy — TutorOS</title></svelte:head>
+<svelte:head><title>Privacy Policy — Prepless AI</title></svelte:head>
 
 <section class="py-16 md:py-24 bg-[var(--color-surface)]">
   <div class="container-page max-w-3xl">
@@ -24,7 +24,7 @@
         <h2 class="text-xl font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">2. How We Use Information</h2>
         <p>Your information is used to:</p>
         <ul>
-          <li>Provide and improve the TutorOS service</li>
+          <li>Provide and improve the Prepless AI service</li>
           <li>Generate AI-powered tutoring schedules based on your inputs</li>
           <li>Communicate service updates and important notices</li>
           <li>Ensure security and prevent abuse</li>
@@ -63,7 +63,7 @@
 
       <div class="animate-fade-in-up" style="animation-delay:0.45s">
         <h2 class="text-xl font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">9. Contact</h2>
-        <p>For privacy-related inquiries, contact us at <a href="mailto:privacy@tutoros.com" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] underline underline-offset-2">privacy@tutoros.com</a>.</p>
+        <p>For privacy-related inquiries, contact us at <a href="mailto:privacy@prepless.ai" class="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] underline underline-offset-2">privacy@prepless.ai</a>.</p>
       </div>
     </div>
   </div>

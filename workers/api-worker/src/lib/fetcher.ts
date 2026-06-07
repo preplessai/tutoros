@@ -5,7 +5,7 @@
 export async function fetchUrl(url: string): Promise<string | null> {
 	try {
 		const res = await fetch(url, {
-			headers: { 'User-Agent': 'TutorOS/1.0' },
+			headers: { 'User-Agent': 'Prepless AI/1.0' },
 			redirect: 'follow'
 		});
 

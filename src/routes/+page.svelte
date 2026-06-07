@@ -3,19 +3,19 @@
 	import { scrollReveal } from '$lib/actions/scrollReveal.svelte';
 
 	const testimonials = [
-		{ quote: 'TutorOS saves me 5+ hours every week. The AI plans are surprisingly good, and I can tweak anything in seconds.', name: 'Sarah M.', role: 'Math Tutor, 6 years', color: 'var(--color-primary-100)' },
+		{ quote: 'Prepless AI saves me 5+ hours every week. The AI plans are surprisingly good, and I can tweak anything in seconds.', name: 'Sarah M.', role: 'Math Tutor, 6 years', color: 'var(--color-primary-100)' },
 		{ quote: 'My students love having a clear schedule. The day plans with time blocks make sessions so much more productive.', name: 'James K.', role: 'Science Tutor, 3 years', color: 'var(--color-accent-100)' },
 		{ quote: 'The resource suggestions are a game-changer. No more hunting for practice problems — it just finds them.', name: 'Priya R.', role: 'SAT Prep Coach', color: 'var(--color-success-bg)' },
 		{ quote: 'I was spending hours every Sunday planning. Now I generate a full plan in under 5 minutes and my weekends are mine again.', name: 'David L.', role: 'English Tutor, 8 years', color: 'var(--color-accent-100)' },
 		{ quote: 'The AI somehow gets what my students need before I do. It catches gaps I would have missed.', name: 'Maria G.', role: 'Physics & Calc Tutor', color: 'var(--color-primary-100)' },
-		{ quote: 'My tutoring business grew 3x since using TutorOS. The professionalism of the plans impresses parents.', name: 'Kenji T.', role: 'Test Prep Coach, 5 years', color: 'var(--color-success-bg)' },
+		{ quote: 'My tutoring business grew 3x since using Prepless AI. The professionalism of the plans impresses parents.', name: 'Kenji T.', role: 'Test Prep Coach, 5 years', color: 'var(--color-success-bg)' },
 	];
 
 	// Duplicate for seamless infinite scroll
 	const marqueeItems = [...testimonials, ...testimonials];
 </script>
 
-<svelte:head><title>TutorOS — AI-Powered Tutoring Schedules</title></svelte:head>
+<svelte:head><title>Prepless AI — AI-Powered Tutoring Schedules</title></svelte:head>
 
 <!-- ═══════════════ HERO ═══════════════ -->
 <section class="relative overflow-hidden pt-8 pb-20 md:pt-16 md:pb-32">
@@ -107,15 +107,15 @@
 				</div>
 
 				<!-- Floating badges -->
-				<div class="absolute -bottom-4 -left-6 animate-float" style="animation-delay:0.5s">
+				<div class="absolute -bottom-4 -left-6 animate-float animate-breathe" style="animation-delay:0.5s">
 					<div class="clay-card px-3 py-2 rounded-xl flex items-center gap-2 text-xs font-medium">
-						<span class="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
+						<span class="h-2 w-2 rounded-full bg-[var(--color-success)] animate-pulse-soft"></span>
 						<span class="text-[var(--color-text-secondary)]">Plan generated</span>
 					</div>
 				</div>
-				<div class="absolute -top-2 -right-4 animate-float" style="animation-delay:1.5s">
+				<div class="absolute -top-2 -right-4 animate-float animate-breathe" style="animation-delay:1.5s">
 					<div class="clay-card px-3 py-2 rounded-xl flex items-center gap-2 text-xs font-medium">
-						<svg class="h-3.5 w-3.5 text-[var(--color-accent-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+						<svg class="h-3.5 w-3.5 text-[var(--color-accent-500)] animate-pulse-soft" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
 						<span class="text-[var(--color-text-secondary)]">AI powered</span>
 					</div>
 				</div>
@@ -164,7 +164,7 @@
 					{ step: '03', icon: 'M13 10V3L4 14h7v7l9-11h-7z', title: 'Get Schedule', desc: 'AI generates a complete multi-week plan. Review, edit, done.' }
 				] as item}
 					<div class="relative flex flex-col items-center text-center" use:scrollReveal={{ delay: item.step === '01' ? 0 : item.step === '02' ? 0.1 : 0.2 }}>
-						<div class="relative z-10 h-24 w-24 rounded-3xl bg-[var(--color-surface-elevated)] shadow-clay-md border-2 border-[var(--color-border)] flex items-center justify-center mb-6">
+						<div class="relative z-10 h-24 w-24 rounded-3xl bg-[var(--color-surface-elevated)] shadow-clay-md border-2 border-[var(--color-border)] flex items-center justify-center mb-6 animate-breathe-border">
 							<svg class="h-10 w-10 text-[var(--color-primary-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={item.icon}/></svg>
 							<span class="absolute -top-2 -right-2 h-7 w-7 rounded-full bg-[var(--color-accent-500)] text-white text-xs font-bold flex items-center justify-center shadow-clay-sm">{item.step}</span>
 						</div>
@@ -197,7 +197,7 @@
 					<div class={i % 2 === 1 ? 'md:col-start-2' : ''} use:scrollReveal={{ direction: i % 2 === 1 ? 'fade-left' : 'fade-up', delay: 0.05 }}>
 						<div class="relative">
 							<div class="h-60 md:h-72 rounded-3xl bg-[var(--color-surface-elevated)] shadow-clay-lg border-2 border-[var(--color-border)] flex items-center justify-center overflow-hidden">
-								<div class="h-20 w-20 rounded-2xl {feature.color === 'primary' ? 'bg-[var(--color-primary-100)]' : feature.color === 'accent' ? 'bg-[var(--color-accent-100)]' : 'bg-[var(--color-success-bg)]'} flex items-center justify-center">
+								<div class="h-20 w-20 rounded-2xl {feature.color === 'primary' ? 'bg-[var(--color-primary-100)]' : feature.color === 'accent' ? 'bg-[var(--color-accent-100)]' : 'bg-[var(--color-success-bg)]'} flex items-center justify-center animate-breathe" style="animation-delay:{i * 1.2}s">
 									<svg class="h-10 w-10 {feature.color === 'primary' ? 'text-[var(--color-primary-500)]' : feature.color === 'accent' ? 'text-[var(--color-accent-500)]' : 'text-[var(--color-success)]'}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={feature.icon}/></svg>
 								</div>
 							</div>
@@ -224,7 +224,7 @@
 	<div class="container-page mb-12">
 		<div class="text-center" use:scrollReveal>
 			<h2 class="text-3xl md:text-5xl font-bold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">Loved by tutors</h2>
-			<p class="mt-4 text-lg text-[var(--color-text-secondary)] max-w-xl mx-auto">See what tutors are saying about TutorOS. Hover to pause.</p>
+			<p class="mt-4 text-lg text-[var(--color-text-secondary)] max-w-xl mx-auto">See what tutors are saying about Prepless AI. Hover to pause.</p>
 		</div>
 	</div>
 

@@ -4,7 +4,7 @@
 	import Card from '$lib/components/ui/Card.svelte';
 </script>
 
-<svelte:head><title>Resource Sites — TutorOS</title></svelte:head>
+<svelte:head><title>Resource Sites — Prepless AI</title></svelte:head>
 
 <div class="space-y-6 max-w-2xl">
 	<div>

@@ -59,7 +59,7 @@
 			period: 'per month',
 			description: 'For tutoring centers and teams',
 			cta: 'Contact sales',
-			href: 'mailto:enterprise@tutoros.com',
+			href: 'mailto:enterprise@prepless.ai',
 			variant: 'outline' as const,
 			credits: '100',
 			creditLabel: 'per month',

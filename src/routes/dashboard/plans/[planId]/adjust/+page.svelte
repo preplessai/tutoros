@@ -10,7 +10,7 @@
 	onMount(() => { planStore.fetchOne($page.params.planId); });
 </script>
 
-<svelte:head><title>Adjust Plan — TutorOS</title></svelte:head>
+<svelte:head><title>Adjust Plan — Prepless AI</title></svelte:head>
 
 <div>
 	<div class="flex items-center gap-4 mb-6">

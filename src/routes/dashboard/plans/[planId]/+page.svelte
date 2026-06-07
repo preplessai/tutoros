@@ -8,7 +8,7 @@
 	onMount(() => { planStore.fetchOne($page.params.planId); });
 </script>
 
-<svelte:head><title>{planStore.current?.title || 'Plan'} — TutorOS</title></svelte:head>
+<svelte:head><title>{planStore.current?.title || 'Plan'} — Prepless AI</title></svelte:head>
 
 {#if planStore.loading && !planStore.current}
 	<div class="flex justify-center py-16"><Spinner size="lg" /></div>

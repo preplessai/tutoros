@@ -3,7 +3,7 @@
 	import Button from '$lib/components/ui/Button.svelte';
 </script>
 
-<svelte:head><title>Dashboard — TutorOS</title></svelte:head>
+<svelte:head><title>Dashboard — Prepless AI</title></svelte:head>
 
 <div class="space-y-8 page-enter">
 	<!-- Welcome Banner -->
@@ -34,7 +34,7 @@
 		] as stat}
 			<Card>
 				<div class="flex items-start gap-4">
-					<div class="h-12 w-12 rounded-2xl flex items-center justify-center shrink-0 shadow-clay-sm" style="background:{stat.color}">
+					<div class="h-12 w-12 rounded-2xl flex items-center justify-center shrink-0 shadow-clay-sm animate-breathe" style="background:{stat.color}">
 						<svg class="h-6 w-6" style="color:{stat.iconColor}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={stat.icon}/></svg>
 					</div>
 					<div class="min-w-0">

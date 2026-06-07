@@ -48,7 +48,7 @@
 
 	<!-- Bottom CTA -->
 	<div class="p-4 border-t-2 border-[var(--color-border)]">
-		<a href="/dashboard/plans/new" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[var(--color-primary-500)] to-[var(--color-accent-500)] rounded-xl hover:from-[var(--color-primary-600)] hover:to-[var(--color-accent-600)] transition-all shadow-clay-sm no-underline active:scale-[0.97]">
+		<a href="/dashboard/plans/new" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[var(--color-primary-500)] to-[var(--color-accent-500)] rounded-xl hover:from-[var(--color-primary-600)] hover:to-[var(--color-accent-600)] transition-all shadow-clay-sm no-underline active:scale-[0.97] animate-breathe">
 			<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
 			New Plan
 		</a>
