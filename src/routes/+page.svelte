@@ -1,5 +1,18 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/Button.svelte';
+	import { scrollReveal } from '$lib/actions/scrollReveal.svelte';
+
+	const testimonials = [
+		{ quote: 'TutorOS saves me 5+ hours every week. The AI plans are surprisingly good, and I can tweak anything in seconds.', name: 'Sarah M.', role: 'Math Tutor, 6 years', color: 'var(--color-primary-100)' },
+		{ quote: 'My students love having a clear schedule. The day plans with time blocks make sessions so much more productive.', name: 'James K.', role: 'Science Tutor, 3 years', color: 'var(--color-accent-100)' },
+		{ quote: 'The resource suggestions are a game-changer. No more hunting for practice problems — it just finds them.', name: 'Priya R.', role: 'SAT Prep Coach', color: 'var(--color-success-bg)' },
+		{ quote: 'I was spending hours every Sunday planning. Now I generate a full plan in under 5 minutes and my weekends are mine again.', name: 'David L.', role: 'English Tutor, 8 years', color: 'var(--color-accent-100)' },
+		{ quote: 'The AI somehow gets what my students need before I do. It catches gaps I would have missed.', name: 'Maria G.', role: 'Physics & Calc Tutor', color: 'var(--color-primary-100)' },
+		{ quote: 'My tutoring business grew 3x since using TutorOS. The professionalism of the plans impresses parents.', name: 'Kenji T.', role: 'Test Prep Coach, 5 years', color: 'var(--color-success-bg)' },
+	];
+
+	// Duplicate for seamless infinite scroll
+	const marqueeItems = [...testimonials, ...testimonials];
 </script>
 
 <svelte:head><title>TutorOS — AI-Powered Tutoring Schedules</title></svelte:head>
@@ -38,7 +51,6 @@
 				<!-- Trust indicators -->
 				<div class="flex items-center gap-6 mt-8">
 					<div class="flex -space-x-2">
-						{[...Array(4)].map(() => '')}
 						{#each ['#A18072','#D4C5BC','#E8924E','#7CA37C'] as color}
 							<div class="h-9 w-9 rounded-full border-2 border-[var(--color-surface)] flex items-center justify-center text-[10px] font-bold text-white" style="background:{color}">
 								<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -122,7 +134,7 @@
 				{ value: '8+', label: 'Resource Sites' },
 				{ value: '97%', label: 'Satisfaction' }
 			] as stat}
-				<div>
+				<div use:scrollReveal>
 					<div class="text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">{stat.value}</div>
 					<div class="text-sm text-[var(--color-text-secondary)] mt-1">{stat.label}</div>
 				</div>
@@ -134,7 +146,7 @@
 <!-- ═══════════════ HOW IT WORKS ═══════════════ -->
 <section class="py-20 md:py-28 bg-[var(--color-surface)]">
 	<div class="container-page">
-		<div class="text-center mb-16 animate-fade-in-up">
+		<div class="text-center mb-16" use:scrollReveal>
 			<h2 class="text-3xl md:text-5xl font-bold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">Three steps to your first plan</h2>
 			<p class="mt-4 text-lg text-[var(--color-text-secondary)] max-w-xl mx-auto">From student profile to AI-generated schedule in minutes.</p>
 		</div>
@@ -145,13 +157,13 @@
 				<div class="h-full bg-gradient-to-r from-[var(--color-primary-300)] via-[var(--color-accent-400)] to-[var(--color-primary-300)] rounded-full" style="mask-image:linear-gradient(to right, transparent, black 20%, black 80%, transparent)"></div>
 			</div>
 
-			<div class="grid md:grid-cols-3 gap-8 relative stagger-children">
+			<div class="grid md:grid-cols-3 gap-8 relative">
 				{#each [
 					{ step: '01', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', title: 'Add Student', desc: 'Enter student grade, subjects, and learning style. One click setup.' },
 					{ step: '02', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', title: 'Set Goals', desc: 'Pick dates, targets, and preferences. AI handles the rest.' },
 					{ step: '03', icon: 'M13 10V3L4 14h7v7l9-11h-7z', title: 'Get Schedule', desc: 'AI generates a complete multi-week plan. Review, edit, done.' }
 				] as item}
-					<div class="relative flex flex-col items-center text-center">
+					<div class="relative flex flex-col items-center text-center" use:scrollReveal={{ delay: item.step === '01' ? 0 : item.step === '02' ? 0.1 : 0.2 }}>
 						<div class="relative z-10 h-24 w-24 rounded-3xl bg-[var(--color-surface-elevated)] shadow-clay-md border-2 border-[var(--color-border)] flex items-center justify-center mb-6">
 							<svg class="h-10 w-10 text-[var(--color-primary-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={item.icon}/></svg>
 							<span class="absolute -top-2 -right-2 h-7 w-7 rounded-full bg-[var(--color-accent-500)] text-white text-xs font-bold flex items-center justify-center shadow-clay-sm">{item.step}</span>
@@ -168,7 +180,7 @@
 <!-- ═══════════════ FEATURES (ZIGZAG) ═══════════════ -->
 <section id="features" class="py-20 md:py-28 bg-[var(--color-surface-secondary)]">
 	<div class="container-page">
-		<div class="text-center mb-16 animate-fade-in-up">
+		<div class="text-center mb-16" use:scrollReveal>
 			<h2 class="text-3xl md:text-5xl font-bold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">Everything a tutor needs</h2>
 			<p class="mt-4 text-lg text-[var(--color-text-secondary)] max-w-xl mx-auto">Powerful features wrapped in a simple, beautiful interface.</p>
 		</div>
@@ -182,7 +194,7 @@
 			] as feature, i}
 				<div class="grid md:grid-cols-2 gap-10 lg:gap-16 items-center {i % 2 === 1 ? 'md:grid-flow-dense' : ''}">
 					<!-- Visual -->
-					<div class={`${i % 2 === 1 ? 'md:col-start-2' : ''}`}>
+					<div class={i % 2 === 1 ? 'md:col-start-2' : ''} use:scrollReveal={{ direction: i % 2 === 1 ? 'fade-left' : 'fade-up', delay: 0.05 }}>
 						<div class="relative">
 							<div class="h-60 md:h-72 rounded-3xl bg-[var(--color-surface-elevated)] shadow-clay-lg border-2 border-[var(--color-border)] flex items-center justify-center overflow-hidden">
 								<div class="h-20 w-20 rounded-2xl {feature.color === 'primary' ? 'bg-[var(--color-primary-100)]' : feature.color === 'accent' ? 'bg-[var(--color-accent-100)]' : 'bg-[var(--color-success-bg)]'} flex items-center justify-center">
@@ -194,7 +206,7 @@
 						</div>
 					</div>
 					<!-- Text -->
-					<div class={i % 2 === 1 ? 'md:col-start-1' : ''}>
+					<div class={i % 2 === 1 ? 'md:col-start-1' : ''} use:scrollReveal={{ direction: i % 2 === 1 ? 'fade-left' : 'fade-up', delay: 0.15 }}>
 						<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium {feature.color === 'primary' ? 'bg-[var(--color-primary-100)] text-[var(--color-primary-700)]' : feature.color === 'accent' ? 'bg-[var(--color-accent-100)] text-[var(--color-accent-700)]' : 'bg-[var(--color-success-bg)] text-[var(--color-success)]'} mb-4">
 							Feature {i + 1}
 						</div>
@@ -207,22 +219,20 @@
 	</div>
 </section>
 
-<!-- ═══════════════ TESTIMONIALS ═══════════════ -->
-<section class="py-20 md:py-28 bg-[var(--color-surface)]">
-	<div class="container-page">
-		<div class="text-center mb-16 animate-fade-in-up">
+<!-- ═══════════════ TESTIMONIALS — INFINITE HORIZONTAL SCROLL ═══════════════ -->
+<section class="py-20 md:py-28 bg-[var(--color-surface)] overflow-hidden">
+	<div class="container-page mb-12">
+		<div class="text-center" use:scrollReveal>
 			<h2 class="text-3xl md:text-5xl font-bold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">Loved by tutors</h2>
-			<p class="mt-4 text-lg text-[var(--color-text-secondary)] max-w-xl mx-auto">See what tutors are saying about TutorOS.</p>
+			<p class="mt-4 text-lg text-[var(--color-text-secondary)] max-w-xl mx-auto">See what tutors are saying about TutorOS. Hover to pause.</p>
 		</div>
+	</div>
 
-		<div class="grid md:grid-cols-3 gap-8 stagger-children">
-			{#each [
-				{ quote: 'TutorOS saves me 5+ hours every week. The AI plans are surprisingly good, and I can tweak anything in seconds.', name: 'Sarah M.', role: 'Math Tutor, 6 years', color: 'var(--color-primary-100)' },
-				{ quote: 'My students love having a clear schedule. The day plans with time blocks make sessions so much more productive.', name: 'James K.', role: 'Science Tutor, 3 years', color: 'var(--color-accent-100)' },
-				{ quote: 'The resource suggestions are a game-changer. No more hunting for practice problems — it just finds them.', name: 'Priya R.', role: 'SAT Prep Coach', color: 'var(--color-success-bg)' }
-			] as testimonial}
-				<div class="clay-card p-6 relative">
-					<!-- Quote mark -->
+	<!-- Marquee track 1 — leftward -->
+	<div class="marquee-track group mb-6" style="--marquee-speed: 35s">
+		{#each marqueeItems as testimonial, i}
+			<div class="shrink-0 w-[340px] mx-3">
+				<div class="clay-card p-6 relative h-full">
 					<svg class="h-8 w-8 text-[var(--color-text-tertiary)]/30 mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
 					<p class="text-sm text-[var(--color-text-secondary)] leading-relaxed italic">"{testimonial.quote}"</p>
 					<div class="flex items-center gap-3 mt-5 pt-4 border-t border-[var(--color-border)]">
@@ -235,8 +245,8 @@
 						</div>
 					</div>
 				</div>
-			{/each}
-		</div>
+			</div>
+		{/each}
 	</div>
 </section>
 
@@ -247,15 +257,17 @@
 	<div class="absolute bottom-10 left-10 w-48 h-48 rounded-full bg-white/5 blur-2xl"></div>
 
 	<div class="container-page relative text-center">
-		<h2 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white font-[family-name:var(--font-heading)] leading-tight">
-			Start planning smarter today
-		</h2>
-		<p class="mt-6 text-lg md:text-xl text-[var(--color-primary-100)] max-w-xl mx-auto">
-			Free to start. No credit card. Create your first AI-powered tutoring plan in less than 5 minutes.
-		</p>
-		<div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-			<Button variant="secondary" size="xl" href="/auth/register">Get started free</Button>
-			<span class="text-sm text-[var(--color-primary-200)]">or <a href="/pricing" class="underline underline-offset-2 hover:text-white transition-colors">view pricing</a></span>
+		<div use:scrollReveal>
+			<h2 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white font-[family-name:var(--font-heading)] leading-tight">
+				Start planning smarter today
+			</h2>
+			<p class="mt-6 text-lg md:text-xl text-[var(--color-primary-100)] max-w-xl mx-auto">
+				Free to start. No credit card. Create your first AI-powered tutoring plan in less than 5 minutes.
+			</p>
+			<div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+				<Button variant="secondary" size="xl" href="/auth/register">Get started free</Button>
+				<span class="text-sm text-[var(--color-primary-200)]">or <a href="/pricing" class="underline underline-offset-2 hover:text-white transition-colors">view pricing</a></span>
+			</div>
 		</div>
 	</div>
 </section>

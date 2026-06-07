@@ -1,6 +1,6 @@
 <footer class="border-t-2 border-[var(--color-border)] bg-[var(--color-surface-secondary)]">
 	<div class="container-page py-8 md:py-12">
-		<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+		<div class="grid grid-cols-1 md:grid-cols-5 gap-8">
 			<div class="md:col-span-2">
 				<div class="flex items-center gap-2.5 font-semibold text-lg text-[var(--color-text-primary)] mb-3 font-[family-name:var(--font-heading)]">
 					<div class="h-8 w-8 rounded-xl bg-gradient-to-br from-[var(--color-primary-400)] to-[var(--color-accent-400)] flex items-center justify-center shadow-clay-sm">
@@ -26,9 +26,22 @@
 					<li><span class="text-sm text-[var(--color-text-secondary)]">Contact</span></li>
 				</ul>
 			</div>
+			<div>
+				<h4 class="text-sm font-semibold text-[var(--color-text-primary)] mb-3 font-[family-name:var(--font-heading)]">Legal</h4>
+				<ul class="space-y-2">
+					<li><a href="/legal/terms" class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors no-underline">Terms of Service</a></li>
+					<li><a href="/legal/privacy" class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors no-underline">Privacy Policy</a></li>
+					<li><a href="/legal/disclaimer" class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors no-underline">Disclaimer</a></li>
+				</ul>
+			</div>
 		</div>
-		<div class="mt-8 pt-6 border-t-2 border-[var(--color-border)]">
+		<div class="mt-8 pt-6 border-t-2 border-[var(--color-border)] flex flex-col sm:flex-row items-center justify-between gap-4">
 			<p class="text-sm text-[var(--color-text-tertiary)]">&copy; {new Date().getFullYear()} TutorOS. All rights reserved.</p>
+			<div class="flex items-center gap-6">
+				<a href="/legal/terms" class="text-xs text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] transition-colors no-underline">Terms</a>
+				<a href="/legal/privacy" class="text-xs text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] transition-colors no-underline">Privacy</a>
+				<a href="/legal/disclaimer" class="text-xs text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] transition-colors no-underline">Disclaimer</a>
+			</div>
 		</div>
 	</div>
 </footer>
