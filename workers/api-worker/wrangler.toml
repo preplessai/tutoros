@@ -1,0 +1,9 @@
+name = "tutoros-api"
+main = "src/index.ts"
+compatibility_date = "2025-06-01"
+
+[vars]
+ANTHROPIC_API_KEY = ""
+
+[env.production]
+vars = { ANTHROPIC_API_KEY = "" }

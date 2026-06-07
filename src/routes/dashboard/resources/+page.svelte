@@ -1,0 +1,14 @@
+<script lang="ts">
+	import EmptyState from '$lib/components/ui/EmptyState.svelte';
+</script>
+
+<svelte:head><title>Resources — TutorOS</title></svelte:head>
+
+<div>
+	<h1 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">Resources</h1>
+	<EmptyState
+		icon="search"
+		title="Resource Library"
+		description="Resources you assign to tasks will appear here for easy access. Open a day plan and click 'Find Resources' to get started."
+	/>
+</div>
