@@ -13,16 +13,16 @@ CREATE TABLE public.profiles (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Enable RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
--- Users can read their own profile
 CREATE POLICY "Users can read own profile" ON public.profiles
   FOR SELECT USING (auth.uid() = id);
 
--- Users can update their own profile
 CREATE POLICY "Users can update own profile" ON public.profiles
   FOR UPDATE USING (auth.uid() = id);
+
+CREATE POLICY "Users can insert own profile" ON public.profiles
+  FOR INSERT WITH CHECK (auth.uid() = id);
 
 -- Auto-create profile on signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -93,6 +93,7 @@ CREATE TABLE public.plan_weeks (
   theme TEXT,
   focus_areas TEXT[] DEFAULT '{}',
   notes TEXT,
+  sort_order INTEGER NOT NULL DEFAULT 0,
   ai_generated BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -121,6 +122,8 @@ CREATE TABLE public.plan_days (
   struggle_areas TEXT[] DEFAULT '{}',
   grades_context TEXT,
   ai_raw_response JSONB,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  ai_generated BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -147,6 +150,7 @@ CREATE TABLE public.plan_tasks (
   description TEXT,
   duration_minutes INTEGER,
   completed BOOLEAN NOT NULL DEFAULT false,
+  ai_generated BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -173,6 +177,7 @@ CREATE TABLE public.resources (
   source TEXT,
   type TEXT CHECK (type IN ('video', 'article', 'practice', 'interactive')),
   description TEXT,
+  ai_generated BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -189,15 +194,6 @@ CREATE POLICY "Tutors can manage own resources" ON public.resources
       AND weekly_plans.tutor_id = auth.uid()
     )
   );
-
--- ── Helper: check if user owns a plan (for app logic) ──
-CREATE OR REPLACE FUNCTION public.tutor_owns_plan(plan_id UUID)
-RETURNS BOOLEAN AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.weekly_plans
-    WHERE id = plan_id AND tutor_id = auth.uid()
-  );
-$$ LANGUAGE sql SECURITY DEFINER;
 
 -- ── Indexes ──
 CREATE INDEX idx_students_tutor ON public.students(tutor_id);

@@ -6,6 +6,13 @@ let students = $state<Student[]>([]);
 let current = $state<Student | null>(null);
 let loading = $state(false);
 
+async function getTutorId(): Promise<string> {
+	const { data } = await supabase.auth.getSession();
+	const userId = data.session?.user?.id;
+	if (!userId) throw new Error('Not authenticated');
+	return userId;
+}
+
 export const studentStore = {
 	get students() { return students; },
 	get current() { return current; },
@@ -27,7 +34,8 @@ export const studentStore = {
 	},
 
 	async create(student: Omit<Student, 'id' | 'tutor_id' | 'created_at' | 'updated_at'>) {
-		const { data, error } = await supabase.from('students').insert(student).select().single();
+		const tutorId = await getTutorId();
+		const { data, error } = await supabase.from('students').insert({ ...student, tutor_id: tutorId }).select().single();
 		if (error) { toast.error('Failed to create student: ' + error.message); return null; }
 		toast.success('Student created');
 		await this.fetchAll();

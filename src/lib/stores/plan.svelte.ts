@@ -11,6 +11,13 @@ let weeks = $state<PlanWeek[]>([]);
 let loading = $state(false);
 let generating = $state(false);
 
+async function getTutorId(): Promise<string> {
+	const { data } = await supabase.auth.getSession();
+	const userId = data.session?.user?.id;
+	if (!userId) throw new Error('Not authenticated');
+	return userId;
+}
+
 export const planStore = {
 	get plans() { return plans; },
 	get current() { return current; },
@@ -40,10 +47,12 @@ export const planStore = {
 		generating = true;
 		try {
 			const result: AiGeneratedPlan = await api.generateWeeklyPlan(request);
+			const tutorId = await getTutorId();
 
 			// Insert plan
 			const { data: plan, error: planErr } = await supabase.from('weekly_plans').insert({
 				student_id: request.studentId,
+				tutor_id: tutorId,
 				title: `${request.subjects[0] || 'Tutoring'} Plan`,
 				grade: request.grade,
 				subjects: request.subjects,
