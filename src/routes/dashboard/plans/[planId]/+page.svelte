@@ -5,7 +5,9 @@
 	import PlanTimeline from '$lib/components/plans/PlanTimeline.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 
-	onMount(() => { planStore.fetchOne($page.params.planId); });
+	onMount(() => {
+		planStore.fetchOne($page.params.planId);
+	});
 </script>
 
 <svelte:head><title>{planStore.current?.title || 'Plan'} — Prepless AI</title></svelte:head>

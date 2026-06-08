@@ -16,7 +16,13 @@ const taskSectionSchema = z.enum([
 ]);
 
 const dayOfWeekSchema = z.enum([
-	'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
+	'monday',
+	'tuesday',
+	'wednesday',
+	'thursday',
+	'friday',
+	'saturday',
+	'sunday'
 ]);
 
 // POST /api/generate-weekly-plan
@@ -42,10 +48,12 @@ export const adjustPlanSchema = z.object({
 		removedSubjects: z.array(z.string()).optional(),
 		gradeChange: z.string().optional(),
 		goalUpdates: z.string().optional(),
-		scheduleChanges: z.object({
-			timePerSession: z.number().int().positive().max(480).optional(),
-			sessionsPerWeek: z.number().int().positive().max(14).optional()
-		}).optional()
+		scheduleChanges: z
+			.object({
+				timePerSession: z.number().int().positive().max(480).optional(),
+				sessionsPerWeek: z.number().int().positive().max(14).optional()
+			})
+			.optional()
 	})
 });
 

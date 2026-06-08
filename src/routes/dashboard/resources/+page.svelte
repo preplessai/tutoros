@@ -5,7 +5,7 @@
 <svelte:head><title>Resources — Prepless AI</title></svelte:head>
 
 <div>
-	<h1 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">Resources</h1>
+	<h1 class="mb-6 text-2xl font-bold text-[var(--color-text-primary)]">Resources</h1>
 	<EmptyState
 		icon="search"
 		title="Resource Library"

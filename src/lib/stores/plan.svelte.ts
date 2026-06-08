@@ -19,15 +19,28 @@ async function getTutorId(): Promise<string> {
 }
 
 export const planStore = {
-	get plans() { return plans; },
-	get current() { return current; },
-	get weeks() { return weeks; },
-	get loading() { return loading; },
-	get generating() { return generating; },
+	get plans() {
+		return plans;
+	},
+	get current() {
+		return current;
+	},
+	get weeks() {
+		return weeks;
+	},
+	get loading() {
+		return loading;
+	},
+	get generating() {
+		return generating;
+	},
 
 	async fetchAll() {
 		loading = true;
-		const { data } = await supabase.from('weekly_plans').select('*').order('created_at', { ascending: false });
+		const { data } = await supabase
+			.from('weekly_plans')
+			.select('*')
+			.order('created_at', { ascending: false });
 		if (data) plans = data as WeeklyPlan[];
 		loading = false;
 	},
@@ -37,7 +50,11 @@ export const planStore = {
 		const { data: plan } = await supabase.from('weekly_plans').select('*').eq('id', id).single();
 		if (plan) current = plan as WeeklyPlan;
 
-		const { data: ws } = await supabase.from('plan_weeks').select('*').eq('plan_id', id).order('week_number');
+		const { data: ws } = await supabase
+			.from('plan_weeks')
+			.select('*')
+			.eq('plan_id', id)
+			.order('week_number');
 		if (ws) weeks = ws as PlanWeek[];
 
 		loading = false;
@@ -50,46 +67,58 @@ export const planStore = {
 			const tutorId = await getTutorId();
 
 			// Insert plan
-			const { data: plan, error: planErr } = await supabase.from('weekly_plans').insert({
-				student_id: request.studentId,
-				tutor_id: tutorId,
-				title: `${request.subjects[0] || 'Tutoring'} Plan`,
-				grade: request.grade,
-				subjects: request.subjects,
-				time_per_session: request.timePerSession,
-				sessions_per_week: request.sessionsPerWeek,
-				start_date: request.startDate,
-				end_date: request.endDate,
-				important_dates: request.importantDates,
-				goals: request.goals,
-				learning_style: request.learningStyle,
-				ai_raw_response: result,
-				status: 'active'
-			}).select().single();
+			const { data: plan, error: planErr } = await supabase
+				.from('weekly_plans')
+				.insert({
+					student_id: request.studentId,
+					tutor_id: tutorId,
+					title: `${request.subjects[0] || 'Tutoring'} Plan`,
+					grade: request.grade,
+					subjects: request.subjects,
+					time_per_session: request.timePerSession,
+					sessions_per_week: request.sessionsPerWeek,
+					start_date: request.startDate,
+					end_date: request.endDate,
+					important_dates: request.importantDates,
+					goals: request.goals,
+					learning_style: request.learningStyle,
+					ai_raw_response: result,
+					status: 'active'
+				})
+				.select()
+				.single();
 
 			if (planErr) throw planErr;
 
 			// Insert weeks and days
 			for (const week of result.plan.weeks) {
-				const { data: weekRow } = await supabase.from('plan_weeks').insert({
-					plan_id: plan.id,
-					week_number: week.weekNumber,
-					week_start: week.weekStart,
-					week_end: week.weekEnd,
-					theme: week.theme,
-					focus_areas: week.focusAreas,
-					notes: week.notes,
-					sort_order: week.weekNumber
-				}).select().single();
+				const { data: weekRow } = await supabase
+					.from('plan_weeks')
+					.insert({
+						plan_id: plan.id,
+						week_number: week.weekNumber,
+						week_start: week.weekStart,
+						week_end: week.weekEnd,
+						theme: week.theme,
+						focus_areas: week.focusAreas,
+						notes: week.notes,
+						sort_order: week.weekNumber
+					})
+					.select()
+					.single();
 
 				if (weekRow) {
 					for (const day of week.days) {
-						const { data: dayRow } = await supabase.from('plan_days').insert({
-							week_id: weekRow.id,
-							date: day.date,
-							day_of_week: day.dayOfWeek,
-							sort_order: week.days.indexOf(day)
-						}).select().single();
+						const { data: dayRow } = await supabase
+							.from('plan_days')
+							.insert({
+								week_id: weekRow.id,
+								date: day.date,
+								day_of_week: day.dayOfWeek,
+								sort_order: week.days.indexOf(day)
+							})
+							.select()
+							.single();
 
 						if (dayRow) {
 							for (const task of day.tasks) {
@@ -126,11 +155,17 @@ export const planStore = {
 			});
 
 			// Delete old weeks/days/tasks
-			const { data: oldWeeks } = await supabase.from('plan_weeks').select('id').eq('plan_id', planId);
+			const { data: oldWeeks } = await supabase
+				.from('plan_weeks')
+				.select('id')
+				.eq('plan_id', planId);
 			if (oldWeeks) {
-				const weekIds = oldWeeks.map(w => w.id);
+				const weekIds = oldWeeks.map((w) => w.id);
 				for (const wid of weekIds) {
-					const { data: oldDays } = await supabase.from('plan_days').select('id').eq('week_id', wid);
+					const { data: oldDays } = await supabase
+						.from('plan_days')
+						.select('id')
+						.eq('week_id', wid);
 					if (oldDays) {
 						for (const did of oldDays) {
 							await supabase.from('plan_tasks').delete().eq('day_id', did.id);
@@ -143,26 +178,43 @@ export const planStore = {
 
 			// Insert new
 			for (const week of result.plan.weeks) {
-				const { data: weekRow } = await supabase.from('plan_weeks').insert({
-					plan_id: planId, week_number: week.weekNumber,
-					week_start: week.weekStart, week_end: week.weekEnd,
-					theme: week.theme, focus_areas: week.focusAreas,
-					notes: week.notes, sort_order: week.weekNumber
-				}).select().single();
+				const { data: weekRow } = await supabase
+					.from('plan_weeks')
+					.insert({
+						plan_id: planId,
+						week_number: week.weekNumber,
+						week_start: week.weekStart,
+						week_end: week.weekEnd,
+						theme: week.theme,
+						focus_areas: week.focusAreas,
+						notes: week.notes,
+						sort_order: week.weekNumber
+					})
+					.select()
+					.single();
 
 				if (weekRow) {
 					for (const day of week.days) {
-						const { data: dayRow } = await supabase.from('plan_days').insert({
-							week_id: weekRow.id, date: day.date,
-							day_of_week: day.dayOfWeek, sort_order: week.days.indexOf(day)
-						}).select().single();
+						const { data: dayRow } = await supabase
+							.from('plan_days')
+							.insert({
+								week_id: weekRow.id,
+								date: day.date,
+								day_of_week: day.dayOfWeek,
+								sort_order: week.days.indexOf(day)
+							})
+							.select()
+							.single();
 
 						if (dayRow) {
 							for (const task of day.tasks) {
 								await supabase.from('plan_tasks').insert({
-									day_id: dayRow.id, section: task.section,
-									sort_order: day.tasks.indexOf(task), title: task.title,
-									description: task.description, duration_minutes: task.durationMinutes
+									day_id: dayRow.id,
+									section: task.section,
+									sort_order: day.tasks.indexOf(task),
+									title: task.title,
+									description: task.description,
+									duration_minutes: task.durationMinutes
 								});
 							}
 						}
@@ -184,20 +236,29 @@ export const planStore = {
 
 	async remove(id: string) {
 		const { error } = await supabase.from('weekly_plans').delete().eq('id', id);
-		if (error) { toast.error('Failed to delete plan'); return false; }
+		if (error) {
+			toast.error('Failed to delete plan');
+			return false;
+		}
 		toast.success('Plan deleted');
-		plans = plans.filter(p => p.id !== id);
+		plans = plans.filter((p) => p.id !== id);
 		if (current?.id === id) current = null;
 		return true;
 	},
 
 	async updateWeek(weekId: string, updates: Partial<PlanWeek>) {
-		await supabase.from('plan_weeks').update({ ...updates, ai_generated: false }).eq('id', weekId);
+		await supabase
+			.from('plan_weeks')
+			.update({ ...updates, ai_generated: false })
+			.eq('id', weekId);
 		await this.fetchOne(current!.id);
 		toast.success('Week updated');
 	},
 
 	async updateTask(taskId: string, updates: Partial<PlanTask>) {
-		await supabase.from('plan_tasks').update({ ...updates, ai_generated: false }).eq('id', taskId);
+		await supabase
+			.from('plan_tasks')
+			.update({ ...updates, ai_generated: false })
+			.eq('id', taskId);
 	}
 };

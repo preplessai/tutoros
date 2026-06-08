@@ -7,14 +7,16 @@
 
 <svelte:head><title>Settings — Prepless AI</title></svelte:head>
 
-<div class="space-y-6 max-w-2xl">
+<div class="max-w-2xl space-y-6">
 	<div>
 		<h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Settings</h1>
-		<p class="mt-1 text-sm text-[var(--color-text-secondary)]">Manage your account and preferences.</p>
+		<p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+			Manage your account and preferences.
+		</p>
 	</div>
 
 	<Card>
-		<h3 class="font-semibold text-[var(--color-text-primary)] mb-4">Profile</h3>
+		<h3 class="mb-4 font-semibold text-[var(--color-text-primary)]">Profile</h3>
 		<div class="space-y-3 text-sm">
 			<div class="flex justify-between">
 				<span class="text-[var(--color-text-secondary)]">Email</span>
@@ -26,20 +28,25 @@
 			</div>
 			<div class="flex justify-between">
 				<span class="text-[var(--color-text-secondary)]">Plan</span>
-				<Badge variant={auth.profile?.subscription_tier === 'pro' ? 'success' : 'default'}>{auth.profile?.subscription_tier || 'free'}</Badge>
+				<Badge variant={auth.profile?.subscription_tier === 'pro' ? 'success' : 'default'}
+					>{auth.profile?.subscription_tier || 'free'}</Badge
+				>
 			</div>
 		</div>
 	</Card>
 
 	<Card>
-		<h3 class="font-semibold text-[var(--color-text-primary)] mb-4">Resource Sites</h3>
-		<p class="text-sm text-[var(--color-text-secondary)] mb-4">Configure default resource sites for new students. Per-student overrides available in student settings.</p>
+		<h3 class="mb-4 font-semibold text-[var(--color-text-primary)]">Resource Sites</h3>
+		<p class="mb-4 text-sm text-[var(--color-text-secondary)]">
+			Configure default resource sites for new students. Per-student overrides available in student
+			settings.
+		</p>
 		<Button variant="secondary" href="/dashboard/settings/resources">Configure Sites</Button>
 	</Card>
 
 	<Card>
-		<h3 class="font-semibold text-[var(--color-error)] text-[var(--color-error)] mb-4">Danger Zone</h3>
-		<p class="text-sm text-[var(--color-text-secondary)] mb-4">Sign out of your account.</p>
+		<h3 class="mb-4 font-semibold text-[var(--color-error)]">Danger Zone</h3>
+		<p class="mb-4 text-sm text-[var(--color-text-secondary)]">Sign out of your account.</p>
 		<Button variant="danger" href="/auth/logout">Sign Out</Button>
 	</Card>
 </div>

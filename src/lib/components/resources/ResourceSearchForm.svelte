@@ -45,25 +45,45 @@
 
 <div class="space-y-4">
 	<h3 class="text-lg font-semibold text-[var(--color-text-primary)]">Search Resources</h3>
-	<p class="text-sm text-[var(--color-text-secondary)]">AI-powered search across learning platforms for relevant practice materials.</p>
+	<p class="text-sm text-[var(--color-text-secondary)]">
+		AI-powered search across learning platforms for relevant practice materials.
+	</p>
 
 	<div class="flex gap-2">
-		<Input name="resourceQuery" value={query} oninput={e => query = (e.target as HTMLInputElement).value} placeholder="e.g., quadratic equations practice" />
+		<Input
+			name="resourceQuery"
+			value={query}
+			oninput={(e) => (query = (e.target as HTMLInputElement).value)}
+			placeholder="e.g., quadratic equations practice"
+		/>
 		<Button variant="gradient" onclick={handleSearch} loading={searching}>Search</Button>
 	</div>
 
 	{#if searched && searchResults.length > 0}
-		<div class="space-y-2 mt-4">
+		<div class="mt-4 space-y-2">
 			{#each searchResults as resource, i}
-				<div class="flex items-start gap-3 p-3 rounded-lg border border-[var(--color-border)] hover:shadow-sm transition-shadow">
-					<a href={resource.url} target="_blank" rel="noopener noreferrer" class="flex-1 min-w-0 no-underline">
-						<h5 class="text-sm font-medium text-[var(--color-primary-500)] text-[var(--color-primary-500)] hover:underline">{resource.title}</h5>
-						<p class="text-xs text-[var(--color-text-secondary)] mt-0.5">{resource.source} · {resource.type}</p>
+				<div
+					class="flex items-start gap-3 rounded-lg border border-[var(--color-border)] p-3 transition-shadow hover:shadow-sm"
+				>
+					<a
+						href={resource.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="min-w-0 flex-1 no-underline"
+					>
+						<h5 class="text-sm font-medium text-[var(--color-primary-500)] hover:underline">
+							{resource.title}
+						</h5>
+						<p class="mt-0.5 text-xs text-[var(--color-text-secondary)]">
+							{resource.source} · {resource.type}
+						</p>
 					</a>
 				</div>
 			{/each}
 		</div>
 	{:else if searched && searchResults.length === 0}
-		<p class="text-sm text-[var(--color-text-secondary)]">No resources found. Try a different query.</p>
+		<p class="text-sm text-[var(--color-text-secondary)]">
+			No resources found. Try a different query.
+		</p>
 	{/if}
 </div>

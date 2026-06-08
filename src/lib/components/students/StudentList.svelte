@@ -7,14 +7,18 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { goto } from '$app/navigation';
 
-	onMount(() => { studentStore.fetchAll(); });
+	onMount(() => {
+		studentStore.fetchAll();
+	});
 </script>
 
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
 		<div>
 			<h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Students</h1>
-			<p class="mt-1 text-sm text-[var(--color-text-secondary)]">{studentStore.students.length} student{studentStore.students.length !== 1 ? 's' : ''}</p>
+			<p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+				{studentStore.students.length} student{studentStore.students.length !== 1 ? 's' : ''}
+			</p>
 		</div>
 		<Button variant="gradient" href="/dashboard/students/new">Add Student</Button>
 	</div>
@@ -29,7 +33,7 @@
 			action={{ label: 'Add Student', onclick: () => goto('/dashboard/students/new') }}
 		/>
 	{:else}
-		<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+		<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 			{#each studentStore.students as student}
 				<StudentCard {student} onclick={() => goto(`/dashboard/students/${student.id}`)} />
 			{/each}

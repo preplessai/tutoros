@@ -36,7 +36,7 @@
 		<div class="flex items-start justify-between">
 			<div>
 				<h1 class="text-2xl font-bold text-[var(--color-text-primary)]">{s.name}</h1>
-				<div class="flex items-center gap-2 mt-1">
+				<div class="mt-1 flex items-center gap-2">
 					<Badge variant="info">{s.grade}</Badge>
 					{#each s.subjects.slice(0, 3) as subject}
 						<Badge variant="primary">{subject}</Badge>
@@ -47,16 +47,18 @@
 				<Button variant="gradient" size="sm" href={`/dashboard/plans/new?studentId=${s.id}`}>
 					New Plan
 				</Button>
-				<Button variant="danger" size="sm" onclick={handleDelete} loading={deleting}>
-					Delete
-				</Button>
+				<Button variant="danger" size="sm" onclick={handleDelete} loading={deleting}>Delete</Button>
 			</div>
 		</div>
 
-		<Tabs tabs={[
-			{ value: 'profile', label: 'Profile' },
-			{ value: 'settings', label: 'Settings' }
-		]} activeTab={tab} onchange={t => tab = t} />
+		<Tabs
+			tabs={[
+				{ value: 'profile', label: 'Profile' },
+				{ value: 'settings', label: 'Settings' }
+			]}
+			activeTab={tab}
+			onchange={(t) => (tab = t)}
+		/>
 
 		{#if tab === 'profile'}
 			<Card>

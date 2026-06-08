@@ -6,13 +6,18 @@
 	let { tasks }: { tasks: PlanTask[] } = $props();
 
 	// Group tasks by section
-	let sections = $derived(Object.entries(
-		tasks.reduce((acc, task) => {
-			if (!acc[task.section]) acc[task.section] = [];
-			acc[task.section].push(task);
-			return acc;
-		}, {} as Record<string, PlanTask[]>)
-	));
+	let sections = $derived(
+		Object.entries(
+			tasks.reduce(
+				(acc, task) => {
+					if (!acc[task.section]) acc[task.section] = [];
+					acc[task.section].push(task);
+					return acc;
+				},
+				{} as Record<string, PlanTask[]>
+			)
+		)
+	);
 </script>
 
 <div class="space-y-6">

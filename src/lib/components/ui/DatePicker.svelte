@@ -1,12 +1,19 @@
 <script lang="ts">
-	let { label, name, value = '', error = '', required = false, onchange }: Record<string, any> = $props();
+	let {
+		label,
+		name,
+		value = '',
+		error = '',
+		required = false,
+		onchange
+	}: Record<string, any> = $props();
 </script>
 
 <div class="space-y-1.5">
 	{#if label}
 		<label for={name} class="block text-sm font-medium text-[var(--color-text-primary)]">
 			{label}
-			{#if required}<span class="text-[var(--color-error)] ml-0.5">*</span>{/if}
+			{#if required}<span class="ml-0.5 text-[var(--color-error)]">*</span>{/if}
 		</label>
 	{/if}
 	<input
@@ -16,7 +23,7 @@
 		{value}
 		{required}
 		{onchange}
-		class="clay-input w-full text-sm
+		class="w-full clay-input text-sm
 			{error ? '!border-[var(--color-error)] focus:!border-[var(--color-error)]' : ''}"
 	/>
 	{#if error}

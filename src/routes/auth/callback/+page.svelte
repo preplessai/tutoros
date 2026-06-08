@@ -4,6 +4,6 @@
 
 <svelte:head><title>Signing in... — Prepless AI</title></svelte:head>
 
-<div class="min-h-[80vh] flex items-center justify-center bg-[var(--color-surface-secondary)]">
+<div class="flex min-h-[80vh] items-center justify-center bg-[var(--color-surface-secondary)]">
 	<AuthCallback />
 </div>

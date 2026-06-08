@@ -4,11 +4,17 @@
 
 <svelte:head><title>Pricing — Prepless AI</title></svelte:head>
 
-<section class="py-20 md:py-28 bg-[var(--color-surface)]">
+<section class="bg-[var(--color-surface)] py-20 md:py-28">
 	<div class="container-page">
-		<div class="text-center mb-16 animate-fade-in-up">
-			<h1 class="text-3xl md:text-5xl font-bold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">Simple, transparent pricing</h1>
-			<p class="mt-4 text-lg text-[var(--color-text-secondary)] max-w-xl mx-auto">Choose the plan that fits your tutoring business. Upgrade anytime.</p>
+		<div class="mb-16 animate-fade-in-up text-center">
+			<h1
+				class="font-[family-name:var(--font-heading)] text-3xl font-bold text-[var(--color-text-primary)] md:text-5xl"
+			>
+				Simple, transparent pricing
+			</h1>
+			<p class="mx-auto mt-4 max-w-xl text-lg text-[var(--color-text-secondary)]">
+				Choose the plan that fits your tutoring business. Upgrade anytime.
+			</p>
 		</div>
 		<PricingGrid />
 	</div>

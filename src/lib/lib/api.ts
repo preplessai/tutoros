@@ -20,7 +20,9 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
 		if (token) {
 			headers['Authorization'] = `Bearer ${token}`;
 		}
-	} catch { /* unauthenticated — let worker reject if required */ }
+	} catch {
+		/* unauthenticated — let worker reject if required */
+	}
 	return headers;
 }
 

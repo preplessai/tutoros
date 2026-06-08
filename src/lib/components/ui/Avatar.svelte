@@ -9,13 +9,26 @@
 		xl: 'h-16 w-16 text-xl'
 	};
 
-	const initials = name.split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2);
+	const initials = name
+		.split(' ')
+		.map((w: string) => w[0])
+		.join('')
+		.toUpperCase()
+		.slice(0, 2);
 </script>
 
 {#if src}
-	<img {src} alt={name} class={`${sizes[size]} rounded-full object-cover ring-2 ring-[var(--color-surface-elevated)]`} {...rest} />
+	<img
+		{src}
+		alt={name}
+		class={`${sizes[size]} rounded-full object-cover ring-2 ring-[var(--color-surface-elevated)]`}
+		{...rest}
+	/>
 {:else}
-	<div class={`${sizes[size]} rounded-full bg-gradient-to-br from-[var(--color-primary-400)] to-[var(--color-accent-400)] flex items-center justify-center text-white font-semibold ring-2 ring-[var(--color-surface-elevated)]`} {...rest}>
+	<div
+		class={`${sizes[size]} flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-primary-400)] to-[var(--color-accent-400)] font-semibold text-white ring-2 ring-[var(--color-surface-elevated)]`}
+		{...rest}
+	>
 		{initials}
 	</div>
 {/if}

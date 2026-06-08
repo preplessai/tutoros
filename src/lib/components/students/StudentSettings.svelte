@@ -16,10 +16,14 @@
 
 <div class="space-y-4">
 	<h3 class="text-lg font-semibold text-[var(--color-text-primary)]">Resource Sites</h3>
-	<p class="text-sm text-[var(--color-text-secondary)]">Choose which learning sites the AI can search for this student.</p>
-	<div class="space-y-3 mt-4">
+	<p class="text-sm text-[var(--color-text-secondary)]">
+		Choose which learning sites the AI can search for this student.
+	</p>
+	<div class="mt-4 space-y-3">
 		{#each student.preferred_resource_sites as site, i}
-			<div class="flex items-center justify-between p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)]">
+			<div
+				class="flex items-center justify-between rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-3"
+			>
 				<div>
 					<p class="text-sm font-medium text-[var(--color-text-secondary)]">{site.name}</p>
 					<p class="text-xs text-[var(--color-text-tertiary)]">{site.url}</p>

@@ -55,11 +55,7 @@ export const auth = {
 
 	async fetchProfile() {
 		if (!user) return;
-		const { data } = await supabase
-			.from('profiles')
-			.select('*')
-			.eq('id', user.id)
-			.single();
+		const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
 		profile = data as Profile | null;
 	},
 

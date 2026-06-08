@@ -14,7 +14,7 @@
 </script>
 
 {#if auth.loading}
-	<div class="flex items-center justify-center min-h-[60vh]">
+	<div class="flex min-h-[60vh] items-center justify-center">
 		<Spinner size="lg" />
 	</div>
 {:else if auth.isAuthenticated}

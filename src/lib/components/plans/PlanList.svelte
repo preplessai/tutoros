@@ -7,14 +7,18 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 
-	onMount(() => { planStore.fetchAll(); });
+	onMount(() => {
+		planStore.fetchAll();
+	});
 </script>
 
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
 		<div>
 			<h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Weekly Plans</h1>
-			<p class="mt-1 text-sm text-[var(--color-text-secondary)]">{planStore.plans.length} plan{planStore.plans.length !== 1 ? 's' : ''}</p>
+			<p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+				{planStore.plans.length} plan{planStore.plans.length !== 1 ? 's' : ''}
+			</p>
 		</div>
 		<Button variant="gradient" href="/dashboard/plans/new">Create Plan</Button>
 	</div>

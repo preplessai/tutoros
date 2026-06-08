@@ -3,14 +3,18 @@
 	let { children } = $props();
 </script>
 
-<div class="flex relative">
+<div class="relative flex">
 	<Sidebar />
-	<main class="flex-1 min-h-[calc(100vh-4rem)] bg-[var(--color-surface)] relative">
+	<main class="relative min-h-[calc(100vh-4rem)] min-w-0 flex-1 bg-[var(--color-surface)]">
 		<!-- Subtle decorative blobs -->
-		<div class="fixed top-1/3 -right-40 w-[400px] h-[400px] rounded-full bg-[var(--color-primary-50)]/20 blur-3xl pointer-events-none"></div>
-		<div class="fixed bottom-0 left-1/3 w-[300px] h-[300px] rounded-full bg-[var(--color-accent-100)]/10 blur-3xl pointer-events-none"></div>
+		<div
+			class="pointer-events-none fixed top-1/3 -right-40 h-[400px] w-[400px] rounded-full bg-[var(--color-primary-50)]/20 blur-3xl"
+		></div>
+		<div
+			class="pointer-events-none fixed bottom-0 left-1/3 h-[300px] w-[300px] rounded-full bg-[var(--color-accent-100)]/10 blur-3xl"
+		></div>
 
-		<div class="p-6 lg:p-8 relative">
+		<div class="relative p-6 lg:p-8">
 			{@render children?.()}
 		</div>
 	</main>

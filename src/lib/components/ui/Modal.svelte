@@ -1,5 +1,12 @@
 <script lang="ts">
-	let { open = false, onclose, title = '', description = '', size = 'md', children }: {
+	let {
+		open = false,
+		onclose,
+		title = '',
+		description = '',
+		size = 'md',
+		children
+	}: {
 		open?: boolean;
 		onclose?: () => void;
 		title?: string;
@@ -32,31 +39,50 @@
 	<div
 		data-backdrop="true"
 		onclick={handleBackdropClick}
-		class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--color-text-primary)]/30 backdrop-blur-sm animate-fade-in"
+		class="fixed inset-0 z-50 flex animate-fade-in items-center justify-center bg-[var(--color-text-primary)]/30 p-4 backdrop-blur-sm"
 		role="dialog"
 		tabindex="-1"
 		aria-modal="true"
 		aria-label={title || 'Dialog'}
 	>
-		<div class={`${sizes[size]} w-full clay-card shadow-clay-xl animate-scale-in max-h-[85vh] flex flex-col`}>
+		<div
+			class={`${sizes[size]} shadow-clay-xl flex max-h-[85vh] w-full animate-scale-in flex-col clay-card`}
+		>
 			{#if title || onclose}
-				<div class="flex items-center justify-between px-6 py-4 border-b-2 border-[var(--color-border)]">
+				<div
+					class="flex items-center justify-between border-b-2 border-[var(--color-border)] px-6 py-4"
+				>
 					<div>
 						{#if title}
-							<h2 class="text-lg font-semibold text-[var(--color-text-primary)] font-[family-name:var(--font-heading)]">{title}</h2>
+							<h2
+								class="font-[family-name:var(--font-heading)] text-lg font-semibold text-[var(--color-text-primary)]"
+							>
+								{title}
+							</h2>
 						{/if}
 						{#if description}
-							<p class="text-sm text-[var(--color-text-secondary)] mt-0.5">{description}</p>
+							<p class="mt-0.5 text-sm text-[var(--color-text-secondary)]">{description}</p>
 						{/if}
 					</div>
 					{#if onclose}
-						<button onclick={onclose} aria-label="Close dialog" class="p-1.5 rounded-xl text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-secondary)] transition-colors cursor-pointer">
-							<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+						<button
+							onclick={onclose}
+							aria-label="Close dialog"
+							class="cursor-pointer rounded-xl p-1.5 text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-text-primary)]"
+						>
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+								><path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								/></svg
+							>
 						</button>
 					{/if}
 				</div>
 			{/if}
-			<div class="px-6 py-4 overflow-y-auto">
+			<div class="overflow-y-auto px-6 py-4">
 				{@render children?.()}
 			</div>
 		</div>

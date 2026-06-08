@@ -25,7 +25,15 @@ export const SECTION_BADGE_COLORS: Record<string, string> = {
 	wrap_up: 'default'
 };
 
-export const DAYS_OF_WEEK = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const;
+export const DAYS_OF_WEEK = [
+	'monday',
+	'tuesday',
+	'wednesday',
+	'thursday',
+	'friday',
+	'saturday',
+	'sunday'
+] as const;
 
 export const GRADES = [
 	'Kindergarten',
@@ -92,13 +100,30 @@ export const SUBSCRIPTION_TIERS = {
 		name: 'Pro',
 		maxStudents: Infinity,
 		maxPlans: Infinity,
-		features: ['advanced_ai', 'day_plans', 'resource_search', 'plan_adjustment', 'manual_edit', 'priority']
+		features: [
+			'advanced_ai',
+			'day_plans',
+			'resource_search',
+			'plan_adjustment',
+			'manual_edit',
+			'priority'
+		]
 	},
 	enterprise: {
 		name: 'Enterprise',
 		maxStudents: Infinity,
 		maxPlans: Infinity,
-		features: ['advanced_ai', 'day_plans', 'resource_search', 'plan_adjustment', 'manual_edit', 'priority', 'team', 'api', 'custom_ai']
+		features: [
+			'advanced_ai',
+			'day_plans',
+			'resource_search',
+			'plan_adjustment',
+			'manual_edit',
+			'priority',
+			'team',
+			'api',
+			'custom_ai'
+		]
 	}
 };
 

@@ -34,8 +34,8 @@ export async function authenticate(
 	// Call Supabase's get-user endpoint — validates the token and returns user info
 	const resp = await fetch(`${supabaseUrl}/auth/v1/user`, {
 		headers: {
-			'Authorization': `Bearer ${token}`,
-			'apikey': anonKey
+			Authorization: `Bearer ${token}`,
+			apikey: anonKey
 		}
 	});
 

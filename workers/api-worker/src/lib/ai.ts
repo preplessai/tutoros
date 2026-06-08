@@ -39,7 +39,7 @@ function blockGroq(retryAfterSeconds: number) {
 	groqConsecutiveFailures++;
 	console.log(
 		`[ai] Groq blocked for ${retryAfterSeconds}s (until ${new Date(groqBlockedUntil).toISOString()}). ` +
-		`Consecutive failures: ${groqConsecutiveFailures}`
+			`Consecutive failures: ${groqConsecutiveFailures}`
 	);
 }
 
@@ -60,26 +60,24 @@ async function callGroq(options: AiCallOptions): Promise<string> {
 	const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
 		method: 'POST',
 		headers: {
-			'Authorization': `Bearer ${apiKey}`,
-			'Content-Type': 'application/json',
+			Authorization: `Bearer ${apiKey}`,
+			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({
 			model: GROQ_MODEL,
 			messages: [
 				{ role: 'system', content: options.systemPrompt },
-				{ role: 'user', content: options.userMessage },
+				{ role: 'user', content: options.userMessage }
 			],
 			max_tokens: options.maxTokens ?? 4096,
-			temperature: options.temperature ?? 0.7,
-		}),
+			temperature: options.temperature ?? 0.7
+		})
 	});
 
 	if (!resp.ok) {
 		if (resp.status === 429) {
 			const retryAfter = resp.headers.get('Retry-After');
-			const waitSeconds = retryAfter
-				? parseInt(retryAfter, 10)
-				: 60;
+			const waitSeconds = retryAfter ? parseInt(retryAfter, 10) : 60;
 
 			blockGroq(waitSeconds);
 			throw new Error('GROQ_RATE_LIMITED');
@@ -106,18 +104,18 @@ async function callDeepSeek(options: AiCallOptions): Promise<string> {
 	const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
 		method: 'POST',
 		headers: {
-			'Authorization': `Bearer ${apiKey}`,
-			'Content-Type': 'application/json',
+			Authorization: `Bearer ${apiKey}`,
+			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({
 			model: DEEPSEEK_MODEL,
 			messages: [
 				{ role: 'system', content: options.systemPrompt },
-				{ role: 'user', content: options.userMessage },
+				{ role: 'user', content: options.userMessage }
 			],
 			max_tokens: options.maxTokens ?? 4096,
-			temperature: options.temperature ?? 0.7,
-		}),
+			temperature: options.temperature ?? 0.7
+		})
 	});
 
 	if (!resp.ok) {

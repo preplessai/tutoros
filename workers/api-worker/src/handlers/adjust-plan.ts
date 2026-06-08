@@ -4,21 +4,31 @@ import { callAI } from '../lib/ai';
 // @ts-ignore
 import systemPrompt from '../prompts/adjust-plan.txt';
 
-export async function handleAdjustPlan(request: Request, env: Record<string, string>): Promise<Response> {
+export async function handleAdjustPlan(
+	request: Request,
+	env: Record<string, string>
+): Promise<Response> {
 	try {
 		const body = await request.json();
 		const parsed = adjustPlanSchema.safeParse(body);
 
 		if (!parsed.success) {
-			return Response.json({ error: 'Invalid request', details: parsed.error.flatten() }, { status: 400 });
+			return Response.json(
+				{ error: 'Invalid request', details: parsed.error.flatten() },
+				{ status: 400 }
+			);
 		}
 
 		const { currentPlan, changes } = parsed.data;
 
-		const userMessage = JSON.stringify({
-			currentPlan,
-			changesRequested: changes
-		}, null, 2);
+		const userMessage = JSON.stringify(
+			{
+				currentPlan,
+				changesRequested: changes
+			},
+			null,
+			2
+		);
 
 		const result = await callAI({
 			systemPrompt,
@@ -28,14 +38,18 @@ export async function handleAdjustPlan(request: Request, env: Record<string, str
 			env
 		});
 
-		const jsonMatch = result.text.match(/```(?:json)?\s*([\s\S]*?)```/) || result.text.match(/(\{[\s\S]*\})/);
+		const jsonMatch =
+			result.text.match(/```(?:json)?\s*([\s\S]*?)```/) || result.text.match(/(\{[\s\S]*\})/);
 		const jsonStr = jsonMatch ? jsonMatch[1].trim() : result.text.trim();
 
 		let plan;
 		try {
 			plan = JSON.parse(jsonStr);
 		} catch {
-			return Response.json({ error: 'Failed to parse AI response', raw: result.text.slice(0, 500) }, { status: 500 });
+			return Response.json(
+				{ error: 'Failed to parse AI response', raw: result.text.slice(0, 500) },
+				{ status: 500 }
+			);
 		}
 
 		return Response.json({ plan: plan.plan || plan, provider: result.provider });

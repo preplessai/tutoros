@@ -6,6 +6,6 @@
 <svelte:head><title>Create Plan — Prepless AI</title></svelte:head>
 
 <div>
-	<h1 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">Create Weekly Plan</h1>
+	<h1 class="mb-6 text-2xl font-bold text-[var(--color-text-primary)]">Create Weekly Plan</h1>
 	<Card><PlanForm /></Card>
 </div>

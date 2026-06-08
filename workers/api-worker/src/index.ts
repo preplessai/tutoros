@@ -9,24 +9,23 @@ import { handleSearchResources } from './handlers/search-resources';
 const app = new Hono();
 
 // CORS — reflect request origin for auth-gated endpoints
-app.use('*', cors({
-	origin: (origin) => {
-		// Allow localhost, common dev ports, and any prepless domain
-		const allowed = [
-			'http://localhost:5173',
-			'http://localhost:4173',
-			'http://localhost:8787'
-		];
-		if (allowed.includes(origin)) return origin;
-		// Allow any prepless-ai domain (pages.dev, custom domains)
-		if (origin.includes('prepless')) return origin;
-		// Allow any origin in development; in production, restrict as needed
-		return origin;
-	},
-	allowMethods: ['GET', 'POST', 'OPTIONS'],
-	allowHeaders: ['Content-Type', 'Authorization'],
-	maxAge: 86400
-}));
+app.use(
+	'*',
+	cors({
+		origin: (origin) => {
+			// Allow localhost, common dev ports, and any prepless domain
+			const allowed = ['http://localhost:5173', 'http://localhost:4173', 'http://localhost:8787'];
+			if (allowed.includes(origin)) return origin;
+			// Allow any prepless-ai domain (pages.dev, custom domains)
+			if (origin.includes('prepless')) return origin;
+			// Allow any origin in development; in production, restrict as needed
+			return origin;
+		},
+		allowMethods: ['GET', 'POST', 'OPTIONS'],
+		allowHeaders: ['Content-Type', 'Authorization'],
+		maxAge: 86400
+	})
+);
 
 // Auth middleware — applied to all /api/* routes
 app.use('/api/*', async (c, next) => {
@@ -60,7 +59,7 @@ app.get('/api/debug', async (c) => {
 		try {
 			// Test the actual endpoint we use for auth validation
 			const resp = await fetch(`${supabaseUrl}/auth/v1/user`, {
-				headers: { 'apikey': anonKey }
+				headers: { apikey: anonKey }
 			});
 			// Without a token, this should return 401 or 403 — that's fine, it means the endpoint is reachable
 			authStatus = `reachable (${resp.status})`;
@@ -81,10 +80,18 @@ app.get('/api/debug', async (c) => {
 });
 
 // AI endpoints — pass env so handlers can access API keys
-app.post('/api/generate-weekly-plan', async (c) => handleGenerateWeeklyPlan(c.req.raw, c.env as Record<string, string>));
-app.post('/api/adjust-plan', async (c) => handleAdjustPlan(c.req.raw, c.env as Record<string, string>));
-app.post('/api/generate-day-plan', async (c) => handleGenerateDayPlan(c.req.raw, c.env as Record<string, string>));
-app.post('/api/search-resources', async (c) => handleSearchResources(c.req.raw, c.env as Record<string, string>));
+app.post('/api/generate-weekly-plan', async (c) =>
+	handleGenerateWeeklyPlan(c.req.raw, c.env as Record<string, string>)
+);
+app.post('/api/adjust-plan', async (c) =>
+	handleAdjustPlan(c.req.raw, c.env as Record<string, string>)
+);
+app.post('/api/generate-day-plan', async (c) =>
+	handleGenerateDayPlan(c.req.raw, c.env as Record<string, string>)
+);
+app.post('/api/search-resources', async (c) =>
+	handleSearchResources(c.req.raw, c.env as Record<string, string>)
+);
 
 // 404
 app.all('*', (c) => c.json({ error: 'Not found' }, 404));

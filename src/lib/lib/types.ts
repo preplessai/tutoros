@@ -73,7 +73,14 @@ export interface PlanWeek {
 	updated_at: string;
 }
 
-export type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+export type DayOfWeek =
+	| 'monday'
+	| 'tuesday'
+	| 'wednesday'
+	| 'thursday'
+	| 'friday'
+	| 'saturday'
+	| 'sunday';
 export type EnergyLevel = 'low' | 'medium' | 'high';
 
 export interface PlanDay {
@@ -83,7 +90,7 @@ export interface PlanDay {
 	day_of_week: DayOfWeek;
 	energy_level: EnergyLevel | null;
 	recent_progress: string | null;
-	struggle_areas: string | null;
+	struggle_areas: string[] | null;
 	grades_context: string | null;
 	ai_raw_response: unknown | null;
 	ai_generated: boolean;
