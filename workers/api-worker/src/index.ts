@@ -30,8 +30,8 @@ app.use('*', cors({
 
 // Auth middleware — applied to all /api/* routes
 app.use('/api/*', async (c, next) => {
-	// Skip auth for health check
-	if (c.req.path === '/api/health') return next();
+	// Skip auth for health check and debug
+	if (c.req.path === '/api/health' || c.req.path === '/api/debug') return next();
 
 	const user = await authenticate(c.req.raw, c.env as Record<string, string>);
 	if (!user) {
@@ -46,6 +46,33 @@ app.use('/api/*', async (c, next) => {
 
 // Health check
 app.get('/api/health', (c) => c.json({ status: 'ok' }));
+
+// Debug — verify env vars and JWKS connectivity
+app.get('/api/debug', async (c) => {
+	const env = c.env as Record<string, string>;
+	const supabaseUrl = env['SUPABASE_URL'] || '';
+	const groqKey = env['GROQ_API_KEY_1'] || '';
+	const deepseekKey = env['SK_API_KEY_DEV'] || '';
+
+	let jwksStatus = 'not checked';
+	if (supabaseUrl) {
+		try {
+			const resp = await fetch(`${supabaseUrl}/auth/v1/jwks`);
+			jwksStatus = resp.ok ? `ok (${resp.status})` : `fail (${resp.status})`;
+		} catch (e: any) {
+			jwksStatus = `error: ${e.message}`;
+		}
+	}
+
+	return c.json({
+		env: {
+			SUPABASE_URL: supabaseUrl ? `${supabaseUrl.substring(0, 30)}...` : 'NOT SET',
+			GROQ_API_KEY_1: groqKey ? 'SET (length ' + groqKey.length + ')' : 'NOT SET',
+			SK_API_KEY_DEV: deepseekKey ? 'SET (length ' + deepseekKey.length + ')' : 'NOT SET'
+		},
+		jwksStatus
+	});
+});
 
 // AI endpoints — pass env so handlers can access API keys
 app.post('/api/generate-weekly-plan', async (c) => handleGenerateWeeklyPlan(c.req.raw, c.env as Record<string, string>));
