@@ -1,9 +1,9 @@
 <script lang="ts">
-	let { label, checked = $bindable(false), disabled = false, onchange, name } = $props();
+	let { label, checked = $bindable(false), disabled = false, name } = $props();
 </script>
 
 <label class="group inline-flex cursor-pointer items-center gap-2.5">
-	<input type="checkbox" {name} {checked} {disabled} {onchange} class="peer sr-only" />
+	<input type="checkbox" {name} bind:checked {disabled} class="peer sr-only" />
 	<div
 		class="relative h-5 w-9 rounded-full transition-colors duration-200
 		{checked ? 'bg-[var(--color-primary-500)]' : 'bg-[var(--color-border-strong)]'}

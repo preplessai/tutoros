@@ -9,8 +9,6 @@
 		rows = 4,
 		required = false,
 		disabled = false,
-		onchange,
-		oninput,
 		...rest
 	} = $props();
 </script>
@@ -27,14 +25,14 @@
 		id={name}
 		{placeholder}
 		{rows}
+		bind:value
 		{disabled}
 		{required}
-		{onchange}
-		{oninput}
 		class="w-full resize-y clay-input text-sm
 			disabled:pointer-events-none disabled:opacity-50
-			{error ? '!border-[var(--color-error)] focus:!border-[var(--color-error)]' : ''}">{value}</textarea
-	>
+			{error ? '!border-[var(--color-error)] focus:!border-[var(--color-error)]' : ''}"
+		{...rest}
+	></textarea>
 	{#if error}
 		<p class="text-sm text-[var(--color-error)]">{error}</p>
 	{:else if hint}

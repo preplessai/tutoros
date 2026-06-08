@@ -14,13 +14,22 @@ async function getTutorId(): Promise<string> {
 }
 
 export const studentStore = {
-	get students() { return students; },
-	get current() { return current; },
-	get loading() { return loading; },
+	get students() {
+		return students;
+	},
+	get current() {
+		return current;
+	},
+	get loading() {
+		return loading;
+	},
 
 	async fetchAll() {
 		loading = true;
-		const { data, error } = await supabase.from('students').select('*').order('created_at', { ascending: false });
+		const { data, error } = await supabase
+			.from('students')
+			.select('*')
+			.order('created_at', { ascending: false });
 		if (!error) students = data as Student[];
 		loading = false;
 	},
@@ -34,9 +43,47 @@ export const studentStore = {
 	},
 
 	async create(student: Omit<Student, 'id' | 'tutor_id' | 'created_at' | 'updated_at'>) {
-		const tutorId = await getTutorId();
-		const { data, error } = await supabase.from('students').insert({ ...student, tutor_id: tutorId }).select().single();
-		if (error) { toast.error('Failed to create student: ' + error.message); return null; }
+		console.log(
+			'[studentStore.create] Starting. Input student data:',
+			JSON.stringify(student, null, 2)
+		);
+		let tutorId: string;
+		try {
+			const { data: sessionData } = await supabase.auth.getSession();
+			console.log('[studentStore.create] Auth session check:', {
+				hasSession: !!sessionData.session,
+				userId: sessionData.session?.user?.id,
+				userEmail: sessionData.session?.user?.email,
+				expiresAt: sessionData.session?.expires_at
+			});
+			tutorId = await getTutorId();
+			console.log('[studentStore.create] Got tutorId:', tutorId);
+		} catch (e: any) {
+			console.error('[studentStore.create] getTutorId threw:', e.message);
+			toast.error('Authentication error: ' + e.message);
+			return null;
+		}
+
+		const payload = { ...student, tutor_id: tutorId };
+		console.log('[studentStore.create] Supabase insert payload:', JSON.stringify(payload, null, 2));
+
+		const { data, error } = await supabase.from('students').insert(payload).select().single();
+
+		if (error) {
+			console.error('[studentStore.create] Supabase insert error:', {
+				code: error.code,
+				message: error.message,
+				details: error.details,
+				hint: error.hint
+			});
+			toast.error('Failed to create student: ' + error.message);
+			return null;
+		}
+
+		console.log(
+			'[studentStore.create] Insert succeeded. Returned row:',
+			JSON.stringify(data, null, 2)
+		);
 		toast.success('Student created');
 		await this.fetchAll();
 		return data as Student;
@@ -44,7 +91,10 @@ export const studentStore = {
 
 	async update(id: string, updates: Partial<Student>) {
 		const { error } = await supabase.from('students').update(updates).eq('id', id);
-		if (error) { toast.error('Failed to update student: ' + error.message); return; }
+		if (error) {
+			toast.error('Failed to update student: ' + error.message);
+			return;
+		}
 		toast.success('Student updated');
 		if (current?.id === id) current = { ...current, ...updates } as Student;
 		await this.fetchAll();
@@ -52,9 +102,12 @@ export const studentStore = {
 
 	async remove(id: string) {
 		const { error } = await supabase.from('students').delete().eq('id', id);
-		if (error) { toast.error('Failed to delete student: ' + error.message); return; }
+		if (error) {
+			toast.error('Failed to delete student: ' + error.message);
+			return;
+		}
 		toast.success('Student deleted');
 		if (current?.id === id) current = null;
-		students = students.filter(s => s.id !== id);
+		students = students.filter((s) => s.id !== id);
 	}
 };

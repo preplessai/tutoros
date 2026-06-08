@@ -9,8 +9,6 @@
 		hint = '',
 		required = false,
 		disabled = false,
-		onchange,
-		oninput,
 		...rest
 	} = $props();
 </script>
@@ -30,11 +28,9 @@
 		{name}
 		id={name}
 		{placeholder}
-		{value}
+		bind:value
 		{disabled}
 		{required}
-		{onchange}
-		{oninput}
 		class="w-full clay-input text-sm
 			disabled:pointer-events-none disabled:opacity-50
 			{error

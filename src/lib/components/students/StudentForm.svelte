@@ -31,19 +31,28 @@
 		}
 	}
 
-	function toggleSite(index: number) {
-		preferredSites[index].enabled = !preferredSites[index].enabled;
-		preferredSites = [...preferredSites];
-	}
-
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
 		errors = [];
 
+		console.log('[StudentForm] Submit triggered. Form values:', {
+			name: name.trim(),
+			grade,
+			subjects: selectedSubjects,
+			learningStyle,
+			notes,
+			preferredSitesCount: preferredSites.length,
+			isEdit: !!editStudent,
+			editStudentId: editStudent?.id
+		});
+
 		if (!name.trim()) errors = [...errors, 'Student name is required.'];
 		if (!grade) errors = [...errors, 'Grade is required.'];
 		if (selectedSubjects.length === 0) errors = [...errors, 'Select at least one subject.'];
-		if (errors.length > 0) return;
+		if (errors.length > 0) {
+			console.warn('[StudentForm] Validation failed:', errors);
+			return;
+		}
 
 		saving = true;
 		try {
@@ -56,18 +65,32 @@
 				preferred_resource_sites: preferredSites
 			};
 
+			console.log(
+				'[StudentForm] Calling studentStore.create with data:',
+				JSON.stringify(data, null, 2)
+			);
+
 			if (editStudent) {
 				await studentStore.update(editStudent.id, data);
 			} else {
 				const created = await studentStore.create(data);
+				console.log('[StudentForm] studentStore.create returned:', created);
 				if (!created) {
-					errors = ['Failed to create student. Check console for details.'];
+					console.error(
+						'[StudentForm] studentStore.create returned null/falsy — check store logs above for Supabase error details'
+					);
+					errors = ['Failed to create student. Open browser console (F12) for details.'];
+					saving = false;
 					return;
 				}
 			}
 
 			goto('/dashboard/students');
 		} catch (err: any) {
+			console.error('[StudentForm] Caught exception:', err);
+			console.error('[StudentForm] Error name:', err?.name);
+			console.error('[StudentForm] Error message:', err?.message);
+			console.error('[StudentForm] Error stack:', err?.stack);
 			errors = [err?.message || 'Unexpected error saving student.'];
 		} finally {
 			saving = false;
@@ -102,8 +125,7 @@
 		label="Grade"
 		name="grade"
 		options={GRADES.map((g) => ({ value: g, label: g }))}
-		value={grade}
-		onchange={(e) => (grade = (e.target as HTMLSelectElement).value)}
+		bind:value={grade}
 	/>
 
 	<div>
@@ -135,16 +157,14 @@
 			{ value: 'reading/writing', label: 'Reading/Writing' },
 			{ value: 'mixed', label: 'Mixed' }
 		]}
-		value={learningStyle}
-		onchange={(e) => (learningStyle = (e.target as HTMLSelectElement).value)}
+		bind:value={learningStyle}
 	/>
 
 	<Textarea
 		label="Notes"
 		name="notes"
 		placeholder="Any notes about this student..."
-		value={notes}
-		oninput={(e) => (notes = (e.target as HTMLTextAreaElement).value)}
+		bind:value={notes}
 		rows={3}
 	/>
 
@@ -154,7 +174,7 @@
 		>
 		<div class="space-y-2">
 			{#each preferredSites as site, i}
-				<Toggle label={site.name} checked={site.enabled} onchange={() => toggleSite(i)} />
+				<Toggle label={site.name} bind:checked={preferredSites[i].enabled} />
 			{/each}
 		</div>
 	</div>
