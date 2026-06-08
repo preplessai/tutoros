@@ -1,5 +1,0 @@
-import{C as e,D as t,E as n,K as r,T as i,a,b as o,ct as s,i as c,q as l,s as u,st as d}from"./Oh321WOq.js";import"./xihTtKlq.js";var f=new Set([`$$slots`,`$$events`,`$$legacy`,`padding`,`hover`,`href`,`children`,`onclick`]),p=t(`<a><!></a>`),m=t(`<div><!></div>`);function h(t,h){let g=c(h,`padding`,3,!0),_=c(h,`hover`,3,!1),v=a(h,f);var y=n(),b=l(y),x=e=>{var t=p();u(t,()=>({href:h.href,class:`block clay-card
-		${_()?`clay-card-hover clay-card-pressed cursor-pointer`:``}
-		${g()?`p-5`:``}`,...v})),o(r(t),()=>h.children??s),d(t),i(e,t)},S=e=>{var t=m();u(t,()=>({class:`clay-card
-		${_()?`clay-card-hover clay-card-pressed cursor-pointer`:``}
-		${g()?`p-5`:``}`,onclick:h.onclick,role:h.onclick?`button`:void 0,tabindex:h.onclick?0:void 0,...v})),o(r(t),()=>h.children??s),d(t),i(e,t)};e(b,e=>{h.href?e(x):e(S,-1)}),i(t,y)}export{h as t};
