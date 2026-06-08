@@ -47,30 +47,36 @@ app.use('/api/*', async (c, next) => {
 // Health check
 app.get('/api/health', (c) => c.json({ status: 'ok' }));
 
-// Debug — verify env vars and JWKS connectivity
+// Debug — verify env vars and Supabase connectivity
 app.get('/api/debug', async (c) => {
 	const env = c.env as Record<string, string>;
 	const supabaseUrl = env['SUPABASE_URL'] || '';
+	const anonKey = env['SUPABASE_ANON_KEY'] || '';
 	const groqKey = env['GROQ_API_KEY_1'] || '';
 	const deepseekKey = env['SK_API_KEY_DEV'] || '';
 
-	let jwksStatus = 'not checked';
-	if (supabaseUrl) {
+	let authStatus = 'not checked';
+	if (supabaseUrl && anonKey) {
 		try {
-			const resp = await fetch(`${supabaseUrl}/auth/v1/jwks`);
-			jwksStatus = resp.ok ? `ok (${resp.status})` : `fail (${resp.status})`;
+			// Test the actual endpoint we use for auth validation
+			const resp = await fetch(`${supabaseUrl}/auth/v1/user`, {
+				headers: { 'apikey': anonKey }
+			});
+			// Without a token, this should return 401 or 403 — that's fine, it means the endpoint is reachable
+			authStatus = `reachable (${resp.status})`;
 		} catch (e: any) {
-			jwksStatus = `error: ${e.message}`;
+			authStatus = `error: ${e.message}`;
 		}
 	}
 
 	return c.json({
 		env: {
 			SUPABASE_URL: supabaseUrl ? `${supabaseUrl.substring(0, 30)}...` : 'NOT SET',
+			SUPABASE_ANON_KEY: anonKey ? 'SET (length ' + anonKey.length + ')' : 'NOT SET',
 			GROQ_API_KEY_1: groqKey ? 'SET (length ' + groqKey.length + ')' : 'NOT SET',
 			SK_API_KEY_DEV: deepseekKey ? 'SET (length ' + deepseekKey.length + ')' : 'NOT SET'
 		},
-		jwksStatus
+		authEndpoint: authStatus
 	});
 });
 

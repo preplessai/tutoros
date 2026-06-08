@@ -5,6 +5,7 @@ compatibility_date = "2025-06-01"
 # Non-secret vars — accessible via c.env in Hono / env in fetch handler
 [vars]
 SUPABASE_URL = "https://thekcjwcdpbyjvsyziul.supabase.co"
+SUPABASE_ANON_KEY = "sb_publishable_EfsGEOhtmdU-Tdph9moXsg_eLsrbO18"
 
 # Secrets — set via `wrangler secret put <NAME>`
 # Required:
