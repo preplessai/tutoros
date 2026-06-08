@@ -1,0 +1,7 @@
+import{A as e,B as t,C as n,D as r,J as i,K as a,T as o,c as s,h as c,i as l,it as u,j as d,l as f,rt as p,st as m,u as h,w as g}from"./Oh321WOq.js";import"./xihTtKlq.js";var _=r(`<span class="text-sm text-[var(--color-text-secondary)] group-has-[:disabled]:opacity-50"> </span>`),v=r(`<label class="group inline-flex cursor-pointer items-center gap-2.5"><input type="checkbox" class="peer sr-only"/> <div></div> <!></label>`);function y(e,r){u(r,!0);let y=l(r,`checked`,11,!1),b=l(r,`disabled`,3,!1);var x=v(),S=a(x);s(S);var C=i(S,2),w=i(C,2),T=e=>{var n=_(),i=a(n,!0);m(n),t(()=>g(i,r.label)),o(e,n)};n(w,e=>{r.label&&e(T)}),m(x),t(()=>{f(S,`name`,r.name),h(S,y()),S.disabled=b(),c(C,1,`relative h-5 w-9 rounded-full transition-colors duration-200
+		${y()?`bg-[var(--color-primary-500)]`:`bg-[var(--color-border-strong)]`}
+		peer-disabled:cursor-not-allowed peer-disabled:opacity-50
+		after:absolute after:top-0.5 after:left-0.5 after:h-4
+		after:w-4 after:rounded-full after:bg-white after:shadow-sm
+		after:transition-transform after:duration-200 after:content-['']
+		${y()?`after:translate-x-4`:`after:translate-x-0`}`)}),d(`change`,S,function(...e){r.onchange?.apply(this,e)}),o(e,x),p()}e([`change`]);export{y as t};
