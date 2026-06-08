@@ -1,7 +1,7 @@
 import { searchResourcesSchema } from '../lib/validate';
 import { callAI } from '../lib/ai';
 
-export async function handleSearchResources(request: Request): Promise<Response> {
+export async function handleSearchResources(request: Request, env: Record<string, string>): Promise<Response> {
 	try {
 		const body = await request.json();
 		const parsed = searchResourcesSchema.safeParse(body);
@@ -35,7 +35,8 @@ Be specific — link to actual topics, not just homepages. For Khan Academy, lin
 			systemPrompt,
 			userMessage,
 			maxTokens: 2048,
-			temperature: 0.5
+			temperature: 0.5,
+			env
 		});
 
 		const jsonMatch = result.text.match(/```(?:json)?\s*([\s\S]*?)```/) || result.text.match(/(\{[\s\S]*\})/);

@@ -4,7 +4,7 @@ import { callAI } from '../lib/ai';
 // @ts-ignore
 import systemPrompt from '../prompts/adjust-plan.txt';
 
-export async function handleAdjustPlan(request: Request): Promise<Response> {
+export async function handleAdjustPlan(request: Request, env: Record<string, string>): Promise<Response> {
 	try {
 		const body = await request.json();
 		const parsed = adjustPlanSchema.safeParse(body);
@@ -24,7 +24,8 @@ export async function handleAdjustPlan(request: Request): Promise<Response> {
 			systemPrompt,
 			userMessage,
 			maxTokens: 8192,
-			temperature: 0.5
+			temperature: 0.5,
+			env
 		});
 
 		const jsonMatch = result.text.match(/```(?:json)?\s*([\s\S]*?)```/) || result.text.match(/(\{[\s\S]*\})/);

@@ -19,11 +19,8 @@ interface CachedKey {
 
 let cachedKeys: CachedKey[] | null = null;
 let jwksFetchTime = 0;
+let cachedSupabaseUrl = '';
 const JWKS_TTL = 3600_000; // cache JWKS for 1 hour
-
-function getEnv(name: string): string {
-	return ((globalThis as any)[name] as string) || '';
-}
 
 // ── Decode base64url ──
 function base64UrlDecode(str: string): Uint8Array {
@@ -36,12 +33,11 @@ function base64UrlDecode(str: string): Uint8Array {
 }
 
 // ── Fetch & parse Supabase JWKS ──
-async function getSigningKeys(): Promise<CachedKey[]> {
-	if (cachedKeys && Date.now() - jwksFetchTime < JWKS_TTL) {
+async function getSigningKeys(supabaseUrl: string): Promise<CachedKey[]> {
+	if (cachedKeys && supabaseUrl === cachedSupabaseUrl && Date.now() - jwksFetchTime < JWKS_TTL) {
 		return cachedKeys;
 	}
 
-	const supabaseUrl = getEnv('SUPABASE_URL');
 	const resp = await fetch(`${supabaseUrl}/auth/v1/jwks`);
 	if (!resp.ok) throw new Error(`Failed to fetch JWKS: ${resp.status}`);
 
@@ -61,12 +57,13 @@ async function getSigningKeys(): Promise<CachedKey[]> {
 	}
 
 	jwksFetchTime = Date.now();
+	cachedSupabaseUrl = supabaseUrl;
 	console.log(`[auth] Loaded ${cachedKeys.length} JWKS keys from Supabase`);
 	return cachedKeys;
 }
 
 // ── Verify JWT signature + claims ──
-async function verifyJwt(token: string): Promise<JwtPayload | null> {
+async function verifyJwt(token: string, supabaseUrl: string): Promise<JwtPayload | null> {
 	try {
 		const parts = token.split('.');
 		if (parts.length !== 3) return null;
@@ -78,7 +75,7 @@ async function verifyJwt(token: string): Promise<JwtPayload | null> {
 		const header = JSON.parse(headerJson) as { kid?: string; alg?: string };
 
 		// Fetch signing keys
-		const keys = await getSigningKeys();
+		const keys = await getSigningKeys(supabaseUrl);
 		const match = keys.find((k) => k.kid === header.kid);
 		if (!match) {
 			console.warn(`[auth] No matching key for kid: ${header.kid}`);
@@ -123,11 +120,22 @@ function extractToken(request: Request): string | null {
 }
 
 // ── Verify request is authenticated ──
-export async function authenticate(request: Request): Promise<{ userId: string; email?: string } | null> {
+// env is the Cloudflare Worker bindings object (Hono c.env)
+export async function authenticate(request: Request, env: Record<string, string>): Promise<{ userId: string; email?: string } | null> {
 	const token = extractToken(request);
-	if (!token) return null;
+	if (!token) {
+		console.log('[auth] No Bearer token in Authorization header');
+		return null;
+	}
 
-	const payload = await verifyJwt(token);
+	// SUPABASE_URL comes from wrangler.toml [vars] or wrangler secret put
+	const supabaseUrl = env['SUPABASE_URL'] || '';
+	if (!supabaseUrl) {
+		console.error('[auth] SUPABASE_URL is not set in worker environment variables');
+		return null;
+	}
+
+	const payload = await verifyJwt(token, supabaseUrl);
 	if (!payload) return null;
 
 	return { userId: payload.sub, email: payload.email };

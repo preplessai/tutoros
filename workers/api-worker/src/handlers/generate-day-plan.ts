@@ -4,7 +4,7 @@ import { callAI } from '../lib/ai';
 // @ts-ignore
 import systemPrompt from '../prompts/day-plan.txt';
 
-export async function handleGenerateDayPlan(request: Request): Promise<Response> {
+export async function handleGenerateDayPlan(request: Request, env: Record<string, string>): Promise<Response> {
 	try {
 		const body = await request.json();
 		const parsed = generateDayPlanSchema.safeParse(body);
@@ -20,7 +20,8 @@ export async function handleGenerateDayPlan(request: Request): Promise<Response>
 			systemPrompt,
 			userMessage,
 			maxTokens: 4096,
-			temperature: 0.7
+			temperature: 0.7,
+			env
 		});
 
 		const jsonMatch = result.text.match(/```(?:json)?\s*([\s\S]*?)```/) || result.text.match(/(\{[\s\S]*\})/);

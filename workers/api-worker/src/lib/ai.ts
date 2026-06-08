@@ -22,17 +22,12 @@ interface AiCallOptions {
 	userMessage: string;
 	maxTokens?: number;
 	temperature?: number;
+	env: Record<string, string>;
 }
 
 interface ProviderResult {
 	text: string;
 	provider: 'groq' | 'deepseek';
-}
-
-// ── Helpers ──
-
-function getEnv(name: string): string {
-	return ((globalThis as any)[name] as string) || '';
 }
 
 function groqAvailable(): boolean {
@@ -59,7 +54,7 @@ function unblockGroq() {
 // ── Groq call (OpenAI-compatible) ──
 
 async function callGroq(options: AiCallOptions): Promise<string> {
-	const apiKey = getEnv('GROQ_API_KEY_1');
+	const apiKey = options.env['GROQ_API_KEY_1'] || '';
 	if (!apiKey) throw new Error('GROQ_API_KEY_1 not configured');
 
 	const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -81,17 +76,15 @@ async function callGroq(options: AiCallOptions): Promise<string> {
 
 	if (!resp.ok) {
 		if (resp.status === 429) {
-			// Parse Retry-After (seconds) from header or body
 			const retryAfter = resp.headers.get('Retry-After');
 			const waitSeconds = retryAfter
 				? parseInt(retryAfter, 10)
-				: 60; // default: RPM resets in ~1min
+				: 60;
 
 			blockGroq(waitSeconds);
 			throw new Error('GROQ_RATE_LIMITED');
 		}
 
-		// Other errors — don't block, just throw
 		const body = await resp.text().catch(() => '');
 		throw new Error(`Groq API error ${resp.status}: ${body.slice(0, 300)}`);
 	}
@@ -100,7 +93,6 @@ async function callGroq(options: AiCallOptions): Promise<string> {
 	const content = data?.choices?.[0]?.message?.content;
 	if (!content) throw new Error('Groq returned empty response');
 
-	// Success — reset failure counter
 	unblockGroq();
 	return content;
 }
@@ -108,7 +100,7 @@ async function callGroq(options: AiCallOptions): Promise<string> {
 // ── DeepSeek call (OpenAI-compatible) ──
 
 async function callDeepSeek(options: AiCallOptions): Promise<string> {
-	const apiKey = getEnv('SK_API_KEY_DEV');
+	const apiKey = options.env['SK_API_KEY_DEV'] || '';
 	if (!apiKey) throw new Error('SK_API_KEY_DEV not configured');
 
 	const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
@@ -143,7 +135,6 @@ async function callDeepSeek(options: AiCallOptions): Promise<string> {
 // ── Main entry: Groq first, fall back to DeepSeek ──
 
 export async function callAI(options: AiCallOptions): Promise<ProviderResult> {
-	// Try Groq if not rate-limited
 	if (groqAvailable()) {
 		try {
 			const text = await callGroq(options);
@@ -154,14 +145,12 @@ export async function callAI(options: AiCallOptions): Promise<ProviderResult> {
 			} else {
 				console.warn(`[ai] Groq error (will try DeepSeek): ${err.message}`);
 			}
-			// Fall through to DeepSeek
 		}
 	} else {
 		const remaining = Math.ceil((groqBlockedUntil - Date.now()) / 1000);
 		console.log(`[ai] Groq still blocked for ${remaining}s, using DeepSeek directly`);
 	}
 
-	// Fallback to DeepSeek
 	const text = await callDeepSeek(options);
 	return { text, provider: 'deepseek' };
 }

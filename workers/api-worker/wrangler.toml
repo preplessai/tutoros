@@ -1,9 +1,12 @@
-name = "prepless-ai-api"
+name = "api"
 main = "src/index.ts"
 compatibility_date = "2025-06-01"
+
+# Non-secret vars — accessible via c.env in Hono / env in fetch handler
+[vars]
+SUPABASE_URL = "https://thekcjwcdpbyjvsyziul.supabase.co"
 
 # Secrets — set via `wrangler secret put <NAME>`
 # Required:
 #   wrangler secret put GROQ_API_KEY_1       # Groq API key (primary AI)
 #   wrangler secret put SK_API_KEY_DEV       # DeepSeek API key (fallback AI)
-#   wrangler secret put SUPABASE_URL         # Supabase project URL (for JWKS verification)

@@ -4,7 +4,7 @@ import { callAI } from '../lib/ai';
 // @ts-ignore - wrangler raw text import
 import systemPrompt from '../prompts/weekly-plan.txt';
 
-export async function handleGenerateWeeklyPlan(request: Request): Promise<Response> {
+export async function handleGenerateWeeklyPlan(request: Request, env: Record<string, string>): Promise<Response> {
 	try {
 		const body = await request.json();
 		const parsed = generateWeeklyPlanSchema.safeParse(body);
@@ -30,7 +30,8 @@ export async function handleGenerateWeeklyPlan(request: Request): Promise<Respon
 			systemPrompt,
 			userMessage,
 			maxTokens: 8192,
-			temperature: 0.7
+			temperature: 0.7,
+			env
 		});
 
 		// Extract JSON from AI response (it may be wrapped in markdown code blocks)
