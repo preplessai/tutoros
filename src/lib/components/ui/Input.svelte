@@ -1,12 +1,28 @@
 <script lang="ts">
-	let { label, name, type = 'text', value = '', placeholder = '', error = '', hint = '', required = false, disabled = false, onchange, oninput, ...rest } = $props();
+	let {
+		label,
+		name,
+		type = 'text',
+		value = $bindable(''),
+		placeholder = '',
+		error = '',
+		hint = '',
+		required = false,
+		disabled = false,
+		onchange,
+		oninput,
+		...rest
+	} = $props();
 </script>
 
 <div class="space-y-1.5">
 	{#if label}
-		<label for={name} class="block text-sm font-medium text-[var(--color-text-primary)] font-[family-name:var(--font-body)]">
+		<label
+			for={name}
+			class="block font-[family-name:var(--font-body)] text-sm font-medium text-[var(--color-text-primary)]"
+		>
 			{label}
-			{#if required}<span class="text-[var(--color-error)] ml-0.5">*</span>{/if}
+			{#if required}<span class="ml-0.5 text-[var(--color-error)]">*</span>{/if}
 		</label>
 	{/if}
 	<input
@@ -19,9 +35,11 @@
 		{required}
 		{onchange}
 		{oninput}
-		class="clay-input w-full text-sm
-			disabled:opacity-50 disabled:pointer-events-none
-			{error ? '!border-[var(--color-error)] focus:!border-[var(--color-error)] focus:!ring-[var(--color-error)]/20' : ''}"
+		class="w-full clay-input text-sm
+			disabled:pointer-events-none disabled:opacity-50
+			{error
+			? '!border-[var(--color-error)] focus:!border-[var(--color-error)] focus:!ring-[var(--color-error)]/20'
+			: ''}"
 		{...rest}
 	/>
 	{#if error}
