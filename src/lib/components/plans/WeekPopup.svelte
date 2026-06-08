@@ -75,7 +75,7 @@
 		if (week) dayPlanStore.fetchDaysForWeek(week.id);
 	}
 
-	const sizes = { view: 'md', edit: 'md', dayplan: 'lg', view_day: 'lg' } as const;
+	const sizes = { view: 'md', edit: 'md', dayplan: 'lg', view_day: 'xl' } as const;
 </script>
 
 {#if week}

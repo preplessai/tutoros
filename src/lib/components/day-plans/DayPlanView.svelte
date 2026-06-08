@@ -1,19 +1,29 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import { dayPlanStore } from '$lib/stores/dayPlan.svelte';
+	import { resourceStore } from '$lib/stores/resource.svelte';
 	import { formatDateLong } from '$lib/lib/date';
 	import TaskList from './TaskList.svelte';
+	import ResourceList from '$lib/components/resources/ResourceList.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import ResourceSearchForm from '$lib/components/resources/ResourceSearchForm.svelte';
 
 	let { dayId }: { dayId: string } = $props();
-	let showResourceSearch = $state(false);
 
-	onMount(() => {
-		dayPlanStore.fetchDay(dayId);
+	onMount(async () => {
+		await dayPlanStore.fetchDay(dayId);
+		await resourceStore.fetchByDay(dayId);
 	});
+
+	function allResources() {
+		return Object.values(resourceStore.resourcesByTask).flat();
+	}
+
+	async function handleRemoveResource(id: string) {
+		await resourceStore.remove(id);
+	}
 </script>
 
 {#if dayPlanStore.loading}
@@ -39,25 +49,32 @@
 			</div>
 			{#if dayPlanStore.currentDay.struggle_areas}
 				<p class="mt-1 text-sm text-[var(--color-text-secondary)]">
-					Focus: {dayPlanStore.currentDay.struggle_areas}
+					Focus: {dayPlanStore.currentDay.struggle_areas.join(', ')}
 				</p>
 			{/if}
 		</div>
 
 		<TaskList tasks={dayPlanStore.tasks} />
 
+		<!-- Saved Resources -->
+		<ResourceList resources={allResources()} onRemove={handleRemoveResource} />
+
 		<div class="flex gap-3 border-t border-[var(--color-border)] pt-4">
 			<Button
 				variant="secondary"
 				size="sm"
-				onclick={() => (showResourceSearch = !showResourceSearch)}
+				onclick={() => goto(`/dashboard/resources/search?dayPlanId=${dayId}`)}
 			>
-				{showResourceSearch ? 'Close Resource Search' : 'Find Resources'}
+				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+					><path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+					/></svg
+				>
+				Find Resources
 			</Button>
 		</div>
-
-		{#if showResourceSearch}
-			<ResourceSearchForm onClose={() => (showResourceSearch = false)} />
-		{/if}
 	</div>
 {/if}
