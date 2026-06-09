@@ -1,21 +1,31 @@
 import { searchResourcesSchema } from '../lib/validate';
 
-// ── DuckDuckGo HTML search (free, no API key) ──
+/**
+ * Brave Search API handler.
+ * Free tier: 2,000 queries/month. API key stored as secret.
+ * Docs: https://api.search.brave.com/app/documentation/web-search/query
+ */
 
-interface DdgResult {
+interface BraveWebResult {
 	title: string;
 	url: string;
-	snippet: string;
+	description: string;
+	type?: string;
+	age?: string;
 }
 
-/**
- * POST to DDG HTML endpoint and parse results.
- * Uses site: operators to filter to preferred sites.
- */
-async function searchDdg(
+interface BraveSearchResponse {
+	web?: {
+		results?: BraveWebResult[];
+	};
+}
+
+async function searchBrave(
 	query: string,
-	preferredSites?: { name: string; url: string }[]
-): Promise<DdgResult[]> {
+	apiKey: string,
+	preferredSites?: { name: string; url: string }[],
+	count = 10
+): Promise<BraveWebResult[]> {
 	// Build query with site: filters
 	let searchQuery = query;
 	if (preferredSites && preferredSites.length > 0) {
@@ -34,127 +44,43 @@ async function searchDdg(
 		}
 	}
 
-	const resp = await fetch('https://html.duckduckgo.com/html/', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'User-Agent': 'Mozilla/5.0 (compatible; PreplessAI/1.0)'
-		},
-		body: new URLSearchParams({ q: searchQuery }).toString()
+	const params = new URLSearchParams({
+		q: searchQuery,
+		count: String(count),
+		search_lang: 'en',
+		safesearch: 'moderate'
 	});
 
-	if (!resp.ok) return [];
-
-	const html = await resp.text();
-
-	return parseDdgHtml(html);
-}
-
-/**
- * Parse DuckDuckGo HTML results page.
- * Extracts title, redirect URL (uddg= param), and snippet.
- */
-function parseDdgHtml(html: string): DdgResult[] {
-	const results: DdgResult[] = [];
-
-	// Split on result__body blocks
-	const bodyParts = html.split(/class="result__body"/g);
-	bodyParts.shift(); // remove content before first result
-
-	for (const part of bodyParts) {
-		try {
-			// Extract title + redirect link
-			const titleMatch = part.match(
-				/<a[^>]*class="result__a"[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/
-			);
-			if (!titleMatch) continue;
-
-			const rawTitle = titleMatch[2].replace(/<[^>]*>/g, '').trim();
-			const title = decodeHtmlEntities(rawTitle);
-			const rawHref = titleMatch[1];
-
-			// Extract snippet
-			const snippetMatch = part.match(
-				/<a[^>]*class="result__snippet"[^>]*>([\s\S]*?)<\/a>/
-			);
-			const rawSnippet = snippetMatch ? snippetMatch[1].replace(/<[^>]*>/g, '').trim() : '';
-			const snippet = decodeHtmlEntities(rawSnippet);
-
-			// Extract real URL from DDG redirect
-			const url = extractDdgUrl(rawHref);
-
-			if (url && title) {
-				results.push({ title, url, snippet });
+	const resp = await fetch(
+		`https://api.search.brave.com/res/v1/web/search?${params.toString()}`,
+		{
+			headers: {
+				'Accept': 'application/json',
+				'Accept-Encoding': 'gzip',
+				'X-Subscription-Token': apiKey
 			}
-		} catch {
-			// Skip malformed result
 		}
+	);
+
+	if (!resp.ok) {
+		console.error('[brave] search failed:', resp.status, resp.statusText);
+		return [];
 	}
 
-	return results;
+	const data = (await resp.json()) as BraveSearchResponse;
+	return data.web?.results || [];
 }
-
-/**
- * DuckDuckGo wraps result URLs in redirects:
- * //duckduckgo.com/l/?uddg=ENCODED_URL&rut=...
- * Decode the real destination URL.
- */
-function extractDdgUrl(href: string): string {
-	try {
-		const uddgMatch = href.match(/uddg=([^&]+)/);
-		if (uddgMatch) {
-			return decodeURIComponent(uddgMatch[1]);
-		}
-		// If no uddg param, maybe it's a direct URL
-		if (href.startsWith('http')) return href;
-		if (href.startsWith('//')) return `https:${href}`;
-	} catch {
-		// fall through
-	}
-	return '';
-}
-
-function decodeHtmlEntities(text: string): string {
-	return text
-		.replace(/&amp;/g, '&')
-		.replace(/&lt;/g, '<')
-		.replace(/&gt;/g, '>')
-		.replace(/&quot;/g, '"')
-		.replace(/&#x27;/g, "'")
-		.replace(/&#(\d+);/g, (_, d) => String.fromCharCode(Number(d)));
-}
-
-// ── Resource type classification from URL patterns ──
 
 function classifyResourceType(url: string, title: string): string {
 	const combined = `${url.toLowerCase()} ${title.toLowerCase()}`;
 
-	if (
-		/\/video\//.test(combined) ||
-		/watch\b/.test(combined) ||
-		/youtube\.com/.test(combined) ||
-		/\/v\//.test(combined)
-	)
+	if (/\/video\//.test(combined) || /watch\b/.test(combined) || /youtube\.com/.test(combined) || /\/v\//.test(combined))
 		return 'video';
 
-	if (
-		/\/exercise\b/.test(combined) ||
-		/\bpractice\b/.test(combined) ||
-		/\bquiz\b/.test(combined) ||
-		/\btest\b/.test(combined) ||
-		/\bproblems?\b/.test(combined) ||
-		/\/e\//.test(combined) ||
-		/ixl\.com/.test(combined)
-	)
+	if (/\/exercise\b/.test(combined) || /\bpractice\b/.test(combined) || /\bquiz\b/.test(combined) || /\btest\b/.test(combined) || /\bproblems?\b/.test(combined) || /\/e\//.test(combined) || /ixl\.com/.test(combined))
 		return 'practice';
 
-	if (
-		/calculator/.test(combined) ||
-		/interactive/.test(combined) ||
-		/simulation/.test(combined) ||
-		/explore/.test(combined) ||
-		/desmos\.com/.test(combined)
-	)
+	if (/calculator/.test(combined) || /interactive/.test(combined) || /simulation/.test(combined) || /explore/.test(combined) || /desmos\.com/.test(combined))
 		return 'interactive';
 
 	return 'article';
@@ -177,8 +103,6 @@ function guessSource(url: string, preferredSites?: { name: string; url: string }
 	}
 }
 
-// ── Handler ──
-
 export async function handleSearchResources(
 	request: Request,
 	env: Record<string, string>
@@ -195,23 +119,31 @@ export async function handleSearchResources(
 		}
 
 		const input = parsed.data;
-		const maxResults = input.maxResults || 5;
+		const apiKey = env['BRAVE_API_KEY'] || '';
 
-		// Search DDG with site filters
-		let results = await searchDdg(input.query, input.preferredSites);
-
-		// Fallback: retry without site filters if nothing found
-		if (results.length === 0 && input.preferredSites && input.preferredSites.length > 0) {
-			results = await searchDdg(input.query);
+		if (!apiKey) {
+			return Response.json(
+				{ error: 'BRAVE_API_KEY not configured' },
+				{ status: 500 }
+			);
 		}
 
-		// Map to expected response format
-		const resources = results.slice(0, maxResults).map((r) => ({
+		const maxResults = input.maxResults || 5;
+
+		// Search with site filters
+		let results = await searchBrave(input.query, apiKey, input.preferredSites, maxResults);
+
+		// Fallback: retry without site filters
+		if (results.length === 0 && input.preferredSites && input.preferredSites.length > 0) {
+			results = await searchBrave(input.query, apiKey, undefined, maxResults);
+		}
+
+		const resources = results.map((r) => ({
 			title: r.title,
 			url: r.url,
 			source: guessSource(r.url, input.preferredSites),
 			type: classifyResourceType(r.url, r.title),
-			description: r.snippet || null
+			description: r.description || null
 		}));
 
 		// Deduplicate by URL
