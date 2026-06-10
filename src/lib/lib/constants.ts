@@ -10,8 +10,8 @@ export const SECTION_LABELS: Record<string, string> = {
 export const SECTION_COLORS: Record<string, string> = {
 	review_struggles: 'border-l-[var(--color-error)] bg-[var(--color-error-bg)]',
 	homework_help: 'border-l-[var(--color-warning)] bg-[var(--color-warning-bg)]',
-	project_help: 'border-l-[var(--color-accent-500)] bg-[var(--color-accent-100)]',
-	learn_new: 'border-l-[var(--color-primary-500)] bg-[var(--color-primary-100)]',
+	project_help: 'border-l-[var(--color-primary-500)] bg-[var(--color-primary-900)]',
+	learn_new: 'border-l-[var(--color-info)] bg-[var(--color-info-bg)]',
 	practice: 'border-l-[var(--color-success)] bg-[var(--color-success-bg)]',
 	wrap_up: 'border-l-[var(--color-text-tertiary)] bg-[var(--color-surface-tertiary)]'
 };

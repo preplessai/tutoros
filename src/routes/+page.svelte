@@ -116,7 +116,7 @@
 				<!-- Trust indicators -->
 				<div class="mt-8 flex items-center gap-6">
 					<div class="flex -space-x-2">
-						{#each ['#A18072', '#D4C5BC', '#E8924E', '#7CA37C'] as color}
+						{#each ['#00E5A0', '#2d9d8e', '#64B5F6', '#FFB74D'] as color}
 							<div
 								class="flex h-9 w-9 items-center justify-center rounded-full border-2 border-[var(--color-surface)] text-[10px] font-bold text-white"
 								style="background:{color}"
