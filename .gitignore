@@ -2,12 +2,14 @@ node_modules
 
 # Output
 .output
+.claude
 .vercel
 .netlify
 .wrangler
 /.svelte-kit
 /build
-/graphify-out
+graphify-out/*
+graphify-out
 # OS
 .DS_Store
 Thumbs.db
