@@ -1,6 +1,9 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/Button.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
+	import { stripeApi } from '$lib/lib/stripe';
+	import { auth } from '$lib/stores/auth.svelte';
+	import { toast } from '$lib/stores/toast.svelte';
 
 	const plans = [
 		{
@@ -82,6 +85,7 @@
 	const payAsYouGoPacks = [
 		{
 			amount: '$5',
+			id: '5',
 			creditsFree: '4 credits',
 			creditsPro: '7 credits',
 			creditsEnterprise: '8 credits',
@@ -91,6 +95,7 @@
 		},
 		{
 			amount: '$10',
+			id: '10',
 			creditsFree: '9 credits',
 			creditsPro: '15 credits',
 			creditsEnterprise: '18 credits',
@@ -100,6 +105,7 @@
 		},
 		{
 			amount: '$20',
+			id: '20',
 			creditsFree: '20 credits',
 			creditsPro: '35 credits',
 			creditsEnterprise: '40 credits',
@@ -108,6 +114,36 @@
 			rateEnterprise: '$0.50/credit'
 		}
 	];
+
+	let loadingBtn = $state<string | null>(null);
+
+	async function handleSubscribe(tier: 'pro' | 'enterprise') {
+		loadingBtn = tier;
+		try {
+			const { url } = await stripeApi.createCheckoutSession({ mode: 'subscription', tier });
+			if (url) window.location.href = url;
+		} catch (e) {
+			toast.error(e instanceof Error ? e.message : 'Failed to start checkout');
+		} finally {
+			loadingBtn = null;
+		}
+	}
+
+	async function handleBuyCredits(creditPack: string) {
+		if (!auth.isAuthenticated) {
+			window.location.href = '/auth/register';
+			return;
+		}
+		loadingBtn = `pack-${creditPack}`;
+		try {
+			const { url } = await stripeApi.createCheckoutSession({ mode: 'payment', creditPack });
+			if (url) window.location.href = url;
+		} catch (e) {
+			toast.error(e instanceof Error ? e.message : 'Failed to start checkout');
+		} finally {
+			loadingBtn = null;
+		}
+	}
 </script>
 
 <!-- Plan cards -->
@@ -155,7 +191,17 @@
 					</div>
 
 					<div class="mt-6">
-						<Button variant={plan.variant} size="lg" fullWidth href={plan.href}>{plan.cta}</Button>
+						{#if plan.name === 'Starter' || !auth.isAuthenticated}
+							<Button variant={plan.variant} size="lg" fullWidth href={plan.href}>{plan.cta}</Button>
+						{:else}
+							<Button
+								variant={plan.variant}
+								size="lg"
+								fullWidth
+								loading={loadingBtn === plan.name.toLowerCase()}
+								onclick={() => handleSubscribe(plan.name.toLowerCase() as 'pro' | 'enterprise')}
+							>{plan.cta}</Button>
+						{/if}
 					</div>
 				</div>
 			</div>
@@ -249,7 +295,12 @@
 				</thead>
 				<tbody>
 					{#each payAsYouGoPacks as pack}
-						<tr class="border-b border-[var(--color-border)] last:border-0">
+						<tr
+							class="cursor-pointer border-b border-[var(--color-border)] transition-colors hover:bg-[var(--color-surface-secondary)] last:border-0"
+							onclick={() => handleBuyCredits(pack.id)}
+							role="button"
+							tabindex="0"
+						>
 							<td class="px-4 py-4">
 								<div class="text-base font-bold text-[var(--color-text-primary)]">
 									{pack.amount}

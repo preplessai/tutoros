@@ -1,6 +1,8 @@
 import type { Student } from '$lib/lib/types';
 import { supabase } from '$lib/lib/supabase';
 import { toast } from './toast.svelte';
+import { auth } from './auth.svelte';
+import { SUBSCRIPTION_TIERS } from '$lib/lib/constants';
 
 let students = $state<Student[]>([]);
 let current = $state<Student | null>(null);
@@ -61,6 +63,14 @@ export const studentStore = {
 		} catch (e: any) {
 			console.error('[studentStore.create] getTutorId threw:', e.message);
 			toast.error('Authentication error: ' + e.message);
+			return null;
+		}
+
+		// Check free tier student limit
+		const tier = auth.profile?.subscription_tier || 'free';
+		const maxStudents = SUBSCRIPTION_TIERS[tier]?.maxStudents;
+		if (maxStudents !== undefined && maxStudents !== Infinity && students.length >= maxStudents) {
+			toast.error(`You've reached the maximum of ${maxStudents} students for the ${SUBSCRIPTION_TIERS[tier].name} tier. Upgrade to add more.`);
 			return null;
 		}
 

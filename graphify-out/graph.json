@@ -1,0 +1,2743 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "eslint.config.js",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\eslint.config.js",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_eslint_config_js",
+      "community": 15,
+      "norm_label": "eslint.config.js"
+    },
+    {
+      "label": "svelte.config.js",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\svelte.config.js",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_svelte_config_js",
+      "community": 16,
+      "norm_label": "svelte.config.js"
+    },
+    {
+      "label": "vite.config.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\vite.config.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_vite_config_ts",
+      "community": 17,
+      "norm_label": "vite.config.ts"
+    },
+    {
+      "label": "app.d.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\app.d.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_app_d_ts",
+      "community": 18,
+      "norm_label": "app.d.ts"
+    },
+    {
+      "label": "index.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\index.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_index_ts",
+      "community": 19,
+      "norm_label": "index.ts"
+    },
+    {
+      "label": "scrollReveal.svelte.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\actions\\scrollReveal.svelte.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_actions_scrollreveal_svelte_ts",
+      "community": 9,
+      "norm_label": "scrollreveal.svelte.ts"
+    },
+    {
+      "label": "scrollReveal()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\actions\\scrollReveal.svelte.ts",
+      "source_location": "L23",
+      "id": "scrollreveal_svelte_scrollreveal",
+      "community": 9,
+      "norm_label": "scrollreveal()"
+    },
+    {
+      "label": "AuthCallback.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\auth\\AuthCallback.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_auth_authcallback_svelte",
+      "community": 20,
+      "norm_label": "authcallback.svelte"
+    },
+    {
+      "label": "LoginForm.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\auth\\LoginForm.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_auth_loginform_svelte",
+      "community": 21,
+      "norm_label": "loginform.svelte"
+    },
+    {
+      "label": "RegisterForm.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\auth\\RegisterForm.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_auth_registerform_svelte",
+      "community": 22,
+      "norm_label": "registerform.svelte"
+    },
+    {
+      "label": "DayPlanGenerator.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\day-plans\\DayPlanGenerator.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_day_plans_dayplangenerator_svelte",
+      "community": 23,
+      "norm_label": "dayplangenerator.svelte"
+    },
+    {
+      "label": "DayPlanView.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\day-plans\\DayPlanView.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_day_plans_dayplanview_svelte",
+      "community": 24,
+      "norm_label": "dayplanview.svelte"
+    },
+    {
+      "label": "SectionLabel.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\day-plans\\SectionLabel.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_day_plans_sectionlabel_svelte",
+      "community": 25,
+      "norm_label": "sectionlabel.svelte"
+    },
+    {
+      "label": "TaskItem.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\day-plans\\TaskItem.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_day_plans_taskitem_svelte",
+      "community": 26,
+      "norm_label": "taskitem.svelte"
+    },
+    {
+      "label": "TaskList.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\day-plans\\TaskList.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_day_plans_tasklist_svelte",
+      "community": 27,
+      "norm_label": "tasklist.svelte"
+    },
+    {
+      "label": "AuthGuard.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\layout\\AuthGuard.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_layout_authguard_svelte",
+      "community": 28,
+      "norm_label": "authguard.svelte"
+    },
+    {
+      "label": "DashboardLayout.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\layout\\DashboardLayout.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_layout_dashboardlayout_svelte",
+      "community": 29,
+      "norm_label": "dashboardlayout.svelte"
+    },
+    {
+      "label": "Footer.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\layout\\Footer.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_layout_footer_svelte",
+      "community": 30,
+      "norm_label": "footer.svelte"
+    },
+    {
+      "label": "Navbar.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\layout\\Navbar.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_layout_navbar_svelte",
+      "community": 31,
+      "norm_label": "navbar.svelte"
+    },
+    {
+      "label": "Sidebar.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\layout\\Sidebar.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_layout_sidebar_svelte",
+      "community": 32,
+      "norm_label": "sidebar.svelte"
+    },
+    {
+      "label": "AdjustPlanForm.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\plans\\AdjustPlanForm.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_plans_adjustplanform_svelte",
+      "community": 33,
+      "norm_label": "adjustplanform.svelte"
+    },
+    {
+      "label": "PlanCard.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\plans\\PlanCard.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_plans_plancard_svelte",
+      "community": 34,
+      "norm_label": "plancard.svelte"
+    },
+    {
+      "label": "PlanForm.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\plans\\PlanForm.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_plans_planform_svelte",
+      "community": 35,
+      "norm_label": "planform.svelte"
+    },
+    {
+      "label": "PlanList.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\plans\\PlanList.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_plans_planlist_svelte",
+      "community": 36,
+      "norm_label": "planlist.svelte"
+    },
+    {
+      "label": "PlanTimeline.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\plans\\PlanTimeline.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_plans_plantimeline_svelte",
+      "community": 37,
+      "norm_label": "plantimeline.svelte"
+    },
+    {
+      "label": "WeekCard.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\plans\\WeekCard.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_plans_weekcard_svelte",
+      "community": 38,
+      "norm_label": "weekcard.svelte"
+    },
+    {
+      "label": "WeekPopup.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\plans\\WeekPopup.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_plans_weekpopup_svelte",
+      "community": 8,
+      "norm_label": "weekpopup.svelte"
+    },
+    {
+      "label": "formatDateShort()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\plans\\WeekPopup.svelte",
+      "source_location": "L178",
+      "id": "weekpopup_formatdateshort",
+      "community": 8,
+      "norm_label": "formatdateshort()"
+    },
+    {
+      "label": "ResourceItem.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\resources\\ResourceItem.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_resources_resourceitem_svelte",
+      "community": 39,
+      "norm_label": "resourceitem.svelte"
+    },
+    {
+      "label": "ResourceList.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\resources\\ResourceList.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_resources_resourcelist_svelte",
+      "community": 40,
+      "norm_label": "resourcelist.svelte"
+    },
+    {
+      "label": "ResourceSearchForm.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\resources\\ResourceSearchForm.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_resources_resourcesearchform_svelte",
+      "community": 41,
+      "norm_label": "resourcesearchform.svelte"
+    },
+    {
+      "label": "SearchResultCard.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\resources\\SearchResultCard.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_resources_searchresultcard_svelte",
+      "community": 42,
+      "norm_label": "searchresultcard.svelte"
+    },
+    {
+      "label": "StudentCard.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\students\\StudentCard.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_students_studentcard_svelte",
+      "community": 43,
+      "norm_label": "studentcard.svelte"
+    },
+    {
+      "label": "StudentForm.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\students\\StudentForm.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_students_studentform_svelte",
+      "community": 44,
+      "norm_label": "studentform.svelte"
+    },
+    {
+      "label": "StudentList.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\students\\StudentList.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_students_studentlist_svelte",
+      "community": 45,
+      "norm_label": "studentlist.svelte"
+    },
+    {
+      "label": "StudentSettings.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\students\\StudentSettings.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_students_studentsettings_svelte",
+      "community": 46,
+      "norm_label": "studentsettings.svelte"
+    },
+    {
+      "label": "PricingGrid.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\subscription\\PricingGrid.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_subscription_pricinggrid_svelte",
+      "community": 47,
+      "norm_label": "pricinggrid.svelte"
+    },
+    {
+      "label": "Avatar.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Avatar.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_avatar_svelte",
+      "community": 48,
+      "norm_label": "avatar.svelte"
+    },
+    {
+      "label": "Badge.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Badge.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_badge_svelte",
+      "community": 49,
+      "norm_label": "badge.svelte"
+    },
+    {
+      "label": "Button.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Button.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_button_svelte",
+      "community": 50,
+      "norm_label": "button.svelte"
+    },
+    {
+      "label": "Card.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Card.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_card_svelte",
+      "community": 51,
+      "norm_label": "card.svelte"
+    },
+    {
+      "label": "CreditBadge.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\CreditBadge.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_creditbadge_svelte",
+      "community": 52,
+      "norm_label": "creditbadge.svelte"
+    },
+    {
+      "label": "DatePicker.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\DatePicker.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_datepicker_svelte",
+      "community": 53,
+      "norm_label": "datepicker.svelte"
+    },
+    {
+      "label": "DropdownMenu.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\DropdownMenu.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_dropdownmenu_svelte",
+      "community": 10,
+      "norm_label": "dropdownmenu.svelte"
+    },
+    {
+      "label": "handleClick()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\DropdownMenu.svelte",
+      "source_location": "L22",
+      "id": "dropdownmenu_handleclick",
+      "community": 10,
+      "norm_label": "handleclick()"
+    },
+    {
+      "label": "EmptyState.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\EmptyState.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_emptystate_svelte",
+      "community": 54,
+      "norm_label": "emptystate.svelte"
+    },
+    {
+      "label": "ErrorDisplay.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\ErrorDisplay.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_errordisplay_svelte",
+      "community": 55,
+      "norm_label": "errordisplay.svelte"
+    },
+    {
+      "label": "Input.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Input.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_input_svelte",
+      "community": 56,
+      "norm_label": "input.svelte"
+    },
+    {
+      "label": "Modal.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Modal.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_modal_svelte",
+      "community": 57,
+      "norm_label": "modal.svelte"
+    },
+    {
+      "label": "Select.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Select.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_select_svelte",
+      "community": 58,
+      "norm_label": "select.svelte"
+    },
+    {
+      "label": "Spinner.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Spinner.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_spinner_svelte",
+      "community": 59,
+      "norm_label": "spinner.svelte"
+    },
+    {
+      "label": "Tabs.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Tabs.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_tabs_svelte",
+      "community": 60,
+      "norm_label": "tabs.svelte"
+    },
+    {
+      "label": "Textarea.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Textarea.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_textarea_svelte",
+      "community": 61,
+      "norm_label": "textarea.svelte"
+    },
+    {
+      "label": "Toast.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Toast.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_toast_svelte",
+      "community": 62,
+      "norm_label": "toast.svelte"
+    },
+    {
+      "label": "ToastContainer.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\ToastContainer.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_toastcontainer_svelte",
+      "community": 63,
+      "norm_label": "toastcontainer.svelte"
+    },
+    {
+      "label": "Toggle.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\Toggle.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_toggle_svelte",
+      "community": 64,
+      "norm_label": "toggle.svelte"
+    },
+    {
+      "label": "api.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\api.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_lib_api_ts",
+      "community": 7,
+      "norm_label": "api.ts"
+    },
+    {
+      "label": "getAuthHeaders()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\api.ts",
+      "source_location": "L15",
+      "id": "api_getauthheaders",
+      "community": 7,
+      "norm_label": "getauthheaders()"
+    },
+    {
+      "label": "post()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\api.ts",
+      "source_location": "L29",
+      "id": "api_post",
+      "community": 7,
+      "norm_label": "post()"
+    },
+    {
+      "label": "constants.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\constants.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_lib_constants_ts",
+      "community": 11,
+      "norm_label": "constants.ts"
+    },
+    {
+      "label": "canUseFeature()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\constants.ts",
+      "source_location": "L130",
+      "id": "constants_canusefeature",
+      "community": 11,
+      "norm_label": "canusefeature()"
+    },
+    {
+      "label": "date.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "community": 3,
+      "norm_label": "date.ts"
+    },
+    {
+      "label": "getMonday()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L4",
+      "id": "date_getmonday",
+      "community": 3,
+      "norm_label": "getmonday()"
+    },
+    {
+      "label": "getSunday()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L16",
+      "id": "date_getsunday",
+      "community": 3,
+      "norm_label": "getsunday()"
+    },
+    {
+      "label": "formatDateShort()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L27",
+      "id": "date_formatdateshort",
+      "community": 3,
+      "norm_label": "formatdateshort()"
+    },
+    {
+      "label": "formatDateLong()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L35",
+      "id": "date_formatdatelong",
+      "community": 1,
+      "norm_label": "formatdatelong()"
+    },
+    {
+      "label": "toISODate()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L43",
+      "id": "date_toisodate",
+      "community": 3,
+      "norm_label": "toisodate()"
+    },
+    {
+      "label": "getWeekNumber()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L50",
+      "id": "date_getweeknumber",
+      "community": 3,
+      "norm_label": "getweeknumber()"
+    },
+    {
+      "label": "getWeekStartDate()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L60",
+      "id": "date_getweekstartdate",
+      "community": 3,
+      "norm_label": "getweekstartdate()"
+    },
+    {
+      "label": "formatWeekRange()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L69",
+      "id": "date_formatweekrange",
+      "community": 3,
+      "norm_label": "formatweekrange()"
+    },
+    {
+      "label": "todayISO()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L76",
+      "id": "date_todayiso",
+      "community": 3,
+      "norm_label": "todayiso()"
+    },
+    {
+      "label": "isDateInWeek()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L83",
+      "id": "date_isdateinweek",
+      "community": 3,
+      "norm_label": "isdateinweek()"
+    },
+    {
+      "label": "export.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "community": 1,
+      "norm_label": "export.ts"
+    },
+    {
+      "label": "escapeHtml()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L63",
+      "id": "export_escapehtml",
+      "community": 1,
+      "norm_label": "escapehtml()"
+    },
+    {
+      "label": "taskToHtml()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L81",
+      "id": "export_tasktohtml",
+      "community": 1,
+      "norm_label": "tasktohtml()"
+    },
+    {
+      "label": "resourcesToHtml()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L94",
+      "id": "export_resourcestohtml",
+      "community": 1,
+      "norm_label": "resourcestohtml()"
+    },
+    {
+      "label": "css()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L108",
+      "id": "export_css",
+      "community": 1,
+      "norm_label": "css()"
+    },
+    {
+      "label": "exportDayPlan()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L135",
+      "id": "export_exportdayplan",
+      "community": 1,
+      "norm_label": "exportdayplan()"
+    },
+    {
+      "label": "exportWeek()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L165",
+      "id": "export_exportweek",
+      "community": 1,
+      "norm_label": "exportweek()"
+    },
+    {
+      "label": "openExport()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L212",
+      "id": "export_openexport",
+      "community": 1,
+      "norm_label": "openexport()"
+    },
+    {
+      "label": "exportDayPlanJson()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L222",
+      "id": "export_exportdayplanjson",
+      "community": 1,
+      "norm_label": "exportdayplanjson()"
+    },
+    {
+      "label": "exportWeekJson()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L255",
+      "id": "export_exportweekjson",
+      "community": 1,
+      "norm_label": "exportweekjson()"
+    },
+    {
+      "label": "downloadJson()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L291",
+      "id": "export_downloadjson",
+      "community": 1,
+      "norm_label": "downloadjson()"
+    },
+    {
+      "label": "parseImportJson()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L310",
+      "id": "export_parseimportjson",
+      "community": 1,
+      "norm_label": "parseimportjson()"
+    },
+    {
+      "label": "supabase.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\supabase.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_lib_supabase_ts",
+      "community": 65,
+      "norm_label": "supabase.ts"
+    },
+    {
+      "label": "types.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\types.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_lib_types_ts",
+      "community": 66,
+      "norm_label": "types.ts"
+    },
+    {
+      "label": "auth.svelte.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\auth.svelte.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_stores_auth_svelte_ts",
+      "community": 2,
+      "norm_label": "auth.svelte.ts"
+    },
+    {
+      "label": "initTheme()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\auth.svelte.ts",
+      "source_location": "L75",
+      "id": "auth_svelte_inittheme",
+      "community": 2,
+      "norm_label": "inittheme()"
+    },
+    {
+      "label": "toggleDark()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\auth.svelte.ts",
+      "source_location": "L84",
+      "id": "auth_svelte_toggledark",
+      "community": 2,
+      "norm_label": "toggledark()"
+    },
+    {
+      "label": "credits.svelte.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\credits.svelte.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_stores_credits_svelte_ts",
+      "community": 67,
+      "norm_label": "credits.svelte.ts"
+    },
+    {
+      "label": "dayPlan.svelte.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\dayPlan.svelte.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_stores_dayplan_svelte_ts",
+      "community": 68,
+      "norm_label": "dayplan.svelte.ts"
+    },
+    {
+      "label": "plan.svelte.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\plan.svelte.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_stores_plan_svelte_ts",
+      "community": 14,
+      "norm_label": "plan.svelte.ts"
+    },
+    {
+      "label": "getTutorId()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\plan.svelte.ts",
+      "source_location": "L15",
+      "id": "plan_svelte_gettutorid",
+      "community": 14,
+      "norm_label": "gettutorid()"
+    },
+    {
+      "label": "resource.svelte.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\resource.svelte.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_stores_resource_svelte_ts",
+      "community": 69,
+      "norm_label": "resource.svelte.ts"
+    },
+    {
+      "label": "student.svelte.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\student.svelte.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_stores_student_svelte_ts",
+      "community": 12,
+      "norm_label": "student.svelte.ts"
+    },
+    {
+      "label": "getTutorId()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\student.svelte.ts",
+      "source_location": "L9",
+      "id": "student_svelte_gettutorid",
+      "community": 12,
+      "norm_label": "gettutorid()"
+    },
+    {
+      "label": "toast.svelte.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "community": 2,
+      "norm_label": "toast.svelte.ts"
+    },
+    {
+      "label": "add()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L16",
+      "id": "toast_svelte_add",
+      "community": 2,
+      "norm_label": "add()"
+    },
+    {
+      "label": "remove()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L27",
+      "id": "toast_svelte_remove",
+      "community": 2,
+      "norm_label": "remove()"
+    },
+    {
+      "label": "success()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L31",
+      "id": "toast_svelte_success",
+      "community": 2,
+      "norm_label": "success()"
+    },
+    {
+      "label": "error()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L35",
+      "id": "toast_svelte_error",
+      "community": 2,
+      "norm_label": "error()"
+    },
+    {
+      "label": "warning()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L39",
+      "id": "toast_svelte_warning",
+      "community": 2,
+      "norm_label": "warning()"
+    },
+    {
+      "label": "info()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L43",
+      "id": "toast_svelte_info",
+      "community": 2,
+      "norm_label": "info()"
+    },
+    {
+      "label": "+error.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\+error.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_error_svelte",
+      "community": 70,
+      "norm_label": "+error.svelte"
+    },
+    {
+      "label": "+layout.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\+layout.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_layout_svelte",
+      "community": 71,
+      "norm_label": "+layout.svelte"
+    },
+    {
+      "label": "+layout.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\+layout.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_layout_ts",
+      "community": 72,
+      "norm_label": "+layout.ts"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_page_svelte",
+      "community": 73,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\auth\\callback\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_auth_callback_page_svelte",
+      "community": 74,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\auth\\login\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_auth_login_page_svelte",
+      "community": 75,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\auth\\logout\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_auth_logout_page_svelte",
+      "community": 76,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\auth\\register\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_auth_register_page_svelte",
+      "community": 77,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+layout.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\+layout.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_layout_svelte",
+      "community": 78,
+      "norm_label": "+layout.svelte"
+    },
+    {
+      "label": "+layout.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\+layout.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_layout_ts",
+      "community": 79,
+      "norm_label": "+layout.ts"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_page_svelte",
+      "community": 80,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\day-plans\\[dayPlanId]\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_day_plans_dayplanid_page_svelte",
+      "community": 81,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\plans\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_plans_page_svelte",
+      "community": 82,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\plans\\new\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_plans_new_page_svelte",
+      "community": 83,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\plans\\[planId]\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_plans_planid_page_svelte",
+      "community": 84,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\plans\\[planId]\\adjust\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_plans_planid_adjust_page_svelte",
+      "community": 85,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\plans\\[planId]\\edit\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_plans_planid_edit_page_svelte",
+      "community": 86,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\resources\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_resources_page_svelte",
+      "community": 87,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\resources\\search\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_resources_search_page_svelte",
+      "community": 2,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "if()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\resources\\search\\+page.svelte",
+      "source_location": "L71",
+      "id": "page_if",
+      "community": 2,
+      "norm_label": "if()"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\settings\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_settings_page_svelte",
+      "community": 88,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\settings\\resources\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_settings_resources_page_svelte",
+      "community": 89,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\students\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_students_page_svelte",
+      "community": 90,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\students\\new\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_students_new_page_svelte",
+      "community": 91,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\students\\[studentId]\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_students_studentid_page_svelte",
+      "community": 92,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\legal\\disclaimer\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_legal_disclaimer_page_svelte",
+      "community": 93,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\legal\\privacy\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_legal_privacy_page_svelte",
+      "community": 94,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\legal\\terms\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_legal_terms_page_svelte",
+      "community": 95,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "+page.svelte",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\pricing\\+page.svelte",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_src_routes_pricing_page_svelte",
+      "community": 96,
+      "norm_label": "+page.svelte"
+    },
+    {
+      "label": "index.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\index.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_index_ts",
+      "community": 97,
+      "norm_label": "index.ts"
+    },
+    {
+      "label": "adjust-plan.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\adjust-plan.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_adjust_plan_ts",
+      "community": 0,
+      "norm_label": "adjust-plan.ts"
+    },
+    {
+      "label": "handleAdjustPlan()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\adjust-plan.ts",
+      "source_location": "L7",
+      "id": "adjust_plan_handleadjustplan",
+      "community": 0,
+      "norm_label": "handleadjustplan()"
+    },
+    {
+      "label": "generate-day-plan.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\generate-day-plan.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_generate_day_plan_ts",
+      "community": 0,
+      "norm_label": "generate-day-plan.ts"
+    },
+    {
+      "label": "handleGenerateDayPlan()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\generate-day-plan.ts",
+      "source_location": "L7",
+      "id": "generate_day_plan_handlegeneratedayplan",
+      "community": 0,
+      "norm_label": "handlegeneratedayplan()"
+    },
+    {
+      "label": "generate-weekly-plan.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\generate-weekly-plan.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_generate_weekly_plan_ts",
+      "community": 0,
+      "norm_label": "generate-weekly-plan.ts"
+    },
+    {
+      "label": "handleGenerateWeeklyPlan()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\generate-weekly-plan.ts",
+      "source_location": "L7",
+      "id": "generate_weekly_plan_handlegenerateweeklyplan",
+      "community": 0,
+      "norm_label": "handlegenerateweeklyplan()"
+    },
+    {
+      "label": "search-resources.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\search-resources.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_search_resources_ts",
+      "community": 5,
+      "norm_label": "search-resources.ts"
+    },
+    {
+      "label": "searchBrave()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\search-resources.ts",
+      "source_location": "L23",
+      "id": "search_resources_searchbrave",
+      "community": 5,
+      "norm_label": "searchbrave()"
+    },
+    {
+      "label": "classifyResourceType()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\search-resources.ts",
+      "source_location": "L74",
+      "id": "search_resources_classifyresourcetype",
+      "community": 5,
+      "norm_label": "classifyresourcetype()"
+    },
+    {
+      "label": "guessSource()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\search-resources.ts",
+      "source_location": "L89",
+      "id": "search_resources_guesssource",
+      "community": 5,
+      "norm_label": "guesssource()"
+    },
+    {
+      "label": "handleSearchResources()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\search-resources.ts",
+      "source_location": "L106",
+      "id": "search_resources_handlesearchresources",
+      "community": 5,
+      "norm_label": "handlesearchresources()"
+    },
+    {
+      "label": "ai.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "community": 0,
+      "norm_label": "ai.ts"
+    },
+    {
+      "label": "groqAvailable()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L33",
+      "id": "ai_groqavailable",
+      "community": 0,
+      "norm_label": "groqavailable()"
+    },
+    {
+      "label": "blockGroq()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L37",
+      "id": "ai_blockgroq",
+      "community": 0,
+      "norm_label": "blockgroq()"
+    },
+    {
+      "label": "unblockGroq()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L46",
+      "id": "ai_unblockgroq",
+      "community": 0,
+      "norm_label": "unblockgroq()"
+    },
+    {
+      "label": "callGroq()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L56",
+      "id": "ai_callgroq",
+      "community": 0,
+      "norm_label": "callgroq()"
+    },
+    {
+      "label": "callDeepSeek()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L100",
+      "id": "ai_calldeepseek",
+      "community": 0,
+      "norm_label": "calldeepseek()"
+    },
+    {
+      "label": "callAI()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L135",
+      "id": "ai_callai",
+      "community": 0,
+      "norm_label": "callai()"
+    },
+    {
+      "label": "auth.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\auth.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_auth_ts",
+      "community": 6,
+      "norm_label": "auth.ts"
+    },
+    {
+      "label": "extractToken()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\auth.ts",
+      "source_location": "L7",
+      "id": "auth_extracttoken",
+      "community": 6,
+      "norm_label": "extracttoken()"
+    },
+    {
+      "label": "authenticate()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\auth.ts",
+      "source_location": "L16",
+      "id": "auth_authenticate",
+      "community": 6,
+      "norm_label": "authenticate()"
+    },
+    {
+      "label": "fetcher.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\fetcher.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_fetcher_ts",
+      "community": 13,
+      "norm_label": "fetcher.ts"
+    },
+    {
+      "label": "fetchUrl()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\fetcher.ts",
+      "source_location": "L5",
+      "id": "fetcher_fetchurl",
+      "community": 13,
+      "norm_label": "fetchurl()"
+    },
+    {
+      "label": "validate.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\validate.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_validate_ts",
+      "community": 98,
+      "norm_label": "validate.ts"
+    },
+    {
+      "label": "index.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\index.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_index_ts",
+      "community": 99,
+      "norm_label": "index.ts"
+    },
+    {
+      "label": "create-checkout-session.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\create-checkout-session.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_handlers_create_checkout_session_ts",
+      "community": 4,
+      "norm_label": "create-checkout-session.ts"
+    },
+    {
+      "label": "handleCreateCheckoutSession()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\create-checkout-session.ts",
+      "source_location": "L11",
+      "id": "create_checkout_session_handlecreatecheckoutsession",
+      "community": 4,
+      "norm_label": "handlecreatecheckoutsession()"
+    },
+    {
+      "label": "create-portal-session.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\create-portal-session.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_handlers_create_portal_session_ts",
+      "community": 4,
+      "norm_label": "create-portal-session.ts"
+    },
+    {
+      "label": "handleCreatePortalSession()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\create-portal-session.ts",
+      "source_location": "L1",
+      "id": "create_portal_session_handlecreateportalsession",
+      "community": 4,
+      "norm_label": "handlecreateportalsession()"
+    },
+    {
+      "label": "webhook.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\webhook.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_handlers_webhook_ts",
+      "community": 4,
+      "norm_label": "webhook.ts"
+    },
+    {
+      "label": "handleWebhook()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\webhook.ts",
+      "source_location": "L3",
+      "id": "webhook_handlewebhook",
+      "community": 4,
+      "norm_label": "handlewebhook()"
+    },
+    {
+      "label": "auth.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\auth.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_auth_ts",
+      "community": 6,
+      "norm_label": "auth.ts"
+    },
+    {
+      "label": "stripe.ts",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\stripe.ts",
+      "source_location": "L1",
+      "id": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_stripe_ts",
+      "community": 4,
+      "norm_label": "stripe.ts"
+    },
+    {
+      "label": "createStripeClient()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\stripe.ts",
+      "source_location": "L3",
+      "id": "stripe_createstripeclient",
+      "community": 4,
+      "norm_label": "createstripeclient()"
+    },
+    {
+      "label": "supabasePatch()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\stripe.ts",
+      "source_location": "L20",
+      "id": "stripe_supabasepatch",
+      "community": 4,
+      "norm_label": "supabasepatch()"
+    },
+    {
+      "label": "supabaseRpc()",
+      "file_type": "code",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\stripe.ts",
+      "source_location": "L39",
+      "id": "stripe_supabaserpc",
+      "community": 4,
+      "norm_label": "supabaserpc()"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\actions\\scrollReveal.svelte.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_actions_scrollreveal_svelte_ts",
+      "_tgt": "scrollreveal_svelte_scrollreveal",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_actions_scrollreveal_svelte_ts",
+      "target": "scrollreveal_svelte_scrollreveal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\plans\\WeekPopup.svelte",
+      "source_location": "L178",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_components_plans_weekpopup_svelte",
+      "_tgt": "weekpopup_formatdateshort",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_components_plans_weekpopup_svelte",
+      "target": "weekpopup_formatdateshort",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\components\\ui\\DropdownMenu.svelte",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_dropdownmenu_svelte",
+      "_tgt": "dropdownmenu_handleclick",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_components_ui_dropdownmenu_svelte",
+      "target": "dropdownmenu_handleclick",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\api.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_api_ts",
+      "_tgt": "api_getauthheaders",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_api_ts",
+      "target": "api_getauthheaders",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\api.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_api_ts",
+      "_tgt": "api_post",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_api_ts",
+      "target": "api_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\api.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_src": "api_post",
+      "_tgt": "api_getauthheaders",
+      "source": "api_getauthheaders",
+      "target": "api_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\constants.ts",
+      "source_location": "L130",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_constants_ts",
+      "_tgt": "constants_canusefeature",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_constants_ts",
+      "target": "constants_canusefeature",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "_tgt": "date_getmonday",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "target": "date_getmonday",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "_tgt": "date_getsunday",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "target": "date_getsunday",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "_tgt": "date_formatdateshort",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "target": "date_formatdateshort",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "_tgt": "date_formatdatelong",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "target": "date_formatdatelong",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "_tgt": "date_toisodate",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "target": "date_toisodate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "_tgt": "date_getweeknumber",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "target": "date_getweeknumber",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "_tgt": "date_getweekstartdate",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "target": "date_getweekstartdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L69",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "_tgt": "date_formatweekrange",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "target": "date_formatweekrange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "_tgt": "date_todayiso",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "target": "date_todayiso",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "_tgt": "date_isdateinweek",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_date_ts",
+      "target": "date_isdateinweek",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_src": "date_getsunday",
+      "_tgt": "date_getmonday",
+      "source": "date_getmonday",
+      "target": "date_getsunday",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_src": "date_getweeknumber",
+      "_tgt": "date_getmonday",
+      "source": "date_getmonday",
+      "target": "date_getweeknumber",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_src": "date_getweekstartdate",
+      "_tgt": "date_getmonday",
+      "source": "date_getmonday",
+      "target": "date_getweekstartdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_src": "date_formatweekrange",
+      "_tgt": "date_formatdateshort",
+      "source": "date_formatdateshort",
+      "target": "date_formatweekrange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L140",
+      "weight": 1.0,
+      "_src": "export_exportdayplan",
+      "_tgt": "date_formatdatelong",
+      "source": "date_formatdatelong",
+      "target": "export_exportdayplan"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\date.ts",
+      "source_location": "L77",
+      "weight": 1.0,
+      "_src": "date_todayiso",
+      "_tgt": "date_toisodate",
+      "source": "date_toisodate",
+      "target": "date_todayiso",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "_tgt": "export_escapehtml",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "target": "export_escapehtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "_tgt": "export_tasktohtml",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "target": "export_tasktohtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "_tgt": "export_resourcestohtml",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "target": "export_resourcestohtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L108",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "_tgt": "export_css",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "target": "export_css",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L135",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "_tgt": "export_exportdayplan",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "target": "export_exportdayplan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L165",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "_tgt": "export_exportweek",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "target": "export_exportweek",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L212",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "_tgt": "export_openexport",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "target": "export_openexport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L222",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "_tgt": "export_exportdayplanjson",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "target": "export_exportdayplanjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L255",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "_tgt": "export_exportweekjson",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "target": "export_exportweekjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L291",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "_tgt": "export_downloadjson",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "target": "export_downloadjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L310",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "_tgt": "export_parseimportjson",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_lib_export_ts",
+      "target": "export_parseimportjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L86",
+      "weight": 1.0,
+      "_src": "export_tasktohtml",
+      "_tgt": "export_escapehtml",
+      "source": "export_escapehtml",
+      "target": "export_tasktohtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L150",
+      "weight": 1.0,
+      "_src": "export_exportdayplan",
+      "_tgt": "export_escapehtml",
+      "source": "export_escapehtml",
+      "target": "export_exportdayplan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L175",
+      "weight": 1.0,
+      "_src": "export_exportweek",
+      "_tgt": "export_escapehtml",
+      "source": "export_escapehtml",
+      "target": "export_exportweek",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L161",
+      "weight": 1.0,
+      "_src": "export_exportdayplan",
+      "_tgt": "export_resourcestohtml",
+      "source": "export_resourcestohtml",
+      "target": "export_exportdayplan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L150",
+      "weight": 1.0,
+      "_src": "export_exportdayplan",
+      "_tgt": "export_css",
+      "source": "export_css",
+      "target": "export_exportdayplan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\lib\\export.ts",
+      "source_location": "L175",
+      "weight": 1.0,
+      "_src": "export_exportweek",
+      "_tgt": "export_css",
+      "source": "export_css",
+      "target": "export_exportweek",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\auth.svelte.ts",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_stores_auth_svelte_ts",
+      "_tgt": "auth_svelte_inittheme",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_stores_auth_svelte_ts",
+      "target": "auth_svelte_inittheme",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\auth.svelte.ts",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_stores_auth_svelte_ts",
+      "_tgt": "auth_svelte_toggledark",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_stores_auth_svelte_ts",
+      "target": "auth_svelte_toggledark",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\auth.svelte.ts",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_src": "auth_svelte_inittheme",
+      "_tgt": "toast_svelte_add",
+      "source": "auth_svelte_inittheme",
+      "target": "toast_svelte_add"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\plan.svelte.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_stores_plan_svelte_ts",
+      "_tgt": "plan_svelte_gettutorid",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_stores_plan_svelte_ts",
+      "target": "plan_svelte_gettutorid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\student.svelte.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_stores_student_svelte_ts",
+      "_tgt": "student_svelte_gettutorid",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_stores_student_svelte_ts",
+      "target": "student_svelte_gettutorid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "_tgt": "toast_svelte_add",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "target": "toast_svelte_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "_tgt": "toast_svelte_remove",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "target": "toast_svelte_remove",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "_tgt": "toast_svelte_success",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "target": "toast_svelte_success",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "_tgt": "toast_svelte_error",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "target": "toast_svelte_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "_tgt": "toast_svelte_warning",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "target": "toast_svelte_warning",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "_tgt": "toast_svelte_info",
+      "source": "c_users_reach_organizer_development_tutoros_src_lib_stores_toast_svelte_ts",
+      "target": "toast_svelte_info",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_src": "toast_svelte_success",
+      "_tgt": "toast_svelte_add",
+      "source": "toast_svelte_add",
+      "target": "toast_svelte_success",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_src": "toast_svelte_error",
+      "_tgt": "toast_svelte_add",
+      "source": "toast_svelte_add",
+      "target": "toast_svelte_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_src": "toast_svelte_warning",
+      "_tgt": "toast_svelte_add",
+      "source": "toast_svelte_add",
+      "target": "toast_svelte_warning",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\lib\\stores\\toast.svelte.ts",
+      "source_location": "L44",
+      "weight": 1.0,
+      "_src": "toast_svelte_info",
+      "_tgt": "toast_svelte_add",
+      "source": "toast_svelte_add",
+      "target": "toast_svelte_info",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\resources\\search\\+page.svelte",
+      "source_location": "L72",
+      "weight": 1.0,
+      "_src": "page_if",
+      "_tgt": "toast_svelte_error",
+      "source": "toast_svelte_error",
+      "target": "page_if"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\search-resources.ts",
+      "source_location": "L66",
+      "weight": 1.0,
+      "_src": "search_resources_searchbrave",
+      "_tgt": "toast_svelte_error",
+      "source": "toast_svelte_error",
+      "target": "search_resources_searchbrave"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\auth.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_src": "auth_authenticate",
+      "_tgt": "toast_svelte_error",
+      "source": "toast_svelte_error",
+      "target": "auth_authenticate"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\create-checkout-session.ts",
+      "source_location": "L135",
+      "weight": 1.0,
+      "_src": "create_checkout_session_handlecreatecheckoutsession",
+      "_tgt": "toast_svelte_error",
+      "source": "toast_svelte_error",
+      "target": "create_checkout_session_handlecreatecheckoutsession"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\create-portal-session.ts",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_src": "create_portal_session_handlecreateportalsession",
+      "_tgt": "toast_svelte_error",
+      "source": "toast_svelte_error",
+      "target": "create_portal_session_handlecreateportalsession"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\webhook.ts",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_src": "webhook_handlewebhook",
+      "_tgt": "toast_svelte_error",
+      "source": "toast_svelte_error",
+      "target": "webhook_handlewebhook"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\src\\routes\\dashboard\\resources\\search\\+page.svelte",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_resources_search_page_svelte",
+      "_tgt": "page_if",
+      "source": "c_users_reach_organizer_development_tutoros_src_routes_dashboard_resources_search_page_svelte",
+      "target": "page_if",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\adjust-plan.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_adjust_plan_ts",
+      "_tgt": "adjust_plan_handleadjustplan",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_adjust_plan_ts",
+      "target": "adjust_plan_handleadjustplan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\adjust-plan.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_src": "adjust_plan_handleadjustplan",
+      "_tgt": "ai_callai",
+      "source": "adjust_plan_handleadjustplan",
+      "target": "ai_callai"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\generate-day-plan.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_generate_day_plan_ts",
+      "_tgt": "generate_day_plan_handlegeneratedayplan",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_generate_day_plan_ts",
+      "target": "generate_day_plan_handlegeneratedayplan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\generate-day-plan.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_src": "generate_day_plan_handlegeneratedayplan",
+      "_tgt": "ai_callai",
+      "source": "generate_day_plan_handlegeneratedayplan",
+      "target": "ai_callai"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\generate-weekly-plan.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_generate_weekly_plan_ts",
+      "_tgt": "generate_weekly_plan_handlegenerateweeklyplan",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_generate_weekly_plan_ts",
+      "target": "generate_weekly_plan_handlegenerateweeklyplan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\generate-weekly-plan.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_src": "generate_weekly_plan_handlegenerateweeklyplan",
+      "_tgt": "ai_callai",
+      "source": "generate_weekly_plan_handlegenerateweeklyplan",
+      "target": "ai_callai"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\search-resources.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_search_resources_ts",
+      "_tgt": "search_resources_searchbrave",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_search_resources_ts",
+      "target": "search_resources_searchbrave",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\search-resources.ts",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_search_resources_ts",
+      "_tgt": "search_resources_classifyresourcetype",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_search_resources_ts",
+      "target": "search_resources_classifyresourcetype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\search-resources.ts",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_search_resources_ts",
+      "_tgt": "search_resources_guesssource",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_search_resources_ts",
+      "target": "search_resources_guesssource",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\search-resources.ts",
+      "source_location": "L106",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_search_resources_ts",
+      "_tgt": "search_resources_handlesearchresources",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_handlers_search_resources_ts",
+      "target": "search_resources_handlesearchresources",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\handlers\\search-resources.ts",
+      "source_location": "L134",
+      "weight": 1.0,
+      "_src": "search_resources_handlesearchresources",
+      "_tgt": "search_resources_searchbrave",
+      "source": "search_resources_searchbrave",
+      "target": "search_resources_handlesearchresources",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "_tgt": "ai_groqavailable",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "target": "ai_groqavailable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "_tgt": "ai_blockgroq",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "target": "ai_blockgroq",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "_tgt": "ai_unblockgroq",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "target": "ai_unblockgroq",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "_tgt": "ai_callgroq",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "target": "ai_callgroq",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "_tgt": "ai_calldeepseek",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "target": "ai_calldeepseek",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L135",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "_tgt": "ai_callai",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_ai_ts",
+      "target": "ai_callai",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L136",
+      "weight": 1.0,
+      "_src": "ai_callai",
+      "_tgt": "ai_groqavailable",
+      "source": "ai_groqavailable",
+      "target": "ai_callai",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_src": "ai_callgroq",
+      "_tgt": "ai_blockgroq",
+      "source": "ai_blockgroq",
+      "target": "ai_callgroq",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_src": "ai_callgroq",
+      "_tgt": "ai_unblockgroq",
+      "source": "ai_unblockgroq",
+      "target": "ai_callgroq",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L138",
+      "weight": 1.0,
+      "_src": "ai_callai",
+      "_tgt": "ai_callgroq",
+      "source": "ai_callgroq",
+      "target": "ai_callai",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\ai.ts",
+      "source_location": "L152",
+      "weight": 1.0,
+      "_src": "ai_callai",
+      "_tgt": "ai_calldeepseek",
+      "source": "ai_calldeepseek",
+      "target": "ai_callai",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\auth.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_auth_ts",
+      "_tgt": "auth_extracttoken",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_auth_ts",
+      "target": "auth_extracttoken",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\auth.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_auth_ts",
+      "_tgt": "auth_authenticate",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_auth_ts",
+      "target": "auth_authenticate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\auth.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_src": "auth_authenticate",
+      "_tgt": "auth_extracttoken",
+      "source": "auth_extracttoken",
+      "target": "auth_authenticate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\auth.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_auth_ts",
+      "_tgt": "auth_extracttoken",
+      "source": "auth_extracttoken",
+      "target": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_auth_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\auth.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_auth_ts",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_auth_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\api-worker\\src\\lib\\fetcher.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_fetcher_ts",
+      "_tgt": "fetcher_fetchurl",
+      "source": "c_users_reach_organizer_development_tutoros_workers_api_worker_src_lib_fetcher_ts",
+      "target": "fetcher_fetchurl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\create-checkout-session.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_handlers_create_checkout_session_ts",
+      "_tgt": "create_checkout_session_handlecreatecheckoutsession",
+      "source": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_handlers_create_checkout_session_ts",
+      "target": "create_checkout_session_handlecreatecheckoutsession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\create-checkout-session.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_src": "create_checkout_session_handlecreatecheckoutsession",
+      "_tgt": "stripe_createstripeclient",
+      "source": "create_checkout_session_handlecreatecheckoutsession",
+      "target": "stripe_createstripeclient"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\create-portal-session.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_handlers_create_portal_session_ts",
+      "_tgt": "create_portal_session_handlecreateportalsession",
+      "source": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_handlers_create_portal_session_ts",
+      "target": "create_portal_session_handlecreateportalsession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\create-portal-session.ts",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_src": "create_portal_session_handlecreateportalsession",
+      "_tgt": "stripe_createstripeclient",
+      "source": "create_portal_session_handlecreateportalsession",
+      "target": "stripe_createstripeclient"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\webhook.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_handlers_webhook_ts",
+      "_tgt": "webhook_handlewebhook",
+      "source": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_handlers_webhook_ts",
+      "target": "webhook_handlewebhook",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\webhook.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_src": "webhook_handlewebhook",
+      "_tgt": "stripe_createstripeclient",
+      "source": "webhook_handlewebhook",
+      "target": "stripe_createstripeclient"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\webhook.ts",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_src": "webhook_handlewebhook",
+      "_tgt": "stripe_supabasepatch",
+      "source": "webhook_handlewebhook",
+      "target": "stripe_supabasepatch"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\handlers\\webhook.ts",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_src": "webhook_handlewebhook",
+      "_tgt": "stripe_supabaserpc",
+      "source": "webhook_handlewebhook",
+      "target": "stripe_supabaserpc"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\stripe.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_stripe_ts",
+      "_tgt": "stripe_createstripeclient",
+      "source": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_stripe_ts",
+      "target": "stripe_createstripeclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\stripe.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_stripe_ts",
+      "_tgt": "stripe_supabasepatch",
+      "source": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_stripe_ts",
+      "target": "stripe_supabasepatch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\reach\\Organizer\\Development\\tutoros\\workers\\stripe-worker\\src\\lib\\stripe.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_src": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_stripe_ts",
+      "_tgt": "stripe_supabaserpc",
+      "source": "c_users_reach_organizer_development_tutoros_workers_stripe_worker_src_lib_stripe_ts",
+      "target": "stripe_supabaserpc",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": []
+}

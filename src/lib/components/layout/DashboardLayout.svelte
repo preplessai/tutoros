@@ -1,5 +1,7 @@
 <script lang="ts">
 	import Sidebar from './Sidebar.svelte';
+	import DowngradeBanner from '$lib/components/subscription/DowngradeBanner.svelte';
+
 	let { children } = $props();
 </script>
 
@@ -14,8 +16,9 @@
 			class="pointer-events-none fixed bottom-0 left-1/3 h-[300px] w-[300px] rounded-full bg-[var(--color-accent-100)]/10 blur-3xl"
 		></div>
 
-		<div class="relative p-6 lg:p-8">
-			{@render children?.()}
-		</div>
+		<DowngradeBanner />
+			<div class="relative p-6 lg:p-8">
+				{@render children?.()}
+			</div>
 	</main>
 </div>

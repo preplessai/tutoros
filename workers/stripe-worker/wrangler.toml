@@ -1,0 +1,15 @@
+name = "stripe"
+main = "src/index.ts"
+compatibility_date = "2025-06-01"
+
+[vars]
+SUPABASE_URL = "https://thekcjwcdpbyjvsyziul.supabase.co"
+
+# Secrets set via `wrangler secret put`:
+#   STRIPE_SECRET_KEY       — Stripe secret key (sk_test_xxx or sk_live_xxx)
+#   STRIPE_WEBHOOK_SECRET   — Stripe webhook signing secret (whsec_xxx)
+#   SUPABASE_SERVICE_ROLE_KEY — Supabase service_role key for server-side DB writes
+#   SUPABASE_ANON_KEY       — Supabase anon key for JWT validation
+#   STRIPE_PRICE_PRO        — Stripe Price ID for Pro monthly
+#   STRIPE_PRICE_ENTERPRISE — Stripe Price ID for Enterprise monthly
+#   APP_URL                 — Frontend URL for redirects (e.g. https://prepless.ai)

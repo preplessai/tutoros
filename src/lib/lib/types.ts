@@ -7,6 +7,12 @@ export interface Profile {
 	avatar_url: string | null;
 	subscription_tier: 'free' | 'pro' | 'enterprise';
 	stripe_customer_id: string | null;
+	stripe_subscription_id: string | null;
+	subscription_status: 'active' | 'past_due' | 'canceled' | 'incomplete' | 'trialing' | 'unpaid' | null;
+	subscription_period_end: string | null;
+	cancel_at_period_end: boolean | null;
+	downgraded_at: string | null;
+	data_truncation_date: string | null;
 	created_at: string;
 	updated_at: string;
 }

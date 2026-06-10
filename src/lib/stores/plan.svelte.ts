@@ -5,6 +5,8 @@ import { api } from '$lib/lib/api';
 import { creditStore } from './credits.svelte';
 import { toast } from './toast.svelte';
 import { toISODate } from '$lib/lib/date';
+import { auth } from './auth.svelte';
+import { SUBSCRIPTION_TIERS } from '$lib/lib/constants';
 
 let plans = $state<WeeklyPlan[]>([]);
 let current = $state<WeeklyPlan | null>(null);
@@ -59,6 +61,21 @@ export const planStore = {
 				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
 				generating = false;
 				return null;
+			}
+
+			// Check plan limit
+			const tier = auth.profile?.subscription_tier || 'free';
+			const maxPlans = SUBSCRIPTION_TIERS[tier]?.maxPlans;
+			if (maxPlans !== undefined && maxPlans !== Infinity) {
+				const { count, error: countErr } = await supabase
+					.from('weekly_plans')
+					.select('*', { count: 'exact', head: true })
+					.eq('tutor_id', await getTutorId());
+				if (!countErr && count !== null && count >= maxPlans) {
+					toast.error(`You've reached the maximum of ${maxPlans} plans for the ${SUBSCRIPTION_TIERS[tier].name} tier. Upgrade to create more.`);
+					generating = false;
+					return null;
+				}
 			}
 
 			const result: AiGeneratedPlan = await api.generateWeeklyPlan(request);
@@ -180,8 +197,8 @@ export const planStore = {
 						}
 						await supabase.from('plan_days').delete().eq('week_id', wid);
 					}
+					await supabase.from('plan_weeks').delete().eq('plan_id', planId);
 				}
-				await supabase.from('plan_weeks').delete().eq('plan_id', planId);
 			}
 
 			// Insert new
@@ -272,5 +289,97 @@ export const planStore = {
 			.from('plan_tasks')
 			.update({ ...updates, ai_generated: false })
 			.eq('id', taskId);
+	},
+
+	/** Import a week from parsed JSON into the current plan */
+	async importWeekFromJson(
+		data: {
+			week: {
+				week_number: number;
+				week_start: string;
+				week_end: string;
+				theme: string | null;
+				focus_areas: string[];
+				notes: string | null;
+			};
+			days: {
+				date: string;
+				day_of_week: string;
+				energy_level: string | null;
+				recent_progress: string | null;
+				struggle_areas: string[] | null;
+				grades_context: string | null;
+				tasks: {
+					section: string;
+					title: string;
+					description: string | null;
+					duration_minutes: number;
+				}[];
+			}[];
+		}
+	): Promise<string | null> {
+		if (!current) {
+			toast.error('No plan loaded');
+			return null;
+		}
+
+		try {
+			const { data: weekRow, error: weekErr } = await supabase
+				.from('plan_weeks')
+				.insert({
+					plan_id: current.id,
+					week_number: data.week.week_number,
+					week_start: data.week.week_start,
+					week_end: data.week.week_end,
+					theme: data.week.theme,
+					focus_areas: data.week.focus_areas,
+					notes: data.week.notes,
+					ai_generated: false,
+					sort_order: data.week.week_number
+				})
+				.select()
+				.single();
+
+			if (weekErr) throw weekErr;
+
+			for (const day of data.days) {
+				const { data: dayRow, error: dayErr } = await supabase
+					.from('plan_days')
+					.insert({
+						week_id: weekRow.id,
+						date: day.date,
+						day_of_week: day.day_of_week,
+						energy_level: day.energy_level,
+						recent_progress: day.recent_progress,
+						struggle_areas: day.struggle_areas,
+						grades_context: day.grades_context,
+						ai_generated: false,
+						sort_order: data.days.indexOf(day)
+					})
+					.select()
+					.single();
+
+				if (dayErr) throw dayErr;
+
+				for (const task of day.tasks) {
+					await supabase.from('plan_tasks').insert({
+						day_id: dayRow.id,
+						section: task.section,
+						sort_order: day.tasks.indexOf(task),
+						title: task.title,
+						description: task.description,
+						duration_minutes: task.duration_minutes
+					});
+				}
+			}
+
+			await this.fetchOne(current.id);
+			toast.success('Week imported');
+			return weekRow.id;
+		} catch (err: unknown) {
+			const message = err instanceof Error ? err.message : 'Unknown error';
+			toast.error('Failed to import week: ' + message);
+			return null;
+		}
 	}
 };

@@ -59,6 +59,12 @@ export const auth = {
 		profile = data as Profile | null;
 	},
 
+	async reloadProfile() {
+		if (!user) return;
+		const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+		profile = data as Profile | null;
+	},
+
 	async signOut() {
 		await supabase.auth.signOut();
 		session = null;

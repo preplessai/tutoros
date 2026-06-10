@@ -1,11 +1,12 @@
 -- ═══════════════════════════════════════
 -- Credits System — Non-expiring + Refreshing
+-- Supports fractional credits (NUMERIC for 0.1 per search)
 -- ═══════════════════════════════════════
 
 -- ── Add credit columns to profiles ──
 ALTER TABLE public.profiles
-  ADD COLUMN IF NOT EXISTS non_expiring_credits INTEGER NOT NULL DEFAULT 0,
-  ADD COLUMN IF NOT EXISTS refreshing_credits INTEGER NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS non_expiring_credits NUMERIC(10,1) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS refreshing_credits NUMERIC(10,1) NOT NULL DEFAULT 0,
   ADD COLUMN IF NOT EXISTS refreshing_reset_at TIMESTAMPTZ;
 
 -- Migrate existing ai_credits → non_expiring_credits (one-time grant)
@@ -17,7 +18,7 @@ UPDATE public.profiles
 CREATE TABLE IF NOT EXISTS public.credit_transactions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  amount INTEGER NOT NULL,
+  amount NUMERIC(10,1) NOT NULL,
   category TEXT NOT NULL CHECK (category IN ('non_expiring', 'refreshing')),
   reason TEXT NOT NULL,
   metadata JSONB DEFAULT '{}'::jsonb,
@@ -39,14 +40,14 @@ CREATE INDEX idx_credit_transactions_user ON public.credit_transactions(user_id,
 -- Returns TRUE if sufficient credits, FALSE otherwise.
 CREATE OR REPLACE FUNCTION public.use_credits(
   p_user_id UUID,
-  p_amount INTEGER,
+  p_amount NUMERIC,
   p_reason TEXT DEFAULT 'plan_generation'
 ) RETURNS BOOLEAN AS $$
 DECLARE
-  v_refreshing INTEGER;
-  v_non_expiring INTEGER;
-  v_from_refreshing INTEGER;
-  v_from_non_expiring INTEGER;
+  v_refreshing NUMERIC;
+  v_non_expiring NUMERIC;
+  v_from_refreshing NUMERIC;
+  v_from_non_expiring NUMERIC;
 BEGIN
   -- Lock row to prevent race conditions
   SELECT refreshing_credits, non_expiring_credits
@@ -94,7 +95,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- ── Function: add_credits ──
 CREATE OR REPLACE FUNCTION public.add_credits(
   p_user_id UUID,
-  p_amount INTEGER,
+  p_amount NUMERIC,
   p_category TEXT,
   p_reason TEXT DEFAULT 'manual_grant'
 ) RETURNS VOID AS $$
@@ -118,10 +119,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ── Function: refresh_credits ──
 -- Resets refreshing_credits to p_amount if reset_at has passed.
--- Called on login or before credit check.
 CREATE OR REPLACE FUNCTION public.refresh_credits(
   p_user_id UUID,
-  p_amount INTEGER,
+  p_amount NUMERIC,
   p_interval INTERVAL DEFAULT '1 month'
 ) RETURNS VOID AS $$
 DECLARE

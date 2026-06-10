@@ -201,5 +201,63 @@ export const dayPlanStore = {
 	async toggleTaskComplete(taskId: string, completed: boolean) {
 		await supabase.from('plan_tasks').update({ completed }).eq('id', taskId);
 		tasks = tasks.map((t) => (t.id === taskId ? { ...t, completed } : t));
+	},
+
+	/** Import a day plan from parsed JSON into a given week */
+	async importFromJson(
+		weekId: string,
+		data: {
+			day: {
+				date: string;
+				day_of_week: string;
+				energy_level: string | null;
+				recent_progress: string | null;
+				struggle_areas: string[] | null;
+				grades_context: string | null;
+			};
+			tasks: {
+				section: string;
+				title: string;
+				description: string | null;
+				duration_minutes: number;
+			}[];
+		}
+	): Promise<string | null> {
+		try {
+			const { data: day, error: dayErr } = await supabase
+				.from('plan_days')
+				.insert({
+					week_id: weekId,
+					date: data.day.date,
+					day_of_week: data.day.day_of_week,
+					energy_level: data.day.energy_level,
+					recent_progress: data.day.recent_progress,
+					struggle_areas: data.day.struggle_areas,
+					grades_context: data.day.grades_context,
+					ai_generated: false
+				})
+				.select()
+				.single();
+
+			if (dayErr) throw dayErr;
+
+			for (const task of data.tasks) {
+				await supabase.from('plan_tasks').insert({
+					day_id: day.id,
+					section: task.section,
+					sort_order: data.tasks.indexOf(task),
+					title: task.title,
+					description: task.description,
+					duration_minutes: task.duration_minutes
+				});
+			}
+
+			toast.success('Day plan imported');
+			return day.id;
+		} catch (err: unknown) {
+			const message = err instanceof Error ? err.message : 'Unknown error';
+			toast.error('Failed to import day plan: ' + message);
+			return null;
+		}
 	}
 };

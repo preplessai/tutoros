@@ -1,14 +1,58 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { auth } from '$lib/stores/auth.svelte';
 	import { creditStore } from '$lib/stores/credits.svelte';
+	import { stripeApi } from '$lib/lib/stripe';
+	import { toast } from '$lib/stores/toast.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
+	import { canUseFeature } from '$lib/lib/constants';
+
+	let managingSubscription = $state(false);
 
 	onMount(() => {
 		creditStore.fetch();
+
+		// Check for successful checkout redirect
+		if ($page.url.searchParams.get('checkout') === 'success') {
+			toast.success('Subscription updated successfully!');
+			window.history.replaceState({}, '', '/dashboard/settings');
+		}
 	});
+
+	async function handleManageSubscription() {
+		managingSubscription = true;
+		try {
+			const { url } = await stripeApi.createPortalSession();
+			window.location.href = url;
+		} catch (err: unknown) {
+			toast.error('Failed to open subscription portal');
+		} finally {
+			managingSubscription = false;
+		}
+	}
+
+	function getTierBadgeVariant(tier: string | null | undefined): 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info' {
+		if (tier === 'pro') return 'success';
+		if (tier === 'enterprise') return 'info';
+		return 'default';
+	}
+
+	function getTierLabel(tier: string | null | undefined): string {
+		if (tier === 'pro') return 'Pro';
+		if (tier === 'enterprise') return 'Enterprise';
+		return 'Starter';
+	}
+
+	function getStatusBadgeVariant(status: string | null | undefined): 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info' {
+		if (status === 'active') return 'success';
+		if (status === 'past_due') return 'warning';
+		if (status === 'canceled') return 'error';
+		if (status === 'trialing') return 'info';
+		return 'default';
+	}
 </script>
 
 <svelte:head><title>Settings — Prepless AI</title></svelte:head>
@@ -41,6 +85,77 @@
 		</div>
 	</Card>
 
+	<!-- Subscription -->
+	<Card>
+		<h3 class="mb-4 font-semibold text-[var(--color-text-primary)]">Subscription</h3>
+		<div class="space-y-4">
+			<div class="flex items-center justify-between">
+				<div>
+					<div class="text-sm text-[var(--color-text-secondary)]">Current Plan</div>
+					<div class="mt-0.5 flex items-center gap-2">
+						<span class="text-lg font-semibold text-[var(--color-text-primary)]">
+							{getTierLabel(auth.profile?.subscription_tier)}
+						</span>
+						<Badge variant={getTierBadgeVariant(auth.profile?.subscription_tier)}>
+							{auth.profile?.subscription_tier || 'free'}
+						</Badge>
+					</div>
+				</div>
+			</div>
+
+			{#if canUseFeature(auth.profile?.subscription_tier || 'free', 'advanced_ai')}
+				<hr class="border-[var(--color-border)]" />
+
+				<div class="space-y-2">
+					<div class="flex items-center justify-between text-sm">
+						<span class="text-[var(--color-text-secondary)]">Status</span>
+						<Badge variant={getStatusBadgeVariant(auth.profile?.subscription_status)}>
+							{auth.profile?.subscription_status || 'unknown'}
+						</Badge>
+					</div>
+
+					{#if auth.profile?.subscription_period_end}
+						<div class="flex items-center justify-between text-sm">
+							<span class="text-[var(--color-text-secondary)]">Current period ends</span>
+							<span class="text-[var(--color-text-primary)]">
+								{new Date(auth.profile.subscription_period_end).toLocaleDateString('en-US', {
+									year: 'numeric', month: 'long', day: 'numeric'
+								})}
+							</span>
+						</div>
+					{/if}
+
+					{#if auth.profile?.cancel_at_period_end}
+						<div class="rounded-lg bg-[var(--color-warning-bg)] p-3 text-sm text-[var(--color-warning)]">
+							Your subscription will end on {new Date(auth.profile.subscription_period_end!).toLocaleDateString('en-US', {
+								year: 'numeric', month: 'long', day: 'numeric'
+							})} and won't renew.
+						</div>
+					{/if}
+				</div>
+
+				<hr class="border-[var(--color-border)]" />
+			{/if}
+
+			<div class="flex flex-wrap gap-3">
+				{#if auth.profile?.subscription_tier === 'free'}
+					<Button variant="gradient" href="/pricing">
+						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+						</svg>
+						Upgrade to Pro
+					</Button>
+				{:else if auth.profile?.cancel_at_period_end}
+					<Button variant="gradient" href="/pricing">Resubscribe</Button>
+				{:else}
+					<Button variant="secondary" onclick={handleManageSubscription} loading={managingSubscription}>
+						Manage Subscription
+					</Button>
+				{/if}
+			</div>
+		</div>
+	</Card>
+
 	<!-- Credits -->
 	<Card>
 		<h3 class="mb-4 font-semibold text-[var(--color-text-primary)]">Credits</h3>
@@ -53,7 +168,7 @@
 			</div>
 			<div>
 				<div class="text-2xl font-bold text-[var(--color-text-primary)]">
-					{creditStore.total}
+					{creditStore.total % 1 === 0 ? creditStore.total : creditStore.total.toFixed(1)}
 				</div>
 				<div class="text-xs text-[var(--color-text-secondary)]">total credits available</div>
 			</div>
@@ -66,7 +181,7 @@
 					<span class="text-sm text-[var(--color-text-primary)]">Non-expiring</span>
 				</div>
 				<div class="text-right">
-					<div class="text-sm font-semibold text-[var(--color-text-primary)]">{creditStore.nonExpiring}</div>
+					<div class="text-sm font-semibold text-[var(--color-text-primary)]">{creditStore.nonExpiring % 1 === 0 ? creditStore.nonExpiring : creditStore.nonExpiring.toFixed(1)}</div>
 					<div class="text-xs text-[var(--color-text-tertiary)]">never expire</div>
 				</div>
 			</div>
@@ -79,7 +194,7 @@
 					<span class="text-sm text-[var(--color-text-primary)]">Refreshing</span>
 				</div>
 				<div class="text-right">
-					<div class="text-sm font-semibold text-[var(--color-text-primary)]">{creditStore.refreshing}</div>
+					<div class="text-sm font-semibold text-[var(--color-text-primary)]">{creditStore.refreshing % 1 === 0 ? creditStore.refreshing : creditStore.refreshing.toFixed(1)}</div>
 					{#if auth.profile?.subscription_tier === 'free'}
 						<span class="text-xs text-[var(--color-text-tertiary)]">upgrade for monthly credits</span>
 					{:else}

@@ -4,6 +4,7 @@
 	import { api } from '$lib/lib/api';
 	import { resourceStore } from '$lib/stores/resource.svelte';
 	import { dayPlanStore } from '$lib/stores/dayPlan.svelte';
+	import { creditStore } from '$lib/stores/credits.svelte';
 	import { RESOURCE_SITES } from '$lib/lib/constants';
 	import type { AiGeneratedResources, PlanTask } from '$lib/lib/types';
 	import Button from '$lib/components/ui/Button.svelte';
@@ -66,6 +67,13 @@
 		searched = true;
 
 		try {
+			// Credit check — 0.1 per search
+			if (!creditStore.hasEnough(0.1)) {
+				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
+				searching = false;
+				return;
+			}
+
 			const enabledSites = preferredSites.filter((s) => s.enabled);
 			const result = await api.searchResources({
 				query: query.trim(),
@@ -78,6 +86,8 @@
 				maxResults: 8
 			});
 			searchResults = result.resources;
+			// Deduct 0.1 credits on successful search
+			await creditStore.useCredits(0.1, 'resource_search');
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : 'Unknown error';
 			toast.error('Search failed: ' + message);
