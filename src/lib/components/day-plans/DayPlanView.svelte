@@ -9,12 +9,15 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import ErrorDisplay from '$lib/components/ui/ErrorDisplay.svelte';
 
 	let { dayId }: { dayId: string } = $props();
 
 	onMount(async () => {
 		await dayPlanStore.fetchDay(dayId);
-		await resourceStore.fetchByDay(dayId);
+		if (dayPlanStore.currentDay) {
+			await resourceStore.fetchByDay(dayId);
+		}
 	});
 
 	function allResources() {
@@ -28,6 +31,12 @@
 
 {#if dayPlanStore.loading}
 	<div class="flex justify-center py-12"><Spinner size="lg" /></div>
+{:else if dayPlanStore.error}
+	<ErrorDisplay
+		status={dayPlanStore.error.status}
+		message={dayPlanStore.error.message}
+		compact
+	/>
 {:else if dayPlanStore.currentDay}
 	<div class="space-y-6">
 		<div>

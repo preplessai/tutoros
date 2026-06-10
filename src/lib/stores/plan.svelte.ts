@@ -2,6 +2,7 @@ import type { WeeklyPlan, PlanWeek, PlanDay, PlanTask } from '$lib/lib/types';
 import type { AiGeneratedPlan } from '$lib/lib/types';
 import { supabase } from '$lib/lib/supabase';
 import { api } from '$lib/lib/api';
+import { creditStore } from './credits.svelte';
 import { toast } from './toast.svelte';
 import { toISODate } from '$lib/lib/date';
 
@@ -19,21 +20,11 @@ async function getTutorId(): Promise<string> {
 }
 
 export const planStore = {
-	get plans() {
-		return plans;
-	},
-	get current() {
-		return current;
-	},
-	get weeks() {
-		return weeks;
-	},
-	get loading() {
-		return loading;
-	},
-	get generating() {
-		return generating;
-	},
+	get plans() { return plans; },
+	get current() { return current; },
+	get weeks() { return weeks; },
+	get loading() { return loading; },
+	get generating() { return generating; },
 
 	async fetchAll() {
 		loading = true;
@@ -63,6 +54,13 @@ export const planStore = {
 	async generateAndSave(request: any): Promise<string | null> {
 		generating = true;
 		try {
+			// Credit check before API call
+			if (!creditStore.hasEnough(1)) {
+				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
+				generating = false;
+				return null;
+			}
+
 			const result: AiGeneratedPlan = await api.generateWeeklyPlan(request);
 			const tutorId = await getTutorId();
 
@@ -136,6 +134,9 @@ export const planStore = {
 				}
 			}
 
+			// Deduct credit on success
+			await creditStore.useCredits(1, 'weekly_plan_generation');
+
 			toast.success('Plan generated successfully');
 			return plan.id;
 		} catch (err: any) {
@@ -149,6 +150,13 @@ export const planStore = {
 	async adjustPlan(planId: string, changes: any): Promise<boolean> {
 		generating = true;
 		try {
+			// Credit check
+			if (!creditStore.hasEnough(1)) {
+				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
+				generating = false;
+				return false;
+			}
+
 			const result: AiGeneratedPlan = await api.adjustPlan({
 				currentPlan: current?.ai_raw_response || {},
 				changes
@@ -224,6 +232,10 @@ export const planStore = {
 
 			await supabase.from('weekly_plans').update({ ai_raw_response: result }).eq('id', planId);
 			await this.fetchOne(planId);
+
+			// Deduct credit on success
+			await creditStore.useCredits(1, 'plan_adjustment');
+
 			toast.success('Plan adjusted');
 			return true;
 		} catch (err: any) {

@@ -1,8 +1,14 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { auth } from '$lib/stores/auth.svelte';
+	import { creditStore } from '$lib/stores/credits.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
+
+	onMount(() => {
+		creditStore.fetch();
+	});
 </script>
 
 <svelte:head><title>Settings — Prepless AI</title></svelte:head>
@@ -32,6 +38,70 @@
 					>{auth.profile?.subscription_tier || 'free'}</Badge
 				>
 			</div>
+		</div>
+	</Card>
+
+	<!-- Credits -->
+	<Card>
+		<h3 class="mb-4 font-semibold text-[var(--color-text-primary)]">Credits</h3>
+
+		<div class="mb-4 flex items-center gap-4">
+			<div class="flex h-16 w-16 items-center justify-center rounded-xl bg-[var(--color-primary-900)]">
+				<svg class="h-8 w-8 text-[var(--color-primary-500)]" fill="currentColor" viewBox="0 0 24 24">
+					<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/>
+				</svg>
+			</div>
+			<div>
+				<div class="text-2xl font-bold text-[var(--color-text-primary)]">
+					{creditStore.total}
+				</div>
+				<div class="text-xs text-[var(--color-text-secondary)]">total credits available</div>
+			</div>
+		</div>
+
+		<div class="space-y-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+			<div class="flex items-center justify-between">
+				<div class="flex items-center gap-2">
+					<div class="h-2 w-2 rounded-full bg-[var(--color-primary-500)]"></div>
+					<span class="text-sm text-[var(--color-text-primary)]">Non-expiring</span>
+				</div>
+				<div class="text-right">
+					<div class="text-sm font-semibold text-[var(--color-text-primary)]">{creditStore.nonExpiring}</div>
+					<div class="text-xs text-[var(--color-text-tertiary)]">never expire</div>
+				</div>
+			</div>
+
+			<hr class="border-[var(--color-border)]" />
+
+			<div class="flex items-center justify-between">
+				<div class="flex items-center gap-2">
+					<div class="h-2 w-2 rounded-full bg-[var(--color-info)]"></div>
+					<span class="text-sm text-[var(--color-text-primary)]">Refreshing</span>
+				</div>
+				<div class="text-right">
+					<div class="text-sm font-semibold text-[var(--color-text-primary)]">{creditStore.refreshing}</div>
+					{#if auth.profile?.subscription_tier === 'free'}
+						<span class="text-xs text-[var(--color-text-tertiary)]">upgrade for monthly credits</span>
+					{:else}
+						<span class="text-xs text-[var(--color-text-tertiary)]">reset monthly</span>
+					{/if}
+				</div>
+			</div>
+		</div>
+
+		<div class="mt-4 flex gap-3">
+			<Button variant="primary" href="/pricing">
+				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+				</svg>
+				Buy More Credits
+			</Button>
+			<Button variant="secondary" onclick={() => creditStore.fetch()}>
+				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+				</svg>
+				Refresh
+			</Button>
 		</div>
 	</Card>
 

@@ -2,6 +2,8 @@ import type { PlanDay, PlanTask } from '$lib/lib/types';
 import type { AiGeneratedDayPlan } from '$lib/lib/types';
 import { supabase } from '$lib/lib/supabase';
 import { api } from '$lib/lib/api';
+import { auth } from './auth.svelte';
+import { creditStore } from './credits.svelte';
 import { toast } from './toast.svelte';
 
 let currentDay = $state<PlanDay | null>(null);
@@ -9,28 +11,57 @@ let tasks = $state<PlanTask[]>([]);
 let weekDays = $state<PlanDay[]>([]);
 let loading = $state(false);
 let generating = $state(false);
+let error = $state<{ status: number; message: string } | null>(null);
 
 export const dayPlanStore = {
-	get currentDay() {
-		return currentDay;
-	},
-	get tasks() {
-		return tasks;
-	},
-	get weekDays() {
-		return weekDays;
-	},
-	get loading() {
-		return loading;
-	},
-	get generating() {
-		return generating;
-	},
+	get currentDay() { return currentDay; },
+	get tasks() { return tasks; },
+	get weekDays() { return weekDays; },
+	get loading() { return loading; },
+	get generating() { return generating; },
+	get error() { return error; },
 
 	async fetchDay(dayId: string) {
 		loading = true;
-		const { data: day } = await supabase.from('plan_days').select('*').eq('id', dayId).single();
-		if (day) currentDay = day as PlanDay;
+		error = null;
+
+		// Fetch day with ownership check via join
+		const { data: day, error: dayErr } = await supabase
+			.from('plan_days')
+			.select('*, plan_weeks!inner(plan_id)')
+			.eq('id', dayId)
+			.single();
+
+		if (dayErr || !day) {
+			currentDay = null;
+			tasks = [];
+			loading = false;
+			error = { status: 404, message: 'This day plan could not be found.' };
+			return;
+		}
+
+		// Check ownership: plan_day → plan_week → weekly_plan.tutor_id
+		const weekData = day.plan_weeks as { plan_id: string } | undefined;
+		if (weekData?.plan_id) {
+			const { data: plan } = await supabase
+				.from('weekly_plans')
+				.select('tutor_id')
+				.eq('id', weekData.plan_id)
+				.single();
+
+			if (!plan || plan.tutor_id !== auth.user?.id) {
+				currentDay = null;
+				tasks = [];
+				loading = false;
+				error = {
+					status: 403,
+					message: 'You don\'t have permission to view this day plan.'
+				};
+				return;
+			}
+		}
+
+		currentDay = day as unknown as PlanDay;
 
 		const { data: ts } = await supabase
 			.from('plan_tasks')
@@ -73,6 +104,13 @@ export const dayPlanStore = {
 	): Promise<string | null> {
 		generating = true;
 		try {
+			// Credit check before API call
+			if (!creditStore.hasEnough(1)) {
+				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
+				generating = false;
+				return null;
+			}
+
 			const result: AiGeneratedDayPlan = await api.generateDayPlan({
 				weekContext: {
 					theme: weekContext.theme,
@@ -119,6 +157,9 @@ export const dayPlanStore = {
 				});
 			}
 
+			// Deduct credit on success
+			await creditStore.useCredits(1, 'day_plan_generation');
+
 			toast.success('Day plan generated');
 			await this.fetchDay(day.id);
 			return day.id;
@@ -133,7 +174,6 @@ export const dayPlanStore = {
 
 	async deleteDay(dayId: string): Promise<boolean> {
 		try {
-			// Delete tasks first, then the day (cascade should handle, but explicit is safer)
 			await supabase.from('plan_tasks').delete().eq('day_id', dayId);
 			await supabase.from('plan_days').delete().eq('id', dayId);
 			weekDays = weekDays.filter((d) => d.id !== dayId);

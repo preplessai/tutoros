@@ -2,9 +2,10 @@
 	import { auth, theme } from '$lib/stores/auth.svelte';
 	import Avatar from '$lib/components/ui/Avatar.svelte';
 	import DropdownMenu from '$lib/components/ui/DropdownMenu.svelte';
+	import CreditBadge from '$lib/components/ui/CreditBadge.svelte';
 
-	function handleLogout() {
-		auth.signOut();
+	async function handleLogout() {
+		await auth.signOut();
 		window.location.href = '/';
 	}
 </script>
@@ -75,6 +76,7 @@
 			</button>
 
 			{#if auth.isAuthenticated}
+				<a href="/dashboard/settings" class="hidden sm:block"><CreditBadge compact /></a>
 				<DropdownMenu
 					items={[
 						{ label: 'Dashboard', href: '/dashboard' },
