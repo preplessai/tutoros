@@ -57,13 +57,22 @@ export async function handleCreateCheckoutSession(
     const cancelUrl = `${appUrl}/pricing?checkout=canceled`;
 
     if (mode === 'subscription') {
-      if (!priceId || !tier) {
-        return Response.json({ error: 'priceId and tier required for subscription mode' }, { status: 400 });
+      if (!tier) {
+        return Response.json({ error: 'tier required for subscription mode' }, { status: 400 });
+      }
+
+      // Resolve priceId from tier if not provided directly
+      const resolvedPriceId = priceId || (tier === 'pro'
+        ? env['STRIPE_PRICE_PRO']
+        : env['STRIPE_PRICE_ENTERPRISE']);
+
+      if (!resolvedPriceId) {
+        return Response.json({ error: `No Stripe Price ID configured for ${tier} tier` }, { status: 500 });
       }
 
       const session = await stripe.checkout.sessions.create({
         mode: 'subscription',
-        line_items: [{ price: priceId, quantity: 1 }],
+        line_items: [{ price: resolvedPriceId, quantity: 1 }],
         client_reference_id: userId,
         customer_email: userEmail || undefined,
         metadata: { type: 'subscription', tier },
