@@ -13,3 +13,6 @@ SUPABASE_ANON_KEY = "sb_publishable_EfsGEOhtmdU-Tdph9moXsg_eLsrbO18"
 #   wrangler secret put SK_API_KEY_DEV       # DeepSeek API key (fallback AI)
 #   wrangler secret put BRAVE_API_KEY        # Brave Search API key (free tier: 2k queries/month)
 #                                             Get it at https://api.search.brave.com
+
+
+
