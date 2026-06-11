@@ -1,11 +1,16 @@
 <script lang="ts">
 	import type { PlanTask } from '$lib/lib/types';
 	import { dayPlanStore } from '$lib/stores/dayPlan.svelte';
+	import { auth } from '$lib/stores/auth.svelte';
+	import { canUseFeature } from '$lib/lib/constants';
 	import Toggle from '$lib/components/ui/Toggle.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Textarea from '$lib/components/ui/Textarea.svelte';
 
 	let { task }: { task: PlanTask } = $props();
+
+	const tier = $derived(auth.profile?.subscription_tier || 'free');
+	const canTrackHomework = $derived(canUseFeature(tier, 'homework_tracking'));
 
 	let editing = $state(false);
 	let editTitle = $state('');
@@ -35,7 +40,15 @@
 <div
 	class="group flex gap-3 rounded-lg p-3 transition-colors hover:bg-[var(--color-surface-secondary)]/50"
 >
-	<Toggle checked={task.completed} onchange={toggleComplete} />
+	{#if canTrackHomework}
+		<Toggle checked={task.completed} onchange={toggleComplete} />
+	{:else}
+		<div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-border)] bg-[var(--color-surface-secondary)]" title="Upgrade to Starter for homework tracking">
+			<svg class="h-3 w-3 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+			</svg>
+		</div>
+	{/if}
 
 	{#if editing}
 		<div class="flex-1 space-y-2">

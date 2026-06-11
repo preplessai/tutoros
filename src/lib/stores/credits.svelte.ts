@@ -1,7 +1,7 @@
 import { supabase } from '$lib/lib/supabase';
 import { auth } from './auth.svelte';
 import { toast } from './toast.svelte';
-import { canUseFeature } from '$lib/lib/constants';
+import { SUBSCRIPTION_TIERS } from '$lib/lib/constants';
 
 let nonExpiring = $state(0);
 let refreshing = $state(0);
@@ -24,10 +24,11 @@ export const creditStore = {
 
 		if (data) {
 			// Auto-refresh credits if subscription-based and reset time passed
-			if (canUseFeature(data.subscription_tier, 'advanced_ai') && data.refreshing_reset_at) {
+			if (data.subscription_tier !== 'free' && data.refreshing_reset_at) {
 				const resetAt = new Date(data.refreshing_reset_at);
 				if (resetAt <= new Date()) {
-					const refreshAmount = data.subscription_tier === 'enterprise' ? 999 : 30;
+					const tierConfig = SUBSCRIPTION_TIERS[data.subscription_tier as keyof typeof SUBSCRIPTION_TIERS];
+					const refreshAmount = tierConfig?.monthlyCredits || 30;
 					await supabase.rpc('refresh_credits', {
 						p_user_id: auth.user.id,
 						p_amount: refreshAmount

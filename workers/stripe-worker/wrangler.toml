@@ -5,11 +5,13 @@ compatibility_date = "2025-06-01"
 [vars]
 SUPABASE_URL = "https://thekcjwcdpbyjvsyziul.supabase.co"
 SUPABASE_ANON_KEY = "sb_publishable_EfsGEOhtmdU-Tdph9moXsg_eLsrbO18"
-APP_URL = "htttps://tutoros.pages.dev/dashboard/settings"
+APP_URL = "https://tutoros.pages.dev"
+STRIPE_PRICE_STARTER = "price_placeholder_starter"
 STRIPE_PRICE_PRO = "price_1TgrzLGESntHaa92TviOs2f2"
 STRIPE_PRICE_ENTERPRISE = "price_1TgrzrGESntHaa924gL9iHiA"
+CREDITS_STARTER = "15"
 CREDITS_PRO = "30"
-CREDITS_ENTERPRISE = "100"
+CREDITS_ENTERPRISE = "75"
 
 # Secrets set via `wrangler secret put`:
 #   STRIPE_SECRET_KEY          — Stripe secret key (sk_test_xxx or sk_live_xxx)

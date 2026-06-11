@@ -5,7 +5,7 @@ const schema = z.object({
   mode: z.enum(['subscription', 'payment']),
   priceId: z.string().optional(),
   creditPack: z.enum(['5', '10', '20']).optional(),
-  tier: z.enum(['pro', 'enterprise']).optional()
+  tier: z.enum(['starter', 'pro', 'enterprise']).optional()
 });
 
 export async function handleCreateCheckoutSession(
@@ -62,9 +62,10 @@ export async function handleCreateCheckoutSession(
       }
 
       // Resolve priceId from tier if not provided directly
-      const resolvedPriceId = priceId || (tier === 'pro'
-        ? env['STRIPE_PRICE_PRO']
-        : env['STRIPE_PRICE_ENTERPRISE']);
+      const priceEnvKey = tier === 'starter' ? 'STRIPE_PRICE_STARTER'
+        : tier === 'pro' ? 'STRIPE_PRICE_PRO'
+        : 'STRIPE_PRICE_ENTERPRISE';
+      const resolvedPriceId = priceId || env[priceEnvKey];
 
       if (!resolvedPriceId) {
         return Response.json({ error: `No Stripe Price ID configured for ${tier} tier` }, { status: 500 });

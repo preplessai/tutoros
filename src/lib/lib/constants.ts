@@ -92,37 +92,41 @@ export const RESOURCE_SITES = [
 export const SUBSCRIPTION_TIERS = {
 	free: {
 		name: 'Free',
-		maxStudents: 3,
-		maxPlans: 5,
-		features: ['basic_ai', 'manual_edit']
+		maxStudents: 1,
+		maxPlans: 1,
+		monthlyCredits: 0,
+		features: ['game_plan', 'parent_email', 'resource_links']
+	},
+	starter: {
+		name: 'Starter',
+		maxStudents: 4,
+		maxPlans: Infinity,
+		monthlyCredits: 15,
+		features: [
+			'game_plan', 'parent_email', 'resource_links',
+			'homework_tracking', 'plan_regeneration'
+		]
 	},
 	pro: {
 		name: 'Pro',
-		maxStudents: Infinity,
+		maxStudents: 8,
 		maxPlans: Infinity,
+		monthlyCredits: 30,
 		features: [
-			'advanced_ai',
-			'day_plans',
-			'resource_search',
-			'plan_adjustment',
-			'manual_edit',
-			'priority'
+			'game_plan', 'parent_email', 'resource_links',
+			'homework_tracking', 'plan_regeneration',
+			'struggle_aware', 'weekly_adaptation', 'progress_reports'
 		]
 	},
 	enterprise: {
 		name: 'Enterprise',
-		maxStudents: Infinity,
+		maxStudents: 20,
 		maxPlans: Infinity,
+		monthlyCredits: 75, // hard cap, displayed as "unlimited"
 		features: [
-			'advanced_ai',
-			'day_plans',
-			'resource_search',
-			'plan_adjustment',
-			'manual_edit',
-			'priority',
-			'team',
-			'api',
-			'custom_ai'
+			'game_plan', 'parent_email', 'resource_links',
+			'homework_tracking', 'plan_regeneration',
+			'struggle_aware', 'weekly_adaptation', 'progress_reports'
 		]
 	}
 };

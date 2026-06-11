@@ -8,7 +8,6 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
-	import { canUseFeature } from '$lib/lib/constants';
 
 	let managingSubscription = $state(false);
 
@@ -35,15 +34,18 @@
 	}
 
 	function getTierBadgeVariant(tier: string | null | undefined): 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info' {
+		if (tier === 'starter') return 'primary';
 		if (tier === 'pro') return 'success';
 		if (tier === 'enterprise') return 'info';
 		return 'default';
 	}
 
 	function getTierLabel(tier: string | null | undefined): string {
+		if (tier === 'free') return 'Free';
+		if (tier === 'starter') return 'Starter';
 		if (tier === 'pro') return 'Pro';
 		if (tier === 'enterprise') return 'Enterprise';
-		return 'Starter';
+		return 'Free';
 	}
 
 	function getStatusBadgeVariant(status: string | null | undefined): 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info' {
@@ -103,7 +105,7 @@
 				</div>
 			</div>
 
-			{#if canUseFeature(auth.profile?.subscription_tier || 'free', 'advanced_ai')}
+			{#if (auth.profile?.subscription_tier || 'free') !== 'free'}
 				<hr class="border-[var(--color-border)]" />
 
 				<div class="space-y-2">

@@ -60,8 +60,8 @@ DECLARE
   v_students_deleted BIGINT;
   v_plans_deleted BIGINT;
 BEGIN
-  -- If target tier is pro or enterprise, no truncation needed
-  IF p_target_tier IN ('pro', 'enterprise') THEN
+  -- If target tier is paid (starter/pro/enterprise), no truncation needed
+  IF p_target_tier IN ('starter', 'pro', 'enterprise') THEN
     RETURN json_build_object('students_deleted', 0, 'plans_deleted', 0);
   END IF;
 
@@ -73,15 +73,15 @@ BEGIN
   JOIN public.students s ON s.id = wp.student_id
   WHERE s.tutor_id = p_user_id;
 
-  -- Truncate students: keep newest 3 (cascades to plans, weeks, days, tasks, resources)
+  -- Truncate students: keep newest 1 (free tier limit)
   DELETE FROM public.students
   WHERE id IN (
     SELECT id FROM public.students
     WHERE tutor_id = p_user_id
     ORDER BY created_at ASC
-    LIMIT greatest(0, v_student_count - 3)
+    LIMIT greatest(0, v_student_count - 1)
   );
-  v_students_deleted := greatest(0, v_student_count - 3);
+  v_students_deleted := greatest(0, v_student_count - 1);
 
   -- Re-count plans after student cascade deletion, then trim excess
   SELECT COUNT(*) INTO v_plan_count
@@ -95,9 +95,9 @@ BEGIN
     JOIN public.students s ON s.id = wp.student_id
     WHERE s.tutor_id = p_user_id
     ORDER BY wp.created_at ASC
-    LIMIT greatest(0, v_plan_count - 5)
+    LIMIT greatest(0, v_plan_count - 1)
   );
-  v_plans_deleted := greatest(0, v_plan_count - 5);
+  v_plans_deleted := greatest(0, v_plan_count - 1);
 
   RETURN json_build_object(
     'students_deleted', v_students_deleted,
@@ -136,13 +136,23 @@ BEGIN
   WHERE s.tutor_id = p_user_id AND wp.status = 'active';
 
   -- Determine limits based on tier
-  IF v_tier = 'free' THEN
-    v_max_students := 3;
-    v_max_plans := 5;
-  ELSE
-    v_max_students := NULL;
-    v_max_plans := NULL;
-  END IF;
+  CASE v_tier
+    WHEN 'free' THEN
+      v_max_students := 1;
+      v_max_plans := 1;
+    WHEN 'starter' THEN
+      v_max_students := 4;
+      v_max_plans := NULL;
+    WHEN 'pro' THEN
+      v_max_students := 8;
+      v_max_plans := NULL;
+    WHEN 'enterprise' THEN
+      v_max_students := 20;
+      v_max_plans := NULL;
+    ELSE
+      v_max_students := 1;
+      v_max_plans := 1;
+  END CASE;
 
   RETURN QUERY
   SELECT
@@ -174,6 +184,22 @@ BEGIN
   END LOOP;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ── Update subscription_tier CHECK constraint to include 'starter' ──
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'profiles_subscription_tier_check'
+    AND conrelid = 'public.profiles'::regclass
+  ) THEN
+    ALTER TABLE public.profiles DROP CONSTRAINT profiles_subscription_tier_check;
+  END IF;
+END;
+$$;
+ALTER TABLE public.profiles
+  ADD CONSTRAINT profiles_subscription_tier_check
+  CHECK (subscription_tier IN ('free', 'starter', 'pro', 'enterprise'));
 
 -- Refresh PostgREST schema cache
 NOTIFY pgrst, 'reload schema';

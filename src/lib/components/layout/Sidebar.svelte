@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { auth } from '$lib/stores/auth.svelte';
+	import { canUseFeature } from '$lib/lib/constants';
 	import Avatar from '$lib/components/ui/Avatar.svelte';
 
 	const navItems = [
@@ -24,6 +25,13 @@
 			label: 'Resources',
 			icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9'
 		},
+		...(canUseFeature(auth.profile?.subscription_tier || 'free', 'progress_reports')
+			? [{
+				href: '/dashboard/progress',
+				label: 'Progress',
+				icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
+			}]
+			: []),
 		{
 			href: '/dashboard/settings',
 			label: 'Settings',

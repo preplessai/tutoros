@@ -5,7 +5,7 @@ export interface Profile {
 	email: string;
 	display_name: string | null;
 	avatar_url: string | null;
-	subscription_tier: 'free' | 'pro' | 'enterprise';
+	subscription_tier: 'free' | 'starter' | 'pro' | 'enterprise';
 	stripe_customer_id: string | null;
 	stripe_subscription_id: string | null;
 	subscription_status: 'active' | 'past_due' | 'canceled' | 'incomplete' | 'trialing' | 'unpaid' | null;

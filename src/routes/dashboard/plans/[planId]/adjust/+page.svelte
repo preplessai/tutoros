@@ -1,13 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { planStore } from '$lib/stores/plan.svelte';
+	import { auth } from '$lib/stores/auth.svelte';
+	import { canUseFeature } from '$lib/lib/constants';
 	import AdjustPlanForm from '$lib/components/plans/AdjustPlanForm.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 
 	onMount(() => {
+		if (!canUseFeature(auth.profile?.subscription_tier || 'free', 'plan_regeneration')) {
+			goto('/pricing');
+			return;
+		}
 		planStore.fetchOne($page.params.planId);
 	});
 </script>

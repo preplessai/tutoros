@@ -3,7 +3,8 @@
 	import { planStore } from '$lib/stores/plan.svelte';
 	import { studentStore } from '$lib/stores/student.svelte';
 	import { dayPlanStore } from '$lib/stores/dayPlan.svelte';
-	import { GRADES } from '$lib/lib/constants';
+	import { auth } from '$lib/stores/auth.svelte';
+	import { GRADES, canUseFeature } from '$lib/lib/constants';
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -119,14 +120,26 @@
 		placeholder="e.g., B+ in Algebra, A- in Chemistry"
 	/>
 
-	<Textarea
-		label="Areas of Struggle"
-		name="struggleAreas"
-		value={struggleAreas}
-		oninput={(e) => (struggleAreas = (e.target as HTMLTextAreaElement).value)}
-		placeholder="Specific topics or skills the student finds difficult"
-		rows={2}
-	/>
+	{#if canUseFeature(auth.profile?.subscription_tier || 'free', 'struggle_aware')}
+		<Textarea
+			label="Areas of Struggle"
+			name="struggleAreas"
+			value={struggleAreas}
+			oninput={(e) => (struggleAreas = (e.target as HTMLTextAreaElement).value)}
+			placeholder="Specific topics or skills the student finds difficult"
+			rows={2}
+		/>
+	{:else}
+		<div class="rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-surface-secondary)] p-3 text-center">
+			<p class="text-sm text-[var(--color-text-secondary)]">
+				<svg class="inline h-4 w-4 align-text-bottom" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+				</svg>
+				Struggle-aware planning is a <strong>Pro</strong> feature.
+				<a href="/pricing" class="ml-1 font-medium text-[var(--color-primary-500)] underline">Upgrade →</a>
+			</p>
+		</div>
+	{/if}
 
 	<Button type="submit" variant="gradient" size="lg" loading={dayPlanStore.generating} fullWidth>
 		{dayPlanStore.generating ? 'Generating...' : 'Generate Day Plan'}

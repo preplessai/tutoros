@@ -2,6 +2,7 @@
 	import type { PlanWeek, PlanTask } from '$lib/lib/types';
 	import { planStore } from '$lib/stores/plan.svelte';
 	import { auth } from '$lib/stores/auth.svelte';
+	import { canUseFeature } from '$lib/lib/constants';
 	import { supabase } from '$lib/lib/supabase';
 	import { exportWeek, exportWeekJson, openExport, downloadJson } from '$lib/lib/export';
 	import type { ExportWeekJson } from '$lib/lib/export';
@@ -13,7 +14,6 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { goto } from '$app/navigation';
 	import { stripeApi } from '$lib/lib/stripe';
-	import { canUseFeature } from '$lib/lib/constants';
 
 	let activeWeek = $state<PlanWeek | null>(null);
 	let popupOpen = $state(false);
@@ -228,11 +228,20 @@
 				</div>
 			</div>
 			<div class="flex flex-wrap gap-2">
-				<Button
-					variant="secondary"
-					size="sm"
-					href={`/dashboard/plans/${planStore.current?.id}/adjust`}>Adjust Plan</Button
-				>
+				{#if canUseFeature(auth.profile?.subscription_tier || 'free', 'plan_regeneration')}
+					<Button
+						variant="secondary"
+						size="sm"
+						href={`/dashboard/plans/${planStore.current?.id}/adjust`}>Adjust Plan</Button
+					>
+				{:else}
+					<Button variant="secondary" size="sm" href="/pricing">
+						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+						</svg>
+						Upgrade to Adjust
+					</Button>
+				{/if}
 
 				<!-- Subscription-aware buttons -->
 				{#if auth.profile?.subscription_tier === 'free'}
@@ -243,7 +252,7 @@
 					<Button variant="secondary" size="sm" onclick={handleManageSubscription} loading={managingSubscription}>Manage Plan</Button>
 				{/if}
 
-				{#if canUseFeature(auth.profile?.subscription_tier || 'free', 'advanced_ai')}
+				{#if (auth.profile?.subscription_tier || 'free') !== 'free'}
 					<!-- Export Plan dropdown -->
 					<div class="relative" onfocusout={handleExportBlur}>
 						<Button variant="secondary" size="sm" onclick={() => (showExportMenu = !showExportMenu)}>

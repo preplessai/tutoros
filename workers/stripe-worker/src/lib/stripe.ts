@@ -11,9 +11,9 @@ export function createStripeClient(env: Record<string, string>): Stripe {
 
 // Credit pack definitions — maps dollar amount to credits by tier
 export const CREDIT_PACKS: Record<string, { amount: number; credits: Record<string, number> }> = {
-  '5':  { amount: 500,  credits: { free: 4,  pro: 7,  enterprise: 8  } },
-  '10': { amount: 1000, credits: { free: 9,  pro: 15, enterprise: 18 } },
-  '20': { amount: 2000, credits: { free: 20, pro: 35, enterprise: 40 } }
+  '5':  { amount: 500,  credits: { free: 4, starter: 6, pro: 7,  enterprise: 8  } },
+  '10': { amount: 1000, credits: { free: 9, starter: 13, pro: 15, enterprise: 18 } },
+  '20': { amount: 2000, credits: { free: 20, starter: 30, pro: 35, enterprise: 40 } }
 };
 
 // Supabase REST helpers — calls PostgREST directly with service_role key

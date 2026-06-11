@@ -78,7 +78,7 @@ export async function handleWebhook(
           });
 
           // Grant monthly credits
-          const creditsAmount = parseInt(env[`CREDITS_${(metadata.tier || 'pro').toUpperCase()}`] || '30');
+          const creditsAmount = parseInt(env[`CREDITS_${(metadata.tier || 'pro').toUpperCase()}`] || (metadata.tier === 'enterprise' ? '75' : metadata.tier === 'pro' ? '30' : '15'));
           await supabaseRpc(supabaseUrl, serviceKey, 'refresh_credits', {
             p_user_id: userId,
             p_amount: creditsAmount
@@ -238,7 +238,7 @@ export async function handleWebhook(
 
         // Refresh credits for the new billing period
         if (tier !== 'free') {
-          const creditsAmount = parseInt(env[`CREDITS_${tier.toUpperCase()}`] || (tier === 'enterprise' ? '100' : '30'));
+          const creditsAmount = parseInt(env[`CREDITS_${tier.toUpperCase()}`] || (tier === 'enterprise' ? '75' : tier === 'pro' ? '30' : '15'));
           await supabaseRpc(supabaseUrl, serviceKey, 'refresh_credits', {
             p_user_id: userId,
             p_amount: creditsAmount

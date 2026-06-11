@@ -14,7 +14,6 @@
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import ErrorDisplay from '$lib/components/ui/ErrorDisplay.svelte';
-	import { canUseFeature } from '$lib/lib/constants';
 
 	let { dayId }: { dayId: string } = $props();
 
@@ -161,7 +160,7 @@
 				Find Resources
 			</Button>
 
-			{#if canUseFeature(auth.profile?.subscription_tier || 'free', 'day_plans')}
+			{#if (auth.profile?.subscription_tier || 'free') !== 'free'}
 				<!-- Export dropdown -->
 				<div class="relative" onfocusout={handleExportBlur}>
 					<Button variant="secondary" size="sm" onclick={() => (showExportMenu = !showExportMenu)}>
