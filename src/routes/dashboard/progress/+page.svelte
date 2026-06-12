@@ -13,6 +13,7 @@
 	const tier = $derived(auth.profile?.subscription_tier || 'free');
 	const canViewProgress = $derived(canUseFeature(tier, 'progress_reports'));
 	const isEnterprise = $derived(tier === 'enterprise');
+	const authReady = $derived(!auth.loading);
 
 	interface Student {
 		id: string;
@@ -208,7 +209,9 @@
 		</p>
 	</div>
 
-	{#if !canViewProgress}
+	{#if !authReady}
+		<div class="flex justify-center py-12"><Spinner size="lg" /></div>
+	{:else if !canViewProgress}
 		<Card>
 			<div class="py-8 text-center">
 				<svg class="mx-auto h-12 w-12 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
