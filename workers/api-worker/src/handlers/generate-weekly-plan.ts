@@ -1,7 +1,7 @@
 import { generateWeeklyPlanSchema } from '../lib/validate';
 import { callAI } from '../lib/ai';
 
-// @ts-ignore - wrangler raw text import
+// @ts-expect-error - wrangler raw text import
 import systemPrompt from '../prompts/weekly-plan.txt';
 
 export async function handleGenerateWeeklyPlan(
@@ -62,7 +62,8 @@ export async function handleGenerateWeeklyPlan(
 		}
 
 		return Response.json({ plan: plan.plan || plan, provider: result.provider });
-	} catch (err: any) {
-		return Response.json({ error: err.message || 'Internal error' }, { status: 500 });
+	} catch (err: unknown) {
+		const message = err instanceof Error ? err.message : 'Internal error';
+		return Response.json({ error: message }, { status: 500 });
 	}
 }

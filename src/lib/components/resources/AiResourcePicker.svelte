@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PlanTask, Student, ResourceType } from '$lib/lib/types';
+	import { onMount } from 'svelte';
 	import { api } from '$lib/lib/api';
 	import { resourceStore } from '$lib/stores/resource.svelte';
 	import { creditStore } from '$lib/stores/credits.svelte';
@@ -10,13 +11,14 @@
 	import Badge from '$lib/components/ui/Badge.svelte';
 
 	let {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		dayId = '',
 		tasks = [] as PlanTask[],
 		student,
 		open = false,
 		onclose
 	}: {
-		dayId: string;
+		dayId: string; // eslint-disable-line svelte/no-unused-props
 		tasks: PlanTask[];
 		student: Student | null;
 		open: boolean;
@@ -45,14 +47,9 @@
 		}
 	});
 
-	$effect(() => {
-		if (open) {
-			fetchRecommendations();
-		}
-	});
-
 	async function fetchRecommendations() {
 		if (!student) return;
+		if (loading) return;
 
 		// Credit check
 		if (!creditStore.hasEnough(0.5)) {
@@ -85,7 +82,10 @@
 			resources = result.resources as RecommendedResource[];
 
 			// Deduct credits on successful generation
-			await creditStore.useCredits(0.5, 'ai_pick_resources');
+			const credited = await creditStore.useCredits(0.5, 'ai_pick_resources');
+			if (!credited) {
+				toast.error('Failed to deduct credits, but resources were found.');
+			}
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : 'Failed to get AI recommendations';
 			error = message;
@@ -148,8 +148,8 @@
 </script>
 
 <Modal
-	open={open}
-	onclose={onclose}
+	{open}
+	{onclose}
 	title="AI Recommended Resources"
 	description="AI-curated educational resources for each task"
 	size="xl"
@@ -163,8 +163,16 @@
 		</div>
 	{:else if error}
 		<div class="flex flex-col items-center justify-center py-12">
-			<svg class="h-12 w-12 text-[var(--color-error)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-				><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+			<svg
+				class="h-12 w-12 text-[var(--color-error)]"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				><path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
 				/></svg
 			>
 			<p class="mt-4 text-sm text-[var(--color-text-secondary)]">{error}</p>
@@ -174,8 +182,16 @@
 		</div>
 	{:else if resources.length === 0}
 		<div class="flex flex-col items-center justify-center py-12">
-			<svg class="h-12 w-12 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-				><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+			<svg
+				class="h-12 w-12 text-[var(--color-text-tertiary)]"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				><path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
 				/></svg
 			>
 			<p class="mt-4 text-sm text-[var(--color-text-secondary)]">No resources found.</p>
@@ -186,7 +202,11 @@
 				<div class="flex justify-end">
 					<Button variant="primary" size="sm" onclick={saveAll} loading={savingAll}>
 						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-							><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+							><path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
 							/></svg
 						>
 						Save All
@@ -197,18 +217,22 @@
 			{#each tasks as task (task.id)}
 				{@const taskResources = resources.filter((r) => r.taskId === task.id)}
 				{#if taskResources.length > 0}
-					<div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-4">
+					<div
+						class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-4"
+					>
 						<h4 class="mb-3 font-medium text-[var(--color-text-primary)]">{task.title}</h4>
 						<div class="space-y-3">
 							{#each taskResources as r (r.url)}
-								<div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-secondary)] p-3">
+								<div
+									class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-secondary)] p-3"
+								>
 									<div class="flex items-start justify-between gap-3">
 										<div class="min-w-0 flex-1">
 											<a
 												href={r.url}
 												target="_blank"
 												rel="noopener noreferrer"
-												class="break-words text-sm font-medium text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] hover:underline"
+												class="text-sm font-medium break-words text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] hover:underline"
 											>
 												{r.title}
 											</a>
@@ -219,7 +243,7 @@
 											<p class="mt-1.5 text-xs text-[var(--color-text-secondary)]">
 												{r.description}
 											</p>
-											<p class="mt-1 text-xs italic text-[var(--color-text-tertiary)]">
+											<p class="mt-1 text-xs text-[var(--color-text-tertiary)] italic">
 												{r.relevance}
 											</p>
 										</div>

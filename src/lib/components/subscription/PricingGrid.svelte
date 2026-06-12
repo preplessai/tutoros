@@ -212,7 +212,8 @@
 
 					<div class="mt-5">
 						{#if plan.tier === 'free' || !auth.isAuthenticated}
-							<Button variant={plan.variant} size="lg" fullWidth href={plan.href}>{plan.cta}</Button>
+							<Button variant={plan.variant} size="lg" fullWidth href={plan.href}>{plan.cta}</Button
+							>
 						{:else}
 							<Button
 								variant={plan.variant}
@@ -220,7 +221,8 @@
 								fullWidth
 								loading={loadingBtn === plan.tier}
 								onclick={() => handleSubscribe(plan.tier as 'starter' | 'pro' | 'enterprise')}
-							>{plan.cta}</Button>
+								>{plan.cta}</Button
+							>
 						{/if}
 					</div>
 				</div>
@@ -319,7 +321,7 @@
 				<tbody>
 					{#each payAsYouGoPacks as pack}
 						<tr
-							class="cursor-pointer border-b border-[var(--color-border)] transition-colors hover:bg-[var(--color-surface-secondary)] last:border-0"
+							class="cursor-pointer border-b border-[var(--color-border)] transition-colors last:border-0 hover:bg-[var(--color-surface-secondary)]"
 							onclick={() => handleBuyCredits(pack.id)}
 							role="button"
 							tabindex="0"
@@ -337,7 +339,9 @@
 								<div class="text-xs text-[var(--color-text-tertiary)]">{pack.rateFree}</div>
 							</td>
 							<td class="px-3 py-4 text-center">
-								<div class="font-medium text-[var(--color-text-primary)]">{pack.creditsStarter}</div>
+								<div class="font-medium text-[var(--color-text-primary)]">
+									{pack.creditsStarter}
+								</div>
 								<div class="text-xs text-[var(--color-text-tertiary)]">{pack.rateStarter}</div>
 							</td>
 							<td class="bg-[var(--color-primary-50)]/50 px-3 py-4 text-center">
@@ -424,7 +428,8 @@
 			</div>
 			<p class="text-sm font-medium text-[var(--color-text-primary)]">Refresh</p>
 			<p class="mt-1 text-xs text-[var(--color-text-secondary)]">
-				Starter, Pro & Enterprise credits <strong>refresh monthly</strong>. Unused credits don't roll over
+				Starter, Pro & Enterprise credits <strong>refresh monthly</strong>. Unused credits don't
+				roll over
 			</p>
 		</div>
 		<div class="text-center">

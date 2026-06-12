@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlanWeek, PlanTask } from '$lib/lib/types';
+	import type { PlanWeek } from '$lib/lib/types';
 	import { planStore } from '$lib/stores/plan.svelte';
 	import { dayPlanStore } from '$lib/stores/dayPlan.svelte';
 	import { auth } from '$lib/stores/auth.svelte';
@@ -85,7 +85,9 @@
 	let exportDayMenuFor = $state<string | null>(null);
 
 	function handleExportBlur() {
-		setTimeout(() => { exportDayMenuFor = null; }, 150);
+		setTimeout(() => {
+			exportDayMenuFor = null;
+		}, 150);
 	}
 
 	async function exportDayPage(dayId: string, e: Event) {
@@ -94,7 +96,13 @@
 		const day = dayPlanStore.currentDay;
 		const tasks = dayPlanStore.tasks;
 		if (!day) return;
-		const { data: resources } = await supabase.from('resources').select('*').in('task_id', tasks.map(t => t.id));
+		const { data: resources } = await supabase
+			.from('resources')
+			.select('*')
+			.in(
+				'task_id',
+				tasks.map((t) => t.id)
+			);
 		openExport(exportDayPlan(day, tasks, (resources || []) as any));
 		exportDayMenuFor = null;
 	}
@@ -105,7 +113,13 @@
 		const day = dayPlanStore.currentDay;
 		const tasks = dayPlanStore.tasks;
 		if (!day) return;
-		const { data: resources } = await supabase.from('resources').select('*').in('task_id', tasks.map(t => t.id));
+		const { data: resources } = await supabase
+			.from('resources')
+			.select('*')
+			.in(
+				'task_id',
+				tasks.map((t) => t.id)
+			);
 		const json = JSON.stringify(exportDayPlanJson(day, tasks, (resources || []) as any), null, 2);
 		downloadJson(json, `day-plan-${day.date}.json`);
 		exportDayMenuFor = null;
@@ -131,7 +145,9 @@
 			const parsed = parseImportJson(text);
 
 			if (parsed.type !== 'day_plan') {
-				throw new Error('This file is a week plan export. Import it using the "Import Week" button on the plan page instead.');
+				throw new Error(
+					'This file is a week plan export. Import it using the "Import Week" button on the plan page instead.'
+				);
 			}
 
 			const data = parsed.data as ExportDayPlanJson;
@@ -226,23 +242,40 @@
 										<!-- Per-day export dropdown -->
 										<div class="relative" onfocusout={handleExportBlur}>
 											<button
-												onclick={(e: Event) => { e.stopPropagation(); exportDayMenuFor = exportDayMenuFor === day.id ? null : day.id; }}
+												onclick={(e: Event) => {
+													e.stopPropagation();
+													exportDayMenuFor = exportDayMenuFor === day.id ? null : day.id;
+												}}
 												aria-label="Export day plan"
 												class="shrink-0 cursor-pointer rounded-lg p-2 text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-primary-500)]"
 											>
 												<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-													><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+													><path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="2"
+														d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
 													/></svg
 												>
 											</button>
 											{#if exportDayMenuFor === day.id}
-												<div class="absolute right-0 z-50 mt-1 min-w-[160px] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] py-1 shadow-lg">
+												<div
+													class="absolute right-0 z-50 mt-1 min-w-[160px] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] py-1 shadow-lg"
+												>
 													<button
 														onclick={(e: Event) => exportDayPage(day.id, e)}
 														class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
 													>
-														<svg class="h-4 w-4 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-															><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+														<svg
+															class="h-4 w-4 text-[var(--color-text-tertiary)]"
+															fill="none"
+															viewBox="0 0 24 24"
+															stroke="currentColor"
+															><path
+																stroke-linecap="round"
+																stroke-linejoin="round"
+																stroke-width="2"
+																d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
 															/></svg
 														>
 														Printable Page
@@ -251,8 +284,16 @@
 														onclick={(e: Event) => exportDayJson(day.id, e)}
 														class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
 													>
-														<svg class="h-4 w-4 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-															><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+														<svg
+															class="h-4 w-4 text-[var(--color-text-tertiary)]"
+															fill="none"
+															viewBox="0 0 24 24"
+															stroke="currentColor"
+															><path
+																stroke-linecap="round"
+																stroke-linejoin="round"
+																stroke-width="2"
+																d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
 															/></svg
 														>
 														JSON File
@@ -307,18 +348,38 @@
 					</Button>
 
 					{#if (auth.profile?.subscription_tier || 'free') !== 'free'}
-						<Button variant="ghost" size="sm" onclick={triggerImportDay} loading={importingDay} fullWidth>
+						<Button
+							variant="ghost"
+							size="sm"
+							onclick={triggerImportDay}
+							loading={importingDay}
+							fullWidth
+						>
 							<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-								><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+								><path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
 								/></svg
 							>
 							Import Day Plan
 						</Button>
-						<input type="file" accept=".json" bind:this={importDayInput} onchange={handleImportDay} class="hidden" />
+						<input
+							type="file"
+							accept=".json"
+							bind:this={importDayInput}
+							onchange={handleImportDay}
+							class="hidden"
+						/>
 					{:else}
 						<Button variant="ghost" size="sm" href="/pricing" fullWidth>
 							<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-								><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+								><path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
 								/></svg
 							>
 							Upgrade to Import

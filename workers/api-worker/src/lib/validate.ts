@@ -1,20 +1,5 @@
 import { z } from 'zod';
 
-const importantDateSchema = z.object({
-	date: z.string(),
-	label: z.string(),
-	type: z.enum(['exam', 'holiday', 'other'])
-});
-
-const taskSectionSchema = z.enum([
-	'review_struggles',
-	'homework_help',
-	'project_help',
-	'learn_new',
-	'practice',
-	'wrap_up'
-]);
-
 const dayOfWeekSchema = z.enum([
 	'monday',
 	'tuesday',
@@ -33,8 +18,14 @@ export const generateWeeklyPlanSchema = z.object({
 	timePerSession: z.number().int().positive().max(480),
 	sessionsPerWeek: z.number().int().positive().max(14),
 	duration: z.string(),
-	startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-	endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+	startDate: z
+		.string()
+		.regex(/^\d{4}-\d{2}-\d{2}$/)
+		.optional(),
+	endDate: z
+		.string()
+		.regex(/^\d{4}-\d{2}-\d{2}$/)
+		.optional(),
 	goals: z.string(),
 	learningStyle: z.string().optional(),
 	diagnosticData: z.string().optional(),

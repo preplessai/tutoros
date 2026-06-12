@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { supabase } from '$lib/lib/supabase';
-	import { auth } from '$lib/stores/auth.svelte';
 	import { toast } from '$lib/stores/toast.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';

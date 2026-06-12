@@ -1,15 +1,19 @@
 <script lang="ts">
 	import { supabase } from '$lib/lib/supabase';
+	import { api } from '$lib/lib/api';
+	import { creditStore } from '$lib/stores/credits.svelte';
 	import type { PlanWeekHomework } from '$lib/lib/types';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Textarea from '$lib/components/ui/Textarea.svelte';
+	import { toast } from '$lib/stores/toast.svelte';
 
 	let { weekId }: { weekId: string } = $props();
 
 	let homework = $state<PlanWeekHomework[]>([]);
 	let loading = $state(true);
 	let adding = $state(false);
+	let aiSuggesting = $state(false);
 
 	let newTitle = $state('');
 	let newDescription = $state('');
@@ -32,18 +36,12 @@
 
 	async function toggleCompleted(item: PlanWeekHomework) {
 		const updated = !item.completed;
-		await supabase
-			.from('plan_week_homework')
-			.update({ completed: updated })
-			.eq('id', item.id);
+		await supabase.from('plan_week_homework').update({ completed: updated }).eq('id', item.id);
 		item.completed = updated;
 	}
 
 	async function deleteItem(id: string) {
-		await supabase
-			.from('plan_week_homework')
-			.delete()
-			.eq('id', id);
+		await supabase.from('plan_week_homework').delete().eq('id', id);
 		homework = homework.filter((h) => h.id !== id);
 	}
 
@@ -77,18 +75,125 @@
 		newUrl = '';
 		adding = false;
 	}
+
+	async function aiSuggestHomework() {
+		if (!creditStore.hasEnough(0.5)) {
+			toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
+			return;
+		}
+
+		aiSuggesting = true;
+		try {
+			// Fetch week context
+			const { data: week } = await supabase
+				.from('plan_weeks')
+				.select('week_number, theme, focus_areas, notes')
+				.eq('id', weekId)
+				.single();
+
+			const weekContext = week
+				? `Week ${week.week_number}${week.theme ? ` - Theme: ${week.theme}` : ''}${week.focus_areas?.length > 0 ? `, Focus: ${week.focus_areas.join(', ')}` : ''}${week.notes ? `, Notes: ${week.notes}` : ''}`
+				: '';
+
+			const credited = await creditStore.useCredits(0.5, 'ai_suggest_homework');
+			if (!credited) {
+				toast.error('Failed to deduct credits.');
+				aiSuggesting = false;
+				return;
+			}
+
+			toast.info('AI is thinking...');
+
+			const response = await api.preplessChat({
+				messages: [
+					{
+						role: 'user',
+						content: `Suggest 3 homework assignments for ${weekContext}. Return ONLY a JSON array of objects with fields: title, description (optional), url (optional). Do not wrap in markdown.`
+					}
+				],
+				studentContext: { id: '', name: '', grade: '', subjects: [] },
+				planContext: { id: '', weeks: [] }
+			});
+
+			// Strip markdown code fences if present
+			let raw = response.message;
+			const fenceMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+			if (fenceMatch) {
+				raw = fenceMatch[1];
+			}
+
+			let suggestions: Array<{ title: string; description?: string; url?: string }> = [];
+			try {
+				suggestions = JSON.parse(raw);
+			} catch {
+				// Try to extract JSON array from the text
+				const arrMatch = raw.match(/\[\s*\{.*\}\s*\]/s);
+				if (arrMatch) {
+					suggestions = JSON.parse(arrMatch[0]);
+				} else {
+					toast.error('Could not parse AI suggestions. Please try again.');
+					aiSuggesting = false;
+					return;
+				}
+			}
+
+			if (!Array.isArray(suggestions) || suggestions.length === 0) {
+				toast.error('No suggestions returned. Please try again.');
+				aiSuggesting = false;
+				return;
+			}
+
+			// Add each suggestion as homework
+			for (const s of suggestions) {
+				const sortOrder =
+					homework.length > 0 ? Math.max(...homework.map((h) => h.sort_order)) + 1 : 1;
+				const { data } = await supabase
+					.from('plan_week_homework')
+					.insert({
+						week_id: weekId,
+						title: s.title?.trim() || 'Untitled',
+						description: s.description?.trim() || null,
+						url: s.url?.trim() || null,
+						completed: false,
+						sort_order: sortOrder
+					})
+					.select()
+					.single();
+				if (data) {
+					homework = [...homework, data as PlanWeekHomework];
+				}
+			}
+
+			toast.success(`Added ${suggestions.length} AI-suggested homework items!`);
+		} catch (err: unknown) {
+			const msg = err instanceof Error ? err.message : 'Unknown error';
+			toast.error('AI suggestion failed: ' + msg);
+		} finally {
+			aiSuggesting = false;
+		}
+	}
 </script>
 
 <div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-4">
-	<h4 class="mb-3 text-sm font-semibold tracking-wider text-[var(--color-text-secondary)] uppercase">
+	<h4
+		class="mb-3 text-sm font-semibold tracking-wider text-[var(--color-text-secondary)] uppercase"
+	>
 		Homework
 	</h4>
 
 	{#if loading}
 		<div class="flex items-center justify-center py-4">
-			<svg class="h-5 w-5 animate-spin text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24">
+			<svg
+				class="h-5 w-5 animate-spin text-[var(--color-text-tertiary)]"
+				fill="none"
+				viewBox="0 0 24 24"
+			>
 				<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-				<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+				<path
+					class="opacity-75"
+					fill="currentColor"
+					d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+				/>
 			</svg>
 		</div>
 	{:else if homework.length === 0 && !adding}
@@ -96,15 +201,23 @@
 	{:else}
 		<div class="mb-3 space-y-1.5">
 			{#each homework as item (item.id)}
-				<div class="flex items-start gap-2 rounded-lg border border-[var(--color-border)] px-3 py-2">
+				<div
+					class="flex items-start gap-2 rounded-lg border border-[var(--color-border)] px-3 py-2"
+				>
 					<button
 						onclick={() => toggleCompleted(item)}
 						class="mt-0.5 shrink-0 cursor-pointer"
 						aria-label="Toggle completion"
 					>
 						{#if item.completed}
-							<svg class="h-4 w-4 text-[var(--color-success)]" fill="currentColor" viewBox="0 0 24 24">
-								<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+							<svg
+								class="h-4 w-4 text-[var(--color-success)]"
+								fill="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+								/>
 							</svg>
 						{:else}
 							<div class="h-4 w-4 rounded border border-[var(--color-border-strong)]"></div>
@@ -177,11 +290,49 @@
 			</div>
 		</div>
 	{:else}
-		<Button variant="secondary" size="sm" onclick={() => (adding = true)} fullWidth>
-			<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-				><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg
+		<div class="flex flex-col gap-2">
+			<Button variant="secondary" size="sm" onclick={() => (adding = true)} fullWidth>
+				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+					><path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 4v16m8-8H4"
+					/></svg
+				>
+				Add Homework
+			</Button>
+			<Button
+				variant="outline"
+				size="sm"
+				onclick={aiSuggestHomework}
+				loading={aiSuggesting}
+				fullWidth
 			>
-			Add Homework
-		</Button>
+				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+					><path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+					/></svg
+				>
+				AI Suggest
+			</Button>
+			<a
+				href="/dashboard/resources/search"
+				class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--color-border)] px-4 py-2 text-xs font-medium text-[var(--color-primary-600)] no-underline transition-colors hover:bg-[var(--color-surface-secondary)]"
+			>
+				<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+					><path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+					/></svg
+				>
+				Find Resources
+			</a>
+		</div>
 	{/if}
 </div>

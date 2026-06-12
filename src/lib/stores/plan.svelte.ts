@@ -1,10 +1,9 @@
-import type { WeeklyPlan, PlanWeek, PlanDay, PlanTask } from '$lib/lib/types';
+import type { WeeklyPlan, PlanWeek, PlanTask } from '$lib/lib/types';
 import type { AiGeneratedPlan } from '$lib/lib/types';
 import { supabase } from '$lib/lib/supabase';
 import { api } from '$lib/lib/api';
 import { creditStore } from './credits.svelte';
 import { toast } from './toast.svelte';
-import { toISODate } from '$lib/lib/date';
 import { auth } from './auth.svelte';
 import { SUBSCRIPTION_TIERS } from '$lib/lib/constants';
 
@@ -22,11 +21,21 @@ async function getTutorId(): Promise<string> {
 }
 
 export const planStore = {
-	get plans() { return plans; },
-	get current() { return current; },
-	get weeks() { return weeks; },
-	get loading() { return loading; },
-	get generating() { return generating; },
+	get plans() {
+		return plans;
+	},
+	get current() {
+		return current;
+	},
+	get weeks() {
+		return weeks;
+	},
+	get loading() {
+		return loading;
+	},
+	get generating() {
+		return generating;
+	},
 
 	async fetchAll() {
 		loading = true;
@@ -72,7 +81,9 @@ export const planStore = {
 					.select('*', { count: 'exact', head: true })
 					.eq('tutor_id', await getTutorId());
 				if (!countErr && count !== null && count >= maxPlans) {
-					toast.error(`You've reached the maximum of ${maxPlans} plans for the ${SUBSCRIPTION_TIERS[tier].name} tier. Upgrade to create more.`);
+					toast.error(
+						`You've reached the maximum of ${maxPlans} plans for the ${SUBSCRIPTION_TIERS[tier].name} tier. Upgrade to create more.`
+					);
 					generating = false;
 					return null;
 				}
@@ -303,32 +314,30 @@ export const planStore = {
 	},
 
 	/** Import a week from parsed JSON into the current plan */
-	async importWeekFromJson(
-		data: {
-			week: {
-				week_number: number;
-				week_start: string;
-				week_end: string;
-				theme: string | null;
-				focus_areas: string[];
-				notes: string | null;
-			};
-			days: {
-				date: string;
-				day_of_week: string;
-				energy_level: string | null;
-				recent_progress: string | null;
-				struggle_areas: string[] | null;
-				grades_context: string | null;
-				tasks: {
-					section: string;
-					title: string;
-					description: string | null;
-					duration_minutes: number;
-				}[];
+	async importWeekFromJson(data: {
+		week: {
+			week_number: number;
+			week_start: string;
+			week_end: string;
+			theme: string | null;
+			focus_areas: string[];
+			notes: string | null;
+		};
+		days: {
+			date: string;
+			day_of_week: string;
+			energy_level: string | null;
+			recent_progress: string | null;
+			struggle_areas: string[] | null;
+			grades_context: string | null;
+			tasks: {
+				section: string;
+				title: string;
+				description: string | null;
+				duration_minutes: number;
 			}[];
-		}
-	): Promise<string | null> {
+		}[];
+	}): Promise<string | null> {
 		if (!current) {
 			toast.error('No plan loaded');
 			return null;

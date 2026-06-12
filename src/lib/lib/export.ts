@@ -1,4 +1,4 @@
-import type { PlanDay, PlanTask, PlanWeek, ResourceType } from './types';
+import type { PlanDay, PlanTask, PlanWeek } from './types';
 import { formatDateLong } from './date';
 
 // ── JSON export types ──
@@ -91,17 +91,23 @@ function taskToHtml(task: PlanTask): string {
 		</div>`;
 }
 
-function resourcesToHtml(resources: { title: string; url: string; source: string; type: string }[]): string {
+function resourcesToHtml(
+	resources: { title: string; url: string; source: string; type: string }[]
+): string {
 	if (!resources.length) return '';
 	return `
 		<div style="margin-top: 16px;">
 			<h3 style="color: #00E5A0; font-size: 15px; font-weight: 600; margin-bottom: 8px;">📚 Resources</h3>
-			${resources.map(r => `
+			${resources
+				.map(
+					(r) => `
 				<div style="margin-bottom: 6px; font-size: 13px;">
 					<a href="${escapeHtml(r.url)}" style="color: #00E5A0;">${escapeHtml(r.title)}</a>
 					<span style="color: #6e7373;"> — ${escapeHtml(r.source)} (${r.type})</span>
 				</div>
-			`).join('')}
+			`
+				)
+				.join('')}
 		</div>`;
 }
 
@@ -154,22 +160,24 @@ export function exportDayPlan(
 		${day.energy_level ? `<span class="badge badge-focus">⚡ ${escapeHtml(day.energy_level)} energy</span>` : ''}
 		${day.struggle_areas?.length ? `<span style="margin-left: 8px; color: #a8adad;">Focus: ${escapeHtml(day.struggle_areas.join(', '))}</span>` : ''}
 	</div>
-	${[...tasksBySection.entries()].map(([section, sectionTasks]) => `
+	${[...tasksBySection.entries()]
+		.map(
+			([section, sectionTasks]) => `
 		<h2>${escapeHtml(SECTION_LABELS[section] || section)}</h2>
 		${sectionTasks.map(taskToHtml).join('')}
-	`).join('')}
+	`
+		)
+		.join('')}
 	${resourcesToHtml(resources)}
 </body></html>`;
 }
 
-export function exportWeek(
-	week: PlanWeek,
-	days: { day: PlanDay; tasks: PlanTask[] }[]
-): string {
+export function exportWeek(week: PlanWeek, days: { day: PlanDay; tasks: PlanTask[] }[]): string {
 	const title = `Week ${week.week_number} — ${week.theme || 'Plan'}`;
-	const dateLine = week.week_start && week.week_end
-		? `${new Date(week.week_start + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — ${new Date(week.week_end + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
-		: `Week ${week.week_number}`;
+	const dateLine =
+		week.week_start && week.week_end
+			? `${new Date(week.week_start + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — ${new Date(week.week_end + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+			: `Week ${week.week_number}`;
 
 	return `<!DOCTYPE html>
 <html lang="en">
@@ -183,27 +191,33 @@ export function exportWeek(
 	${week.focus_areas?.length ? `<p class="meta" style="margin-top: 4px;">Focus areas: ${escapeHtml(week.focus_areas.join(', '))}</p>` : ''}
 	${week.notes ? `<p class="meta">${escapeHtml(week.notes)}</p>` : ''}
 
-	${days.map(({ day, tasks }) => {
-		const tasksBySection = new Map<string, PlanTask[]>();
-		for (const t of tasks) {
-			const list = tasksBySection.get(t.section) || [];
-			list.push(t);
-			tasksBySection.set(t.section, list);
-		}
+	${days
+		.map(({ day, tasks }) => {
+			const tasksBySection = new Map<string, PlanTask[]>();
+			for (const t of tasks) {
+				const list = tasksBySection.get(t.section) || [];
+				list.push(t);
+				tasksBySection.set(t.section, list);
+			}
 
-		return `
+			return `
 		<div class="day-block">
 			<div class="day-date">${formatDateLong(day.date)}</div>
 			<div class="day-subtitle">
 				${day.energy_level ? `<span class="badge badge-focus">⚡ ${escapeHtml(day.energy_level)}</span>` : ''}
 				${day.struggle_areas?.length ? `<span style="margin-left: 8px;">Focus: ${escapeHtml(day.struggle_areas.join(', '))}</span>` : ''}
 			</div>
-			${[...tasksBySection.entries()].map(([section, sectionTasks]) => `
+			${[...tasksBySection.entries()]
+				.map(
+					([section, sectionTasks]) => `
 				<h3>${escapeHtml(SECTION_LABELS[section] || section)}</h3>
 				${sectionTasks.map(taskToHtml).join('')}
-			`).join('')}
+			`
+				)
+				.join('')}
 		</div>`;
-	}).join('')}
+		})
+		.join('')}
 </body></html>`;
 }
 
@@ -223,7 +237,13 @@ export function openExport(html: string) {
 export function exportDayPlanJson(
 	day: PlanDay,
 	tasks: PlanTask[],
-	resources: { title: string; url: string; source: string; type: string; description: string | null }[]
+	resources: {
+		title: string;
+		url: string;
+		source: string;
+		type: string;
+		description: string | null;
+	}[]
 ): ExportDayPlanJson {
 	return {
 		type: 'day_plan',

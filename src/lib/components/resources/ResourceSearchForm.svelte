@@ -1,15 +1,11 @@
 <script lang="ts">
 	import { planStore } from '$lib/stores/plan.svelte';
-	import { supabase } from '$lib/lib/supabase';
 	import { api } from '$lib/lib/api';
 	import { toast } from '$lib/stores/toast.svelte';
-	import type { AiGeneratedResources, Resource } from '$lib/lib/types';
-	import Button from '$lib/components/ui/Button.svelte';
+	import type { AiGeneratedResources } from '$lib/lib/types';
 	import Input from '$lib/components/ui/Input.svelte';
-	import Card from '$lib/components/ui/Card.svelte';
-	import Spinner from '$lib/components/ui/Spinner.svelte';
 
-	let { onClose }: { onClose?: () => void } = $props();
+	let { onClose }: { onClose?: () => void } = $props(); // eslint-disable-line @typescript-eslint/no-unused-vars
 
 	let query = $state('');
 	let searchResults = $state<AiGeneratedResources['resources']>([]);
@@ -61,7 +57,7 @@
 
 	{#if searched && searchResults.length > 0}
 		<div class="mt-4 space-y-2">
-			{#each searchResults as resource, i}
+			{#each searchResults as resource}
 				<div
 					class="flex items-start gap-3 rounded-lg border border-[var(--color-border)] p-3 transition-shadow hover:shadow-sm"
 				>

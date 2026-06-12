@@ -6,11 +6,9 @@
 	import { studentStore } from '$lib/stores/student.svelte';
 	import { planStore } from '$lib/stores/plan.svelte';
 	import { toast } from '$lib/stores/toast.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
-	import Card from '$lib/components/ui/Card.svelte';
 	import ChatMessage from './ChatMessage.svelte';
 	import ChangeConfirmation from './ChangeConfirmation.svelte';
-	import type { PlanChangeProposal, PlanMutation } from '$lib/lib/types';
+	import type { PlanChangeProposal } from '$lib/lib/types';
 
 	let {
 		studentId,
@@ -50,41 +48,48 @@
 	});
 
 	async function loadContext() {
-		if (studentId) {
-			const student = await studentStore.fetchOne(studentId);
-			if (student) {
-				studentContext = {
-					id: student.id,
-					name: student.name,
-					grade: student.grade,
-					subjects: student.subjects,
-					diagnosticData: student.diagnostic_data || undefined,
-					extraInfo: student.extra_info || undefined
-				};
+		try {
+			if (studentId) {
+				const student = await studentStore.fetchOne(studentId);
+				if (student) {
+					studentContext = {
+						id: student.id,
+						name: student.name,
+						grade: student.grade,
+						subjects: student.subjects,
+						diagnosticData: student.diagnostic_data || undefined,
+						extraInfo: student.extra_info || undefined
+					};
+				}
 			}
-		}
 
-		if (planId) {
-			await planStore.fetchOne(planId);
-			const weeks = planStore.weeks;
-			if (weeks.length > 0) {
-				planContext = {
-					id: planId,
-					weeks: weeks.map((w) => ({
-						id: w.id,
-						weekNumber: w.week_number,
-						theme: w.theme,
-						focusAreas: w.focus_areas,
-						notes: w.notes
-					}))
-				};
+			if (planId) {
+				await planStore.fetchOne(planId);
+				const weeks = planStore.weeks;
+				if (weeks.length > 0) {
+					planContext = {
+						id: planId,
+						weeks: weeks.map((w) => ({
+							id: w.id,
+							weekNumber: w.week_number,
+							theme: w.theme,
+							focusAreas: w.focus_areas,
+							notes: w.notes
+						}))
+					};
+				}
 			}
+		} catch (err) {
+			console.error('Failed to load context:', err);
 		}
 	}
 
 	async function sendMessage() {
 		const text = inputText.trim();
 		if (!text || loading) return;
+
+		// Clear any stale proposals
+		pendingProposal = null;
 
 		inputText = '';
 		messages = [...messages, { role: 'user', content: text }];
@@ -98,7 +103,21 @@
 					{
 						role: 'assistant',
 						content:
-							"Insufficient credits. Please upgrade your plan or purchase more credits to continue using the AI chat."
+							'Insufficient credits. Please upgrade your plan or purchase more credits to continue using the AI chat.'
+					}
+				];
+				loading = false;
+				return;
+			}
+
+			// Deduct credits for the AI interaction
+			const credited = await creditStore.useCredits(0.5, 'ai_chat_message');
+			if (!credited) {
+				messages = [
+					...messages,
+					{
+						role: 'assistant',
+						content: 'Failed to deduct credits. Please try again or upgrade your plan.'
 					}
 				];
 				loading = false;
@@ -142,19 +161,18 @@
 		try {
 			for (const mutation of pendingProposal.mutations) {
 				if (mutation.action === 'update') {
-					const { error } = await supabase
-						.from(mutation.table)
-						.update(mutation.data)
-						.eq('id', mutation.data.id);
+					const id = mutation.data.id as string;
+					if (!id) {
+						toast.error('Invalid mutation: missing id');
+						continue;
+					}
+					const { error } = await supabase.from(mutation.table).update(mutation.data).eq('id', id);
 					if (error) throw error;
 				} else if (mutation.action === 'insert') {
 					const { error } = await supabase.from(mutation.table).insert(mutation.data);
 					if (error) throw error;
 				}
 			}
-
-			// Deduct credits after successful mutations
-			await creditStore.useCredits(0.5, 'ai_chat_mutation');
 
 			// Refresh relevant stores
 			if (planId) {
@@ -165,7 +183,8 @@
 				...messages,
 				{
 					role: 'assistant',
-					content: 'Changes have been applied successfully! Is there anything else you\'d like to adjust?'
+					content:
+						"Changes have been applied successfully! Is there anything else you'd like to adjust?"
 				}
 			];
 			pendingProposal = null;
@@ -179,7 +198,13 @@
 	}
 
 	function rejectChanges() {
-		messages = [...messages, { role: 'assistant', content: 'Changes rejected. Let me know if you\'d like to try something else.' }];
+		messages = [
+			...messages,
+			{
+				role: 'assistant',
+				content: "Changes rejected. Let me know if you'd like to try something else."
+			}
+		];
 		pendingProposal = null;
 	}
 
@@ -199,16 +224,14 @@
 	}
 </script>
 
-<div class="flex flex-col h-full">
+<div class="flex h-full flex-col">
 	<!-- Chat messages area -->
-	<div
-		bind:this={chatContainer}
-		class="flex-1 overflow-y-auto space-y-3 p-4"
-	>
+	<div bind:this={chatContainer} class="flex-1 space-y-3 overflow-y-auto p-4">
 		{#if messages.length === 0}
-			<div class="flex items-center justify-center h-full">
-				<p class="text-sm text-[var(--color-text-tertiary)] text-center max-w-sm">
-					Ask me anything about your student's plan! I can help adjust themes, add tasks, suggest resources, or provide learning recommendations.
+			<div class="flex h-full items-center justify-center">
+				<p class="max-w-sm text-center text-sm text-[var(--color-text-tertiary)]">
+					Ask me anything about your student's plan! I can help adjust themes, add tasks, suggest
+					resources, or provide learning recommendations.
 				</p>
 			</div>
 		{:else}
@@ -220,8 +243,19 @@
 		{#if loading}
 			<div class="flex items-center gap-2 text-sm text-[var(--color-text-tertiary)]">
 				<svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-					<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+					<circle
+						class="opacity-25"
+						cx="12"
+						cy="12"
+						r="10"
+						stroke="currentColor"
+						stroke-width="4"
+					/>
+					<path
+						class="opacity-75"
+						fill="currentColor"
+						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+					/>
 				</svg>
 				Prepless AI is thinking...
 			</div>
@@ -242,23 +276,34 @@
 
 	<!-- Input area -->
 	<div class="border-t border-[var(--color-border-weak)] p-4">
-		<div class="flex gap-3 items-end">
+		<div class="flex items-end gap-3">
 			<textarea
 				bind:value={inputText}
 				onkeydown={handleKeydown}
 				placeholder="Ask Prepless AI..."
 				rows="1"
+				maxlength="5000"
 				disabled={loading || executingMutations}
-				class="flex-1 resize-none rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-surface-primary)] px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-400)] disabled:opacity-50"
+				class="flex-1 resize-none rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-surface-primary)] px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:ring-2 focus:ring-[var(--color-primary-400)] focus:outline-none disabled:opacity-50"
 			></textarea>
 
 			<button
 				onclick={sendMessage}
 				disabled={!inputText.trim() || loading || executingMutations}
-				class="flex-shrink-0 inline-flex items-center justify-center rounded-xl bg-[var(--color-primary-500)] text-white p-3 hover:bg-[var(--color-primary-600)] active:bg-[var(--color-primary-700)] transition-colors disabled:opacity-50 disabled:pointer-events-none"
+				class="inline-flex flex-shrink-0 items-center justify-center rounded-xl bg-[var(--color-primary-500)] p-3 text-white transition-colors hover:bg-[var(--color-primary-600)] active:bg-[var(--color-primary-700)] disabled:pointer-events-none disabled:opacity-50"
 				aria-label="Send message"
 			>
-				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="18"
+					height="18"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
 					<line x1="22" y1="2" x2="11" y2="13" />
 					<polygon points="22 2 15 22 11 13 2 9 22 2" />
 				</svg>

@@ -27,12 +27,12 @@
 
 		{#if proposal.mutations.length > 0}
 			<div class="space-y-2">
-				<h4 class="text-xs font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">
+				<h4 class="text-xs font-medium tracking-wider text-[var(--color-text-tertiary)] uppercase">
 					Changes ({proposal.mutations.length})
 				</h4>
 
 				{#each proposal.mutations as mutation}
-					<div class="rounded-lg bg-[var(--color-surface-secondary)] p-3 text-xs space-y-1">
+					<div class="space-y-1 rounded-lg bg-[var(--color-surface-secondary)] p-3 text-xs">
 						<div class="flex items-center gap-2">
 							<span
 								class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
@@ -49,8 +49,10 @@
 						<div class="text-[var(--color-text-secondary)]">
 							{#each Object.entries(mutation.data) as [key, value]}
 								<div class="flex gap-2">
-									<span class="font-medium text-[var(--color-text-tertiary)] min-w-20">{key}:</span>
-									<span class="truncate">{typeof value === 'string' ? value : JSON.stringify(value)}</span>
+									<span class="min-w-20 font-medium text-[var(--color-text-tertiary)]">{key}:</span>
+									<span class="truncate"
+										>{typeof value === 'string' ? value : JSON.stringify(value)}</span
+									>
 								</div>
 							{/each}
 						</div>
@@ -59,13 +61,9 @@
 			</div>
 		{/if}
 
-		<div class="flex gap-3 justify-end pt-2">
-			<Button variant="ghost" onclick={onreject} disabled={loading}>
-				Reject
-			</Button>
-			<Button variant="gradient" onclick={onapprove} loading={loading}>
-				Approve
-			</Button>
+		<div class="flex justify-end gap-3 pt-2">
+			<Button variant="ghost" onclick={onreject} disabled={loading}>Reject</Button>
+			<Button variant="gradient" onclick={onapprove} {loading}>Approve</Button>
 		</div>
 	</div>
 </Card>

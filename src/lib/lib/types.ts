@@ -8,7 +8,14 @@ export interface Profile {
 	subscription_tier: 'free' | 'starter' | 'pro' | 'enterprise';
 	stripe_customer_id: string | null;
 	stripe_subscription_id: string | null;
-	subscription_status: 'active' | 'past_due' | 'canceled' | 'incomplete' | 'trialing' | 'unpaid' | null;
+	subscription_status:
+		| 'active'
+		| 'past_due'
+		| 'canceled'
+		| 'incomplete'
+		| 'trialing'
+		| 'unpaid'
+		| null;
 	subscription_period_end: string | null;
 	cancel_at_period_end: boolean | null;
 	downgraded_at: string | null;
@@ -272,7 +279,14 @@ export interface ChatMessage {
 }
 
 export interface PlanChangeProposal {
-	type: 'week_theme' | 'focus_areas' | 'add_task' | 'remove_task' | 'adjust_schedule' | 'add_resources' | 'add_homework';
+	type:
+		| 'week_theme'
+		| 'focus_areas'
+		| 'add_task'
+		| 'remove_task'
+		| 'adjust_schedule'
+		| 'add_resources'
+		| 'add_homework';
 	description: string;
 	mutations: PlanMutation[];
 }

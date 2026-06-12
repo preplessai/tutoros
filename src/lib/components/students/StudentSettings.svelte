@@ -1,9 +1,7 @@
 <script lang="ts">
-	import type { Student, PreferredResourceSite } from '$lib/lib/types';
+	import type { Student } from '$lib/lib/types';
 	import { studentStore } from '$lib/stores/student.svelte';
 	import Toggle from '$lib/components/ui/Toggle.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
-	import { toast } from '$lib/stores/toast.svelte';
 
 	let { student }: { student: Student } = $props();
 

@@ -1,7 +1,7 @@
 import { generateDayPlanSchema } from '../lib/validate';
 import { callAI } from '../lib/ai';
 
-// @ts-ignore
+// @ts-expect-error - wrangler raw text import
 import systemPrompt from '../prompts/day-plan.txt';
 
 export async function handleGenerateDayPlan(
@@ -45,7 +45,8 @@ export async function handleGenerateDayPlan(
 		}
 
 		return Response.json({ dayPlan: dayPlan.dayPlan || dayPlan, provider: result.provider });
-	} catch (err: any) {
-		return Response.json({ error: err.message || 'Internal error' }, { status: 500 });
+	} catch (err: unknown) {
+		const message = err instanceof Error ? err.message : 'Internal error';
+		return Response.json({ error: message }, { status: 500 });
 	}
 }

@@ -38,7 +38,10 @@
 
 	function canProceed(): boolean {
 		if (step === 0) return !!studentId;
-		if (step === 1) return timePerSession > 0 && sessionsPerWeek > 0 && (duration !== 'custom' || !!customEndDate);
+		if (step === 1)
+			return (
+				timePerSession > 0 && sessionsPerWeek > 0 && (duration !== 'custom' || !!customEndDate)
+			);
 		return true;
 	}
 
@@ -219,15 +222,27 @@
 			{/if}
 
 			{#if selectedStudent}
-				<div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-4 space-y-2">
+				<div
+					class="space-y-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-4"
+				>
 					<div class="flex items-center gap-2">
-						<span class="text-xs font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">Grade</span>
-						<span class="text-sm font-semibold text-[var(--color-text-primary)]">{selectedStudent.grade}</span>
+						<span
+							class="text-xs font-medium tracking-wider text-[var(--color-text-tertiary)] uppercase"
+							>Grade</span
+						>
+						<span class="text-sm font-semibold text-[var(--color-text-primary)]"
+							>{selectedStudent.grade}</span
+						>
 					</div>
 					{#if selectedStudent.extra_info}
 						<div>
-							<span class="text-xs font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">About this student</span>
-							<p class="mt-1 text-sm text-[var(--color-text-secondary)]">{selectedStudent.extra_info}</p>
+							<span
+								class="text-xs font-medium tracking-wider text-[var(--color-text-tertiary)] uppercase"
+								>About this student</span
+							>
+							<p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+								{selectedStudent.extra_info}
+							</p>
 						</div>
 					{/if}
 				</div>
@@ -270,13 +285,11 @@
 			</div>
 
 			<h2
-				class="font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)] pt-4"
+				class="pt-4 font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]"
 			>
 				Set the schedule
 			</h2>
-			<p class="text-sm text-[var(--color-text-secondary)]">
-				How often and for how long?
-			</p>
+			<p class="text-sm text-[var(--color-text-secondary)]">How often and for how long?</p>
 
 			<div class="grid gap-4 md:grid-cols-2">
 				<Select
@@ -385,8 +398,13 @@
 				</div>
 				{#if selectedStudent?.extra_info}
 					<div class="mt-3 border-t border-[var(--color-border)] pt-3">
-						<span class="text-xs font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">About this student</span>
-						<p class="mt-1 text-sm text-[var(--color-text-secondary)]">{selectedStudent.extra_info}</p>
+						<span
+							class="text-xs font-medium tracking-wider text-[var(--color-text-tertiary)] uppercase"
+							>About this student</span
+						>
+						<p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+							{selectedStudent.extra_info}
+						</p>
 					</div>
 				{/if}
 			</Card>

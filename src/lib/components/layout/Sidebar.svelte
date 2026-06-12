@@ -47,7 +47,9 @@
 			}`}
 		>
 			<svg
-				class="h-5 w-5 shrink-0 {overviewActive ? '' : 'group-hover:scale-110'} transition-transform"
+				class="h-5 w-5 shrink-0 {overviewActive
+					? ''
+					: 'group-hover:scale-110'} transition-transform"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"
@@ -75,7 +77,9 @@
 			}`}
 		>
 			<svg
-				class="h-5 w-5 shrink-0 {studentsActive ? '' : 'group-hover:scale-110'} transition-transform"
+				class="h-5 w-5 shrink-0 {studentsActive
+					? ''
+					: 'group-hover:scale-110'} transition-transform"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"
@@ -89,7 +93,9 @@
 			</svg>
 			<span class="flex-1 text-left">Students</span>
 			<svg
-				class="h-4 w-4 transition-transform duration-200 {studentsExpanded || isStudentRoute ? 'rotate-0' : '-rotate-90'}"
+				class="h-4 w-4 transition-transform duration-200 {studentsExpanded || isStudentRoute
+					? 'rotate-0'
+					: '-rotate-90'}"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"
@@ -101,7 +107,9 @@
 		<!-- Student children -->
 		{#if studentsExpanded || isStudentRoute}
 			{#if studentStore.loading}
-				<div class="px-10 py-1.5 text-xs text-[var(--color-text-tertiary)]">Loading students...</div>
+				<div class="px-10 py-1.5 text-xs text-[var(--color-text-tertiary)]">
+					Loading students...
+				</div>
 			{:else if studentStore.students.length === 0}
 				<div class="px-10 py-1.5 text-xs text-[var(--color-text-tertiary)]">No students yet</div>
 			{:else}
@@ -133,7 +141,9 @@
 			}`}
 		>
 			<svg
-				class="h-5 w-5 shrink-0 {settingsActive ? '' : 'group-hover:scale-110'} transition-transform"
+				class="h-5 w-5 shrink-0 {settingsActive
+					? ''
+					: 'group-hover:scale-110'} transition-transform"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"

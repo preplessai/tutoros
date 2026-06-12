@@ -128,12 +128,8 @@
 		}
 	}
 
-	function closeExportMenu() {
-		showExportMenu = false;
-	}
-
 	// Close export menu on outside click
-	function handleExportBlur(e: FocusEvent) {
+	function handleExportBlur() {
 		// Delay to let click on menu items fire first
 		setTimeout(() => {
 			showExportMenu = false;
@@ -144,11 +140,7 @@
 {#if dayPlanStore.loading}
 	<div class="flex justify-center py-12"><Spinner size="lg" /></div>
 {:else if dayPlanStore.error}
-	<ErrorDisplay
-		status={dayPlanStore.error.status}
-		message={dayPlanStore.error.message}
-		compact
-	/>
+	<ErrorDisplay status={dayPlanStore.error.status} message={dayPlanStore.error.message} compact />
 {:else if dayPlanStore.currentDay}
 	<div class="space-y-6">
 		<div>
@@ -199,7 +191,12 @@
 
 			<Button variant="secondary" size="sm" onclick={() => (showAiPicker = true)}>
 				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M13 10V3L4 14h7v7l9-11h-7z"
+					/>
 				</svg>
 				AI Pick Best
 			</Button>
@@ -218,7 +215,11 @@
 						>
 						Export
 						<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-							><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"
+							><path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M19 9l-7 7-7-7"
 							/></svg
 						>
 					</Button>
@@ -230,8 +231,16 @@
 								onclick={handleExportPage}
 								class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
 							>
-								<svg class="h-4 w-4 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-									><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+								<svg
+									class="h-4 w-4 text-[var(--color-text-tertiary)]"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									><path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
 									/></svg
 								>
 								Printable Page
@@ -240,8 +249,16 @@
 								onclick={handleExportJson}
 								class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
 							>
-								<svg class="h-4 w-4 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-									><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+								<svg
+									class="h-4 w-4 text-[var(--color-text-tertiary)]"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									><path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
 									/></svg
 								>
 								JSON File
@@ -253,7 +270,11 @@
 				<!-- Import -->
 				<Button variant="ghost" size="sm" onclick={triggerImport} loading={importing}>
 					<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-						><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
 						/></svg
 					>
 					Import
@@ -269,7 +290,7 @@
 		</div>
 
 		<AiResourcePicker
-			dayId={dayId}
+			{dayId}
 			tasks={dayPlanStore.tasks}
 			student={studentForPicker}
 			open={showAiPicker}

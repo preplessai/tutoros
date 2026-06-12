@@ -11,21 +11,20 @@ import { handlePreplessChat } from './handlers/prepless-chat';
 const app = new Hono();
 
 // CORS — reflect request origin for auth-gated endpoints
-app.use('*', cors({
-	origin: (origin) => {
-		const allowed = [
-			'http://localhost:5173',
-			'http://localhost:4173',
-			'http://localhost:8787'
-		];
-		if (allowed.includes(origin)) return origin;
-		if (origin.includes('prepless')) return origin;
-		return origin;
-	},
-	allowMethods: ['GET', 'POST', 'OPTIONS'],
-	allowHeaders: ['Content-Type', 'Authorization'],
-	maxAge: 86400
-}));
+app.use(
+	'*',
+	cors({
+		origin: (origin) => {
+			const allowed = ['http://localhost:5173', 'http://localhost:4173', 'http://localhost:8787'];
+			if (allowed.includes(origin)) return origin;
+			if (origin.includes('prepless')) return origin;
+			return origin;
+		},
+		allowMethods: ['GET', 'POST', 'OPTIONS'],
+		allowHeaders: ['Content-Type', 'Authorization'],
+		maxAge: 86400
+	})
+);
 
 // Auth middleware — applied to all /api/* routes
 app.use('/api/*', async (c, next) => {
@@ -33,9 +32,10 @@ app.use('/api/*', async (c, next) => {
 	if (c.req.path === '/api/health' || c.req.path === '/api/debug') return next();
 
 	// Skip auth in local dev (set DISABLE_AUTH=true in .dev.vars)
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	if ((c.env as Record<string, string>)['DISABLE_AUTH'] === 'true') {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(c as any).set('userId', 'dev-user');
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(c as any).set('userEmail', 'dev@localhost');
 		return next();
 	}
@@ -87,12 +87,24 @@ app.get('/api/debug', async (c) => {
 });
 
 // AI endpoints — pass env so handlers can access API keys
-app.post('/api/generate-weekly-plan', async (c) => handleGenerateWeeklyPlan(c.req.raw, c.env as Record<string, string>));
-app.post('/api/adjust-plan', async (c) => handleAdjustPlan(c.req.raw, c.env as Record<string, string>));
-app.post('/api/generate-day-plan', async (c) => handleGenerateDayPlan(c.req.raw, c.env as Record<string, string>));
-app.post('/api/search-resources', async (c) => handleSearchResources(c.req.raw, c.env as Record<string, string>));
-app.post('/api/pick-resources', async (c) => handlePickResources(c.req.raw, c.env as Record<string, string>));
-app.post('/api/prepless-chat', async (c) => handlePreplessChat(c.req.raw, c.env as Record<string, string>));
+app.post('/api/generate-weekly-plan', async (c) =>
+	handleGenerateWeeklyPlan(c.req.raw, c.env as Record<string, string>)
+);
+app.post('/api/adjust-plan', async (c) =>
+	handleAdjustPlan(c.req.raw, c.env as Record<string, string>)
+);
+app.post('/api/generate-day-plan', async (c) =>
+	handleGenerateDayPlan(c.req.raw, c.env as Record<string, string>)
+);
+app.post('/api/search-resources', async (c) =>
+	handleSearchResources(c.req.raw, c.env as Record<string, string>)
+);
+app.post('/api/pick-resources', async (c) =>
+	handlePickResources(c.req.raw, c.env as Record<string, string>)
+);
+app.post('/api/prepless-chat', async (c) =>
+	handlePreplessChat(c.req.raw, c.env as Record<string, string>)
+);
 
 // 404
 app.all('*', (c) => c.json({ error: 'Not found' }, 404));

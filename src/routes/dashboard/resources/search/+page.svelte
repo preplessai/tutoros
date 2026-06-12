@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import { supabase } from '$lib/lib/supabase';
 	import { api } from '$lib/lib/api';
 	import { resourceStore } from '$lib/stores/resource.svelte';
 	import { dayPlanStore } from '$lib/stores/dayPlan.svelte';
@@ -35,6 +36,8 @@
 	let tasks = $state<PlanTask[]>([]);
 	let selectedTaskId = $state('');
 
+	// Plan context for enriched queries
+
 	$effect(() => {
 		dayPlanId = $page.url.searchParams.get('dayPlanId') || '';
 		initialTaskId = $page.url.searchParams.get('taskId') || '';
@@ -52,6 +55,28 @@
 					'en-US',
 					{ month: 'long', day: 'numeric', year: 'numeric' }
 				);
+			}
+
+			// Fetch plan context from the day's parent week to get grade/subjects
+			try {
+				const { data: week } = await supabase
+					.from('plan_weeks')
+					.select('plan_id')
+					.eq('id', dayPlanStore.currentDay?.week_id || '')
+					.single();
+				if (week?.plan_id) {
+					const { data: plan } = await supabase
+						.from('weekly_plans')
+						.select('grade, subjects')
+						.eq('id', week.plan_id)
+						.single();
+					if (plan) {
+						contextGrade = plan.grade || '';
+						contextSubjects = plan.subjects || [];
+					}
+				}
+			} catch {
+				// Non-critical: continue with empty context
 			}
 		}
 

@@ -22,7 +22,7 @@
 		cancelText?: string;
 		variant?: 'danger' | 'gradient' | 'primary';
 		loading?: boolean;
-		children?: any;
+		//children?: any;
 	} = $props();
 </script>
 
@@ -31,7 +31,7 @@
 		<p class="text-sm text-[var(--color-text-secondary)]">{description}</p>
 		<div class="flex justify-end gap-3 pt-2">
 			<Button variant="ghost" onclick={onclose}>{cancelText}</Button>
-			<Button variant={variant} onclick={onconfirm} loading={loading}>{confirmText}</Button>
+			<Button {variant} onclick={onconfirm} {loading}>{confirmText}</Button>
 		</div>
 	</div>
 </Modal>

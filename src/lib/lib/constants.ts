@@ -103,8 +103,11 @@ export const SUBSCRIPTION_TIERS = {
 		maxPlans: Infinity,
 		monthlyCredits: 15,
 		features: [
-			'game_plan', 'parent_email', 'resource_links',
-			'homework_tracking', 'plan_regeneration'
+			'game_plan',
+			'parent_email',
+			'resource_links',
+			'homework_tracking',
+			'plan_regeneration'
 		]
 	},
 	pro: {
@@ -113,9 +116,14 @@ export const SUBSCRIPTION_TIERS = {
 		maxPlans: Infinity,
 		monthlyCredits: 30,
 		features: [
-			'game_plan', 'parent_email', 'resource_links',
-			'homework_tracking', 'plan_regeneration',
-			'struggle_aware', 'weekly_adaptation', 'progress_reports'
+			'game_plan',
+			'parent_email',
+			'resource_links',
+			'homework_tracking',
+			'plan_regeneration',
+			'struggle_aware',
+			'weekly_adaptation',
+			'progress_reports'
 		]
 	},
 	enterprise: {
@@ -124,9 +132,14 @@ export const SUBSCRIPTION_TIERS = {
 		maxPlans: Infinity,
 		monthlyCredits: 75, // hard cap, displayed as "unlimited"
 		features: [
-			'game_plan', 'parent_email', 'resource_links',
-			'homework_tracking', 'plan_regeneration',
-			'struggle_aware', 'weekly_adaptation', 'progress_reports'
+			'game_plan',
+			'parent_email',
+			'resource_links',
+			'homework_tracking',
+			'plan_regeneration',
+			'struggle_aware',
+			'weekly_adaptation',
+			'progress_reports'
 		]
 	}
 };

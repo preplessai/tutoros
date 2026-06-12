@@ -20,11 +20,15 @@
 
 			if (p.subscription_period_end) {
 				periodEnd = new Date(p.subscription_period_end).toLocaleDateString('en-US', {
-					year: 'numeric', month: 'long', day: 'numeric'
+					year: 'numeric',
+					month: 'long',
+					day: 'numeric'
 				});
 			}
 			truncationDate = trunc.toLocaleDateString('en-US', {
-				year: 'numeric', month: 'long', day: 'numeric'
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric'
 			});
 		}
 	});
@@ -39,17 +43,29 @@
 			const exports: any[] = [];
 			for (const plan of allPlans) {
 				// Fetch weeks
-				const { data: weeks } = await supabase.from('plan_weeks').select('*').eq('plan_id', plan.id).order('week_number');
+				const { data: weeks } = await supabase
+					.from('plan_weeks')
+					.select('*')
+					.eq('plan_id', plan.id)
+					.order('week_number');
 				if (!weeks) continue;
 
 				const weeksData = [];
 				for (const week of weeks) {
-					const { data: days } = await supabase.from('plan_days').select('*').eq('week_id', week.id).order('date');
+					const { data: days } = await supabase
+						.from('plan_days')
+						.select('*')
+						.eq('week_id', week.id)
+						.order('date');
 					if (!days) continue;
 
 					const daysData = [];
 					for (const day of days) {
-						const { data: tasks } = await supabase.from('plan_tasks').select('*').eq('day_id', day.id).order('sort_order');
+						const { data: tasks } = await supabase
+							.from('plan_tasks')
+							.select('*')
+							.eq('day_id', day.id)
+							.order('sort_order');
 						daysData.push({ ...day, tasks: tasks || [] });
 					}
 					weeksData.push({ ...week, days: daysData });
@@ -60,11 +76,15 @@
 				});
 			}
 
-			const json = JSON.stringify({
-				type: 'data_export',
-				exported_at: new Date().toISOString(),
-				plans: exports
-			}, null, 2);
+			const json = JSON.stringify(
+				{
+					type: 'data_export',
+					exported_at: new Date().toISOString(),
+					plans: exports
+				},
+				null,
+				2
+			);
 
 			downloadJson(json, `prepless-data-export-${new Date().toISOString().split('T')[0]}.json`);
 
@@ -82,26 +102,37 @@
 </script>
 
 {#if !dismissed && auth.profile?.downgraded_at && daysRemaining >= 0}
-	<div class="rounded-xl border-2 border-[var(--color-warning)] bg-[var(--color-warning-bg)] p-4 md:p-5">
+	<div
+		class="rounded-xl border-2 border-[var(--color-warning)] bg-[var(--color-warning-bg)] p-4 md:p-5"
+	>
 		<div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 			<div class="flex items-start gap-3">
-				<svg class="mt-0.5 h-5 w-5 shrink-0 text-[var(--color-warning)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+				<svg
+					class="mt-0.5 h-5 w-5 shrink-0 text-[var(--color-warning)]"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+					/>
 				</svg>
 				<div>
-					<p class="font-semibold text-[var(--color-text-primary)]">
-						Subscription canceled
-					</p>
+					<p class="font-semibold text-[var(--color-text-primary)]">Subscription canceled</p>
 					{#if daysRemaining > 0}
 						<p class="mt-1 text-sm text-[var(--color-text-secondary)]">
-							Your access continues until <strong>{periodEnd}</strong>.
-							After that, your data will be trimmed to fit the free tier limits on <strong>{truncationDate}</strong>
-							({daysRemaining} days remaining after period end).
-							Download your data now to avoid losing anything.
+							Your access continues until <strong>{periodEnd}</strong>. After that, your data will
+							be trimmed to fit the free tier limits on <strong>{truncationDate}</strong>
+							({daysRemaining} days remaining after period end). Download your data now to avoid losing
+							anything.
 						</p>
 					{:else}
 						<p class="mt-1 text-sm text-[var(--color-text-secondary)]">
-							Your grace period has ended. Some of your data may have been trimmed to fit free tier limits.
+							Your grace period has ended. Some of your data may have been trimmed to fit free tier
+							limits.
 						</p>
 					{/if}
 				</div>
@@ -110,25 +141,31 @@
 				{#if daysRemaining > 0}
 					<Button variant="secondary" size="sm" onclick={downloadAllData} loading={exportLoading}>
 						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+							/>
 						</svg>
 						Download Data
 					</Button>
-					<Button variant="gradient" size="sm" href="/pricing">
-						Reactivate
-					</Button>
+					<Button variant="gradient" size="sm" href="/pricing">Reactivate</Button>
 				{:else}
-					<Button variant="gradient" size="sm" href="/pricing">
-						Upgrade Again
-					</Button>
+					<Button variant="gradient" size="sm" href="/pricing">Upgrade Again</Button>
 				{/if}
 				<button
-					onclick={() => dismissed = true}
+					onclick={() => (dismissed = true)}
 					class="rounded-lg p-1.5 text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-text-primary)]"
 					aria-label="Dismiss"
 				>
 					<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M6 18L18 6M6 6l12 12"
+						/>
 					</svg>
 				</button>
 			</div>

@@ -17,8 +17,8 @@
 		></div>
 
 		<DowngradeBanner />
-			<div class="relative p-6 lg:p-8">
-				{@render children?.()}
-			</div>
+		<div class="relative p-6 lg:p-8">
+			{@render children?.()}
+		</div>
 	</main>
 </div>

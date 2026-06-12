@@ -70,7 +70,9 @@ export const studentStore = {
 		const tier = auth.profile?.subscription_tier || 'free';
 		const maxStudents = SUBSCRIPTION_TIERS[tier]?.maxStudents;
 		if (maxStudents !== undefined && maxStudents !== Infinity && students.length >= maxStudents) {
-			toast.error(`You've reached the maximum of ${maxStudents} students for the ${SUBSCRIPTION_TIERS[tier].name} tier. Upgrade to add more.`);
+			toast.error(
+				`You've reached the maximum of ${maxStudents} students for the ${SUBSCRIPTION_TIERS[tier].name} tier. Upgrade to add more.`
+			);
 			return null;
 		}
 

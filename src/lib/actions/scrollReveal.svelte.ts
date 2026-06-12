@@ -41,7 +41,7 @@ export function scrollReveal(node: HTMLElement, opts: RevealOptions = {}) {
 	observer.observe(node);
 
 	return {
-		update(newOpts: RevealOptions) {
+		update() {
 			// Reset and re-observe if options change
 			node.style.opacity = '0';
 			node.style.animation = '';

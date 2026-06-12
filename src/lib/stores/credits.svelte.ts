@@ -8,10 +8,18 @@ let refreshing = $state(0);
 let loading = $state(false);
 
 export const creditStore = {
-	get nonExpiring() { return nonExpiring; },
-	get refreshing() { return refreshing; },
-	get total() { return nonExpiring + refreshing; },
-	get loading() { return loading; },
+	get nonExpiring() {
+		return nonExpiring;
+	},
+	get refreshing() {
+		return refreshing;
+	},
+	get total() {
+		return nonExpiring + refreshing;
+	},
+	get loading() {
+		return loading;
+	},
 
 	async fetch() {
 		if (!auth.user?.id) return;
@@ -27,7 +35,8 @@ export const creditStore = {
 			if (data.subscription_tier !== 'free' && data.refreshing_reset_at) {
 				const resetAt = new Date(data.refreshing_reset_at);
 				if (resetAt <= new Date()) {
-					const tierConfig = SUBSCRIPTION_TIERS[data.subscription_tier as keyof typeof SUBSCRIPTION_TIERS];
+					const tierConfig =
+						SUBSCRIPTION_TIERS[data.subscription_tier as keyof typeof SUBSCRIPTION_TIERS];
 					const refreshAmount = tierConfig?.monthlyCredits || 30;
 					await supabase.rpc('refresh_credits', {
 						p_user_id: auth.user.id,

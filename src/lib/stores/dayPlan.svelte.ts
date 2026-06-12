@@ -14,12 +14,24 @@ let generating = $state(false);
 let error = $state<{ status: number; message: string } | null>(null);
 
 export const dayPlanStore = {
-	get currentDay() { return currentDay; },
-	get tasks() { return tasks; },
-	get weekDays() { return weekDays; },
-	get loading() { return loading; },
-	get generating() { return generating; },
-	get error() { return error; },
+	get currentDay() {
+		return currentDay;
+	},
+	get tasks() {
+		return tasks;
+	},
+	get weekDays() {
+		return weekDays;
+	},
+	get loading() {
+		return loading;
+	},
+	get generating() {
+		return generating;
+	},
+	get error() {
+		return error;
+	},
 
 	async fetchDay(dayId: string) {
 		loading = true;
@@ -55,7 +67,7 @@ export const dayPlanStore = {
 				loading = false;
 				error = {
 					status: 403,
-					message: 'You don\'t have permission to view this day plan.'
+					message: "You don't have permission to view this day plan."
 				};
 				return;
 			}

@@ -30,6 +30,10 @@ interface ProviderResult {
 	provider: 'groq' | 'deepseek';
 }
 
+interface ChatCompletionResponse {
+	choices?: { message?: { content?: string } }[];
+}
+
 function groqAvailable(): boolean {
 	return Date.now() >= groqBlockedUntil;
 }
@@ -87,7 +91,7 @@ async function callGroq(options: AiCallOptions): Promise<string> {
 		throw new Error(`Groq API error ${resp.status}: ${body.slice(0, 300)}`);
 	}
 
-	const data = (await resp.json()) as any;
+	const data = (await resp.json()) as ChatCompletionResponse;
 	const content = data?.choices?.[0]?.message?.content;
 	if (!content) throw new Error('Groq returned empty response');
 
@@ -123,7 +127,7 @@ async function callDeepSeek(options: AiCallOptions): Promise<string> {
 		throw new Error(`DeepSeek API error ${resp.status}: ${body.slice(0, 300)}`);
 	}
 
-	const data = (await resp.json()) as any;
+	const data = (await resp.json()) as ChatCompletionResponse;
 	const content = data?.choices?.[0]?.message?.content;
 	if (!content) throw new Error('DeepSeek returned empty response');
 
@@ -137,11 +141,12 @@ export async function callAI(options: AiCallOptions): Promise<ProviderResult> {
 		try {
 			const text = await callGroq(options);
 			return { text, provider: 'groq' };
-		} catch (err: any) {
-			if (err.message === 'GROQ_RATE_LIMITED') {
+		} catch (err: unknown) {
+			if (err instanceof Error && err.message === 'GROQ_RATE_LIMITED') {
 				console.log('[ai] Groq rate-limited, falling back to DeepSeek');
 			} else {
-				console.warn(`[ai] Groq error (will try DeepSeek): ${err.message}`);
+				const message = err instanceof Error ? err.message : String(err);
+				console.warn(`[ai] Groq error (will try DeepSeek): ${message}`);
 			}
 		}
 	} else {

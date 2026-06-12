@@ -6,11 +6,7 @@
 
 <svelte:head><title>{$page.status} — Prepless AI</title></svelte:head>
 
-<ErrorDisplay
-	status={$page.status}
-	message={$page.error?.message || ''}
-	actions={goHome}
-/>
+<ErrorDisplay status={$page.status} message={$page.error?.message || ''} actions={goHome} />
 
 {#snippet goHome()}
 	<Button variant="primary" href="/">Back to Home</Button>

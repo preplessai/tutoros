@@ -51,16 +51,41 @@ async function searchBrave(
 		safesearch: 'moderate'
 	});
 
-	const resp = await fetch(
-		`https://api.search.brave.com/res/v1/web/search?${params.toString()}`,
-		{
-			headers: {
-				'Accept': 'application/json',
-				'Accept-Encoding': 'gzip',
-				'X-Subscription-Token': apiKey
-			}
+	const resp = await fetch(`https://api.search.brave.com/res/v1/web/search?${params.toString()}`, {
+		headers: {
+			Accept: 'application/json',
+			'Accept-Encoding': 'gzip',
+			'X-Subscription-Token': apiKey
 		}
-	);
+	});
+
+	// Handle rate limiting: if 429, wait for Retry-After and retry once
+	if (resp.status === 429) {
+		const retryAfter = resp.headers.get('Retry-After');
+		const waitMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : 1000;
+		console.warn(`[brave] rate limited (429), retrying after ${waitMs}ms`);
+
+		await new Promise((resolve) => setTimeout(resolve, waitMs));
+
+		const retryResp = await fetch(
+			`https://api.search.brave.com/res/v1/web/search?${params.toString()}`,
+			{
+				headers: {
+					Accept: 'application/json',
+					'Accept-Encoding': 'gzip',
+					'X-Subscription-Token': apiKey
+				}
+			}
+		);
+
+		if (!retryResp.ok) {
+			console.error('[brave] retry also failed:', retryResp.status, retryResp.statusText);
+			return [];
+		}
+
+		const retryData = (await retryResp.json()) as BraveSearchResponse;
+		return retryData.web?.results || [];
+	}
 
 	if (!resp.ok) {
 		console.error('[brave] search failed:', resp.status, resp.statusText);
@@ -74,13 +99,32 @@ async function searchBrave(
 function classifyResourceType(url: string, title: string): string {
 	const combined = `${url.toLowerCase()} ${title.toLowerCase()}`;
 
-	if (/\/video\//.test(combined) || /watch\b/.test(combined) || /youtube\.com/.test(combined) || /\/v\//.test(combined))
+	if (
+		/\/video\//.test(combined) ||
+		/watch\b/.test(combined) ||
+		/youtube\.com/.test(combined) ||
+		/\/v\//.test(combined)
+	)
 		return 'video';
 
-	if (/\/exercise\b/.test(combined) || /\bpractice\b/.test(combined) || /\bquiz\b/.test(combined) || /\btest\b/.test(combined) || /\bproblems?\b/.test(combined) || /\/e\//.test(combined) || /ixl\.com/.test(combined))
+	if (
+		/\/exercise\b/.test(combined) ||
+		/\bpractice\b/.test(combined) ||
+		/\bquiz\b/.test(combined) ||
+		/\btest\b/.test(combined) ||
+		/\bproblems?\b/.test(combined) ||
+		/\/e\//.test(combined) ||
+		/ixl\.com/.test(combined)
+	)
 		return 'practice';
 
-	if (/calculator/.test(combined) || /interactive/.test(combined) || /simulation/.test(combined) || /explore/.test(combined) || /desmos\.com/.test(combined))
+	if (
+		/calculator/.test(combined) ||
+		/interactive/.test(combined) ||
+		/simulation/.test(combined) ||
+		/explore/.test(combined) ||
+		/desmos\.com/.test(combined)
+	)
 		return 'interactive';
 
 	return 'article';
@@ -122,10 +166,7 @@ export async function handleSearchResources(
 		const apiKey = env['BRAVE_API_KEY'] || '';
 
 		if (!apiKey) {
-			return Response.json(
-				{ error: 'BRAVE_API_KEY not configured' },
-				{ status: 500 }
-			);
+			return Response.json({ error: 'BRAVE_API_KEY not configured' }, { status: 500 });
 		}
 
 		const maxResults = input.maxResults || 5;

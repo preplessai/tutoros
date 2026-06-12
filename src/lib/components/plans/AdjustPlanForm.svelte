@@ -5,7 +5,6 @@
 	import { SUBJECTS } from '$lib/lib/constants';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
-	import Select from '$lib/components/ui/Select.svelte';
 	import Textarea from '$lib/components/ui/Textarea.svelte';
 	import DatePicker from '$lib/components/ui/DatePicker.svelte';
 

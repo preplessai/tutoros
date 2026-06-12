@@ -42,7 +42,8 @@
 			subjects: plan.subjects,
 			grades,
 			struggleAreas,
-			extraInfo: studentStore.students.find((s) => s.id === plan.student_id)?.extra_info || undefined
+			extraInfo:
+				studentStore.students.find((s) => s.id === plan.student_id)?.extra_info || undefined
 		};
 
 		const dayId = await dayPlanStore.generateAndSave(
@@ -87,13 +88,27 @@
 			rows={2}
 		/>
 	{:else}
-		<div class="rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-surface-secondary)] p-3 text-center">
+		<div
+			class="rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-surface-secondary)] p-3 text-center"
+		>
 			<p class="text-sm text-[var(--color-text-secondary)]">
-				<svg class="inline h-4 w-4 align-text-bottom" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+				<svg
+					class="inline h-4 w-4 align-text-bottom"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+					/>
 				</svg>
 				Struggle-aware planning is a <strong>Pro</strong> feature.
-				<a href="/pricing" class="ml-1 font-medium text-[var(--color-primary-500)] underline">Upgrade →</a>
+				<a href="/pricing" class="ml-1 font-medium text-[var(--color-primary-500)] underline"
+					>Upgrade →</a
+				>
 			</p>
 		</div>
 	{/if}
