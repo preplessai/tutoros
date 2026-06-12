@@ -1,0 +1,5 @@
+import{C as e,D as t,E as n,J as r,O as i,a,b as o,ct as s,i as c,l,lt as u,q as d}from"./XpMGC4_z.js";import"./xihTtKlq.js";var f=new Set([`$$slots`,`$$events`,`$$legacy`,`padding`,`hover`,`href`,`children`,`onclick`]),p=i(`<a><!></a>`),m=i(`<div><!></div>`);function h(i,h){let g=c(h,`padding`,3,!0),_=c(h,`hover`,3,!1),v=a(h,f);var y=t(),b=r(y),x=e=>{var t=p();l(t,()=>({href:h.href,class:`block clay-card
+		${_()?`clay-card-hover clay-card-pressed cursor-pointer`:``}
+		${g()?`p-5`:``}`,...v})),o(d(t),()=>h.children??u),s(t),n(e,t)},S=e=>{var t=m();l(t,()=>({class:`clay-card
+		${_()?`clay-card-hover clay-card-pressed cursor-pointer`:``}
+		${g()?`p-5`:``}`,onclick:h.onclick,role:h.onclick?`button`:void 0,tabindex:h.onclick?0:void 0,...v})),o(d(t),()=>h.children??u),s(t),n(e,t)};e(b,e=>{h.href?e(x):e(S,-1)}),n(i,y)}export{h as t};

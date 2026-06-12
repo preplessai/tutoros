@@ -1,1 +1,0 @@
-function e(e){return(typeof e==`string`?new Date(e):e).toLocaleDateString(`en-US`,{month:`short`,day:`numeric`})}function t(e){return(typeof e==`string`?new Date(e):e).toLocaleDateString(`en-US`,{month:`long`,day:`numeric`,year:`numeric`})}function n(t,n){return`${e(t)} - ${e(n)}`}export{e as n,n as r,t};

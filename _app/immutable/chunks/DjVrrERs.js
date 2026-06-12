@@ -1,0 +1,1 @@
+function e(e){return(typeof e==`string`?new Date(e):e).toLocaleDateString(`en-US`,{month:`short`,day:`numeric`})}function t(e){return(typeof e==`string`?new Date(e):e).toLocaleDateString(`en-US`,{month:`long`,day:`numeric`,year:`numeric`})}export{e as n,t};
