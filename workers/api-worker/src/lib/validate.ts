@@ -27,15 +27,18 @@ const dayOfWeekSchema = z.enum([
 
 // POST /api/generate-weekly-plan
 export const generateWeeklyPlanSchema = z.object({
+	studentId: z.string(),
 	grade: z.string().min(1),
 	subjects: z.array(z.string()).min(1),
 	timePerSession: z.number().int().positive().max(480),
 	sessionsPerWeek: z.number().int().positive().max(14),
-	startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-	endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-	importantDates: z.array(importantDateSchema),
+	duration: z.string(),
+	startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+	endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 	goals: z.string(),
-	learningStyle: z.string()
+	learningStyle: z.string().optional(),
+	diagnosticData: z.string().optional(),
+	extraInfo: z.string().optional()
 });
 
 // POST /api/adjust-plan
@@ -87,4 +90,54 @@ export const searchResourcesSchema = z.object({
 	grade: z.string(),
 	preferredSites: z.array(z.object({ name: z.string(), url: z.string() })),
 	maxResults: z.number().int().positive().max(20).optional()
+});
+
+// POST /api/pick-resources
+export const pickResourcesSchema = z.object({
+	tasks: z.array(
+		z.object({
+			id: z.string(),
+			title: z.string(),
+			description: z.string().nullable(),
+			section: z.string()
+		})
+	),
+	studentContext: z.object({
+		grade: z.string(),
+		subjects: z.array(z.string()),
+		preferredSites: z.array(z.object({ name: z.string(), url: z.string() }))
+	}),
+	maxPerTask: z.number().optional().default(2)
+});
+
+// POST /api/prepless-chat
+export const preplessChatSchema = z.object({
+	messages: z.array(
+		z.object({
+			role: z.enum(['user', 'assistant']),
+			content: z.string()
+		})
+	),
+	studentContext: z.object({
+		id: z.string(),
+		name: z.string(),
+		grade: z.string(),
+		subjects: z.array(z.string()),
+		diagnosticData: z.string().optional(),
+		extraInfo: z.string().optional()
+	}),
+	planContext: z
+		.object({
+			id: z.string(),
+			weeks: z.array(
+				z.object({
+					id: z.string(),
+					weekNumber: z.number(),
+					theme: z.string().nullable(),
+					focusAreas: z.array(z.string()),
+					notes: z.string().nullable()
+				})
+			)
+		})
+		.optional()
 });

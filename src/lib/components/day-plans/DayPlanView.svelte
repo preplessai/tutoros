@@ -4,6 +4,7 @@
 	import { dayPlanStore } from '$lib/stores/dayPlan.svelte';
 	import { resourceStore } from '$lib/stores/resource.svelte';
 	import { auth } from '$lib/stores/auth.svelte';
+	import { studentStore } from '$lib/stores/student.svelte';
 	import { formatDateLong } from '$lib/lib/date';
 	import { exportDayPlan, exportDayPlanJson, openExport, downloadJson } from '$lib/lib/export';
 	import type { ExportDayPlanJson } from '$lib/lib/export';
@@ -14,8 +15,44 @@
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import ErrorDisplay from '$lib/components/ui/ErrorDisplay.svelte';
+	import AiResourcePicker from '$lib/components/resources/AiResourcePicker.svelte';
 
 	let { dayId }: { dayId: string } = $props();
+
+	let showAiPicker = $state(false);
+	let studentForPicker = $state<import('$lib/lib/types').Student | null>(null);
+
+	// Fetch student info when day loads, for AI Resource Picker
+	$effect(() => {
+		const day = dayPlanStore.currentDay;
+		if (day && day.week_id && !studentForPicker) {
+			fetchStudentForDay(day.week_id);
+		}
+	});
+
+	async function fetchStudentForDay(weekId: string) {
+		try {
+			const { supabase } = await import('$lib/lib/supabase');
+			const { data: week } = await supabase
+				.from('plan_weeks')
+				.select('plan_id')
+				.eq('id', weekId)
+				.single();
+			if (week) {
+				const { data: plan } = await supabase
+					.from('weekly_plans')
+					.select('student_id')
+					.eq('id', week.plan_id)
+					.single();
+				if (plan) {
+					const student = await studentStore.fetchOne(plan.student_id);
+					studentForPicker = student;
+				}
+			}
+		} catch {
+			/* silently ignore — student not needed for core functionality */
+		}
+	}
 
 	onMount(async () => {
 		await dayPlanStore.fetchDay(dayId);
@@ -160,6 +197,13 @@
 				Find Resources
 			</Button>
 
+			<Button variant="secondary" size="sm" onclick={() => (showAiPicker = true)}>
+				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+				</svg>
+				AI Pick Best
+			</Button>
+
 			{#if (auth.profile?.subscription_tier || 'free') !== 'free'}
 				<!-- Export dropdown -->
 				<div class="relative" onfocusout={handleExportBlur}>
@@ -223,5 +267,13 @@
 				/>
 			{/if}
 		</div>
+
+		<AiResourcePicker
+			dayId={dayId}
+			tasks={dayPlanStore.tasks}
+			student={studentForPicker}
+			open={showAiPicker}
+			onclose={() => (showAiPicker = false)}
+		/>
 	</div>
 {/if}

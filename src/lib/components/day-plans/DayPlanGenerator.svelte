@@ -1,14 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { planStore } from '$lib/stores/plan.svelte';
 	import { studentStore } from '$lib/stores/student.svelte';
 	import { dayPlanStore } from '$lib/stores/dayPlan.svelte';
 	import { auth } from '$lib/stores/auth.svelte';
-	import { GRADES, canUseFeature } from '$lib/lib/constants';
-	import { goto } from '$app/navigation';
+	import { canUseFeature } from '$lib/lib/constants';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
-	import Select from '$lib/components/ui/Select.svelte';
 	import Textarea from '$lib/components/ui/Textarea.svelte';
 	import DatePicker from '$lib/components/ui/DatePicker.svelte';
 
@@ -28,11 +25,8 @@
 	} = $props();
 
 	let dayDate = $state('');
-	let recentProgress = $state('');
 	let grades = $state('');
 	let struggleAreas = $state('');
-	let energyLevel = $state('medium');
-	let learningStyle = $state('visual');
 
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
@@ -46,11 +40,9 @@
 		const studentContext = {
 			grade: plan.grade,
 			subjects: plan.subjects,
-			learningStyle,
-			recentProgress,
 			grades,
 			struggleAreas,
-			energyLevel: energyLevel as 'low' | 'medium' | 'high'
+			extraInfo: studentStore.students.find((s) => s.id === plan.student_id)?.extra_info || undefined
 		};
 
 		const dayId = await dayPlanStore.generateAndSave(
@@ -75,41 +67,6 @@
 		value={dayDate}
 		onchange={(e) => (dayDate = (e.target as HTMLInputElement).value)}
 		required
-	/>
-
-	<Select
-		label="Energy Level"
-		name="energyLevel"
-		options={[
-			{ value: 'low', label: 'Low — passive, review-focused' },
-			{ value: 'medium', label: 'Medium — typical session' },
-			{ value: 'high', label: 'High — ready for challenges' }
-		]}
-		value={energyLevel}
-		onchange={(e) => (energyLevel = (e.target as HTMLSelectElement).value)}
-	/>
-
-	<Select
-		label="Learning Style"
-		name="learningStyle"
-		options={[
-			{ value: 'visual', label: 'Visual' },
-			{ value: 'auditory', label: 'Auditory' },
-			{ value: 'hands-on', label: 'Hands-on' },
-			{ value: 'reading/writing', label: 'Reading/Writing' },
-			{ value: 'mixed', label: 'Mixed' }
-		]}
-		value={learningStyle}
-		onchange={(e) => (learningStyle = (e.target as HTMLSelectElement).value)}
-	/>
-
-	<Textarea
-		label="Recent School Progress"
-		name="recentProgress"
-		value={recentProgress}
-		oninput={(e) => (recentProgress = (e.target as HTMLTextAreaElement).value)}
-		placeholder="What has the student covered recently? Any recent test scores?"
-		rows={2}
 	/>
 
 	<Input

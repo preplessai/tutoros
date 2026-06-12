@@ -14,7 +14,8 @@
 	let name = $state(editStudent?.name || '');
 	let grade = $state(editStudent?.grade || '');
 	let selectedSubjects = $state<string[]>(editStudent?.subjects || []);
-	let learningStyle = $state(editStudent?.learning_style || '');
+	let diagnosticData = $state(editStudent?.diagnostic_data || '');
+	let extraInfo = $state(editStudent?.extra_info || '');
 	let notes = $state(editStudent?.notes || '');
 	let preferredSites = $state<PreferredResourceSite[]>(
 		editStudent?.preferred_resource_sites ||
@@ -39,7 +40,8 @@
 			name: name.trim(),
 			grade,
 			subjects: selectedSubjects,
-			learningStyle,
+			diagnosticData,
+			extraInfo,
 			notes,
 			preferredSitesCount: preferredSites.length,
 			isEdit: !!editStudent,
@@ -60,7 +62,8 @@
 				name: name.trim(),
 				grade,
 				subjects: selectedSubjects,
-				learning_style: learningStyle || null,
+				diagnostic_data: diagnosticData || null,
+				extra_info: extraInfo || null,
 				notes: notes || null,
 				preferred_resource_sites: preferredSites
 			};
@@ -146,18 +149,20 @@
 		</div>
 	</div>
 
-	<Select
-		label="Learning Style"
-		name="learningStyle"
-		placeholder="Select (optional)"
-		options={[
-			{ value: 'visual', label: 'Visual' },
-			{ value: 'auditory', label: 'Auditory' },
-			{ value: 'hands-on', label: 'Hands-on' },
-			{ value: 'reading/writing', label: 'Reading/Writing' },
-			{ value: 'mixed', label: 'Mixed' }
-		]}
-		bind:value={learningStyle}
+	<Textarea
+		label="Previous Diagnostic Data (if any)"
+		name="diagnostic_data"
+		placeholder="Any previous test scores, assessments, or diagnostic results..."
+		bind:value={diagnosticData}
+		rows={3}
+	/>
+
+	<Textarea
+		label="Anything else I should know about this student?"
+		name="extra_info"
+		placeholder="Learning style, pace, preferences, strengths, challenges, or any other relevant information..."
+		bind:value={extraInfo}
+		rows={3}
 	/>
 
 	<Textarea

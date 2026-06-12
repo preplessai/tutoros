@@ -36,8 +36,8 @@ export interface ExportWeekJson {
 	exported_at: string;
 	week: {
 		week_number: number;
-		week_start: string;
-		week_end: string;
+		week_start: string | null;
+		week_end: string | null;
 		theme: string | null;
 		focus_areas: string[];
 		notes: string | null;
@@ -167,8 +167,9 @@ export function exportWeek(
 	days: { day: PlanDay; tasks: PlanTask[] }[]
 ): string {
 	const title = `Week ${week.week_number} — ${week.theme || 'Plan'}`;
-	const startStr = new Date(week.week_start + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-	const endStr = new Date(week.week_end + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+	const dateLine = week.week_start && week.week_end
+		? `${new Date(week.week_start + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — ${new Date(week.week_end + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+		: `Week ${week.week_number}`;
 
 	return `<!DOCTYPE html>
 <html lang="en">
@@ -176,7 +177,7 @@ export function exportWeek(
 <body>
 	<h1>Week ${week.week_number}</h1>
 	<div class="meta">
-		${startStr} — ${endStr}
+		${dateLine}
 		${week.theme ? `<span class="badge badge-focus">${escapeHtml(week.theme)}</span>` : ''}
 	</div>
 	${week.focus_areas?.length ? `<p class="meta" style="margin-top: 4px;">Focus areas: ${escapeHtml(week.focus_areas.join(', '))}</p>` : ''}

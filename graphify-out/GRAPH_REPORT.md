@@ -1,12 +1,12 @@
-# Graph Report - C:\Users\reach\Organizer\Development\tutoros  (2026-06-11)
+# Graph Report - C:\Users\reach\Organizer\Development\tutoros  (2026-06-12)
 
 ## Corpus Check
-- 113 files · ~39,882 words
+- 120 files · ~44,696 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 176 nodes · 106 edges · 103 communities detected
-- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 17 edges (avg confidence: 0.8)
+- 192 nodes · 118 edges · 108 communities detected
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 19 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -113,11 +113,16 @@
 - [[_COMMUNITY_Community 100|Community 100]]
 - [[_COMMUNITY_Community 101|Community 101]]
 - [[_COMMUNITY_Community 102|Community 102]]
+- [[_COMMUNITY_Community 103|Community 103]]
+- [[_COMMUNITY_Community 104|Community 104]]
+- [[_COMMUNITY_Community 105|Community 105]]
+- [[_COMMUNITY_Community 106|Community 106]]
+- [[_COMMUNITY_Community 107|Community 107]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `error()` - 8 edges
-2. `add()` - 7 edges
-3. `callAI()` - 7 edges
+1. `callAI()` - 9 edges
+2. `error()` - 8 edges
+3. `add()` - 7 edges
 4. `exportDayPlan()` - 5 edges
 5. `handleWebhook()` - 5 edges
 6. `getMonday()` - 4 edges
@@ -131,8 +136,8 @@
   C:\Users\reach\Organizer\Development\tutoros\src\lib\lib\date.ts → C:\Users\reach\Organizer\Development\tutoros\src\lib\lib\export.ts
 - `initTheme()` --calls--> `add()`  [INFERRED]
   C:\Users\reach\Organizer\Development\tutoros\src\lib\stores\auth.svelte.ts → C:\Users\reach\Organizer\Development\tutoros\src\lib\stores\toast.svelte.ts
-- `fetchProgress()` --calls--> `add()`  [INFERRED]
-  C:\Users\reach\Organizer\Development\tutoros\src\routes\dashboard\progress\+page.svelte → C:\Users\reach\Organizer\Development\tutoros\src\lib\stores\toast.svelte.ts
+- `add()` --calls--> `fetchProgress()`  [INFERRED]
+  C:\Users\reach\Organizer\Development\tutoros\src\lib\stores\toast.svelte.ts → C:\Users\reach\Organizer\Development\tutoros\src\routes\dashboard\progress\+page.svelte
 - `error()` --calls--> `if()`  [INFERRED]
   C:\Users\reach\Organizer\Development\tutoros\src\lib\stores\toast.svelte.ts → C:\Users\reach\Organizer\Development\tutoros\src\routes\dashboard\resources\search\+page.svelte
 - `error()` --calls--> `searchBrave()`  [INFERRED]
@@ -141,16 +146,16 @@
 ## Communities
 
 ### Community 0 - "Community 0"
+Cohesion: 0.15
+Nodes (11): handleAdjustPlan(), blockGroq(), callAI(), callDeepSeek(), callGroq(), groqAvailable(), unblockGroq(), handleGenerateDayPlan() (+3 more)
+
+### Community 1 - "Community 1"
 Cohesion: 0.19
 Nodes (8): initTheme(), fetchProgress(), if(), add(), error(), info(), success(), warning()
 
-### Community 1 - "Community 1"
+### Community 2 - "Community 2"
 Cohesion: 0.23
 Nodes (7): formatDateLong(), css(), escapeHtml(), exportDayPlan(), exportWeek(), resourcesToHtml(), taskToHtml()
-
-### Community 2 - "Community 2"
-Cohesion: 0.22
-Nodes (9): handleAdjustPlan(), blockGroq(), callAI(), callDeepSeek(), callGroq(), groqAvailable(), unblockGroq(), handleGenerateDayPlan() (+1 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.31
@@ -165,28 +170,28 @@ Cohesion: 0.5
 Nodes (2): handleSearchResources(), searchBrave()
 
 ### Community 6 - "Community 6"
+Cohesion: 0.67
+Nodes (2): canProceed(), handleSubmit()
+
+### Community 7 - "Community 7"
 Cohesion: 0.83
 Nodes (2): authenticate(), extractToken()
 
-### Community 7 - "Community 7"
-Cohesion: 1.0
-Nodes (2): getAuthHeaders(), post()
-
 ### Community 8 - "Community 8"
-Cohesion: 1.0
-Nodes (2): getAuthHeaders(), post()
+Cohesion: 0.67
+Nodes (0): 
 
 ### Community 9 - "Community 9"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 10 - "Community 10"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (2): getAuthHeaders(), post()
 
 ### Community 11 - "Community 11"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (2): getAuthHeaders(), post()
 
 ### Community 12 - "Community 12"
 Cohesion: 1.0
@@ -552,154 +557,168 @@ Nodes (0):
 Cohesion: 1.0
 Nodes (0): 
 
+### Community 103 - "Community 103"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 104 - "Community 104"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 105 - "Community 105"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 106 - "Community 106"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 107 - "Community 107"
+Cohesion: 1.0
+Nodes (0): 
+
 ## Knowledge Gaps
-- **Thin community `Community 9`** (2 nodes): `scrollReveal.svelte.ts`, `scrollReveal()`
+- **Thin community `Community 12`** (2 nodes): `scrollReveal.svelte.ts`, `scrollReveal()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 10`** (2 nodes): `WeekPopup.svelte`, `formatDateShort()`
+- **Thin community `Community 13`** (2 nodes): `DropdownMenu.svelte`, `handleClick()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 11`** (2 nodes): `DropdownMenu.svelte`, `handleClick()`
+- **Thin community `Community 14`** (2 nodes): `constants.ts`, `canUseFeature()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 12`** (2 nodes): `constants.ts`, `canUseFeature()`
+- **Thin community `Community 15`** (2 nodes): `plan.svelte.ts`, `getTutorId()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 13`** (2 nodes): `plan.svelte.ts`, `getTutorId()`
+- **Thin community `Community 16`** (2 nodes): `student.svelte.ts`, `getTutorId()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 14`** (2 nodes): `student.svelte.ts`, `getTutorId()`
+- **Thin community `Community 17`** (2 nodes): `+page.svelte`, `formatDateShort()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 15`** (2 nodes): `fetcher.ts`, `fetchUrl()`
+- **Thin community `Community 18`** (2 nodes): `fetcher.ts`, `fetchUrl()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 16`** (1 nodes): `eslint.config.js`
+- **Thin community `Community 19`** (1 nodes): `eslint.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 17`** (1 nodes): `svelte.config.js`
+- **Thin community `Community 20`** (1 nodes): `svelte.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 18`** (1 nodes): `vite.config.ts`
+- **Thin community `Community 21`** (1 nodes): `vite.config.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 19`** (1 nodes): `app.d.ts`
+- **Thin community `Community 22`** (1 nodes): `app.d.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 20`** (1 nodes): `index.ts`
+- **Thin community `Community 23`** (1 nodes): `index.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 21`** (1 nodes): `AuthCallback.svelte`
+- **Thin community `Community 24`** (1 nodes): `AuthCallback.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 22`** (1 nodes): `LoginForm.svelte`
+- **Thin community `Community 25`** (1 nodes): `LoginForm.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 23`** (1 nodes): `RegisterForm.svelte`
+- **Thin community `Community 26`** (1 nodes): `RegisterForm.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 24`** (1 nodes): `DayPlanGenerator.svelte`
+- **Thin community `Community 27`** (1 nodes): `ChangeConfirmation.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 25`** (1 nodes): `DayPlanView.svelte`
+- **Thin community `Community 28`** (1 nodes): `ChatMessage.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 26`** (1 nodes): `SectionLabel.svelte`
+- **Thin community `Community 29`** (1 nodes): `DayPlanGenerator.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 27`** (1 nodes): `TaskItem.svelte`
+- **Thin community `Community 30`** (1 nodes): `DayPlanView.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 28`** (1 nodes): `TaskList.svelte`
+- **Thin community `Community 31`** (1 nodes): `SectionLabel.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 29`** (1 nodes): `AuthGuard.svelte`
+- **Thin community `Community 32`** (1 nodes): `TaskItem.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 30`** (1 nodes): `DashboardLayout.svelte`
+- **Thin community `Community 33`** (1 nodes): `TaskList.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 31`** (1 nodes): `Footer.svelte`
+- **Thin community `Community 34`** (1 nodes): `AuthGuard.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 32`** (1 nodes): `Navbar.svelte`
+- **Thin community `Community 35`** (1 nodes): `DashboardLayout.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 33`** (1 nodes): `Sidebar.svelte`
+- **Thin community `Community 36`** (1 nodes): `Footer.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 34`** (1 nodes): `AdjustPlanForm.svelte`
+- **Thin community `Community 37`** (1 nodes): `Navbar.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 35`** (1 nodes): `PlanCard.svelte`
+- **Thin community `Community 38`** (1 nodes): `Sidebar.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 36`** (1 nodes): `PlanForm.svelte`
+- **Thin community `Community 39`** (1 nodes): `AdjustPlanForm.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 37`** (1 nodes): `PlanList.svelte`
+- **Thin community `Community 40`** (1 nodes): `PlanCard.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 38`** (1 nodes): `PlanTimeline.svelte`
+- **Thin community `Community 41`** (1 nodes): `PlanList.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 39`** (1 nodes): `WeekCard.svelte`
+- **Thin community `Community 42`** (1 nodes): `PlanTimeline.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 40`** (1 nodes): `ResourceItem.svelte`
+- **Thin community `Community 43`** (1 nodes): `WeekCard.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 41`** (1 nodes): `ResourceList.svelte`
+- **Thin community `Community 44`** (1 nodes): `WeekHomework.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 42`** (1 nodes): `ResourceSearchForm.svelte`
+- **Thin community `Community 45`** (1 nodes): `WeekPopup.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 43`** (1 nodes): `SearchResultCard.svelte`
+- **Thin community `Community 46`** (1 nodes): `ResourceItem.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 44`** (1 nodes): `StudentCard.svelte`
+- **Thin community `Community 47`** (1 nodes): `ResourceList.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 45`** (1 nodes): `StudentForm.svelte`
+- **Thin community `Community 48`** (1 nodes): `ResourceSearchForm.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 46`** (1 nodes): `StudentList.svelte`
+- **Thin community `Community 49`** (1 nodes): `SearchResultCard.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 47`** (1 nodes): `StudentSettings.svelte`
+- **Thin community `Community 50`** (1 nodes): `StudentCard.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 48`** (1 nodes): `ConfirmDialog.svelte`
+- **Thin community `Community 51`** (1 nodes): `StudentForm.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 49`** (1 nodes): `DowngradeBanner.svelte`
+- **Thin community `Community 52`** (1 nodes): `StudentList.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 50`** (1 nodes): `PricingGrid.svelte`
+- **Thin community `Community 53`** (1 nodes): `StudentSettings.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 51`** (1 nodes): `Avatar.svelte`
+- **Thin community `Community 54`** (1 nodes): `ConfirmDialog.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 52`** (1 nodes): `Badge.svelte`
+- **Thin community `Community 55`** (1 nodes): `DowngradeBanner.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 53`** (1 nodes): `Button.svelte`
+- **Thin community `Community 56`** (1 nodes): `PricingGrid.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 54`** (1 nodes): `Card.svelte`
+- **Thin community `Community 57`** (1 nodes): `Avatar.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 55`** (1 nodes): `CreditBadge.svelte`
+- **Thin community `Community 58`** (1 nodes): `Badge.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 56`** (1 nodes): `DatePicker.svelte`
+- **Thin community `Community 59`** (1 nodes): `Button.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 57`** (1 nodes): `EmptyState.svelte`
+- **Thin community `Community 60`** (1 nodes): `Card.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 58`** (1 nodes): `ErrorDisplay.svelte`
+- **Thin community `Community 61`** (1 nodes): `CreditBadge.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 59`** (1 nodes): `Input.svelte`
+- **Thin community `Community 62`** (1 nodes): `DatePicker.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 60`** (1 nodes): `Modal.svelte`
+- **Thin community `Community 63`** (1 nodes): `EmptyState.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 61`** (1 nodes): `Select.svelte`
+- **Thin community `Community 64`** (1 nodes): `ErrorDisplay.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 62`** (1 nodes): `Spinner.svelte`
+- **Thin community `Community 65`** (1 nodes): `Input.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 63`** (1 nodes): `Tabs.svelte`
+- **Thin community `Community 66`** (1 nodes): `Modal.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 64`** (1 nodes): `Textarea.svelte`
+- **Thin community `Community 67`** (1 nodes): `Select.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 65`** (1 nodes): `Toast.svelte`
+- **Thin community `Community 68`** (1 nodes): `Spinner.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 66`** (1 nodes): `ToastContainer.svelte`
+- **Thin community `Community 69`** (1 nodes): `Tabs.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 67`** (1 nodes): `Toggle.svelte`
+- **Thin community `Community 70`** (1 nodes): `Textarea.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 68`** (1 nodes): `supabase.ts`
+- **Thin community `Community 71`** (1 nodes): `Toast.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 69`** (1 nodes): `types.ts`
+- **Thin community `Community 72`** (1 nodes): `ToastContainer.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 70`** (1 nodes): `credits.svelte.ts`
+- **Thin community `Community 73`** (1 nodes): `Toggle.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 71`** (1 nodes): `dayPlan.svelte.ts`
+- **Thin community `Community 74`** (1 nodes): `supabase.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 72`** (1 nodes): `resource.svelte.ts`
+- **Thin community `Community 75`** (1 nodes): `types.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 73`** (1 nodes): `+error.svelte`
+- **Thin community `Community 76`** (1 nodes): `credits.svelte.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 74`** (1 nodes): `+layout.svelte`
+- **Thin community `Community 77`** (1 nodes): `dayPlan.svelte.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 75`** (1 nodes): `+layout.ts`
+- **Thin community `Community 78`** (1 nodes): `resource.svelte.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 76`** (1 nodes): `+page.svelte`
+- **Thin community `Community 79`** (1 nodes): `+error.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 77`** (1 nodes): `+page.svelte`
+- **Thin community `Community 80`** (1 nodes): `+layout.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 78`** (1 nodes): `+page.svelte`
+- **Thin community `Community 81`** (1 nodes): `+layout.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 79`** (1 nodes): `+page.svelte`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 80`** (1 nodes): `+page.svelte`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 81`** (1 nodes): `+layout.svelte`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 82`** (1 nodes): `+layout.ts`
+- **Thin community `Community 82`** (1 nodes): `+page.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 83`** (1 nodes): `+page.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -709,9 +728,9 @@ Nodes (0):
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 86`** (1 nodes): `+page.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 87`** (1 nodes): `+page.svelte`
+- **Thin community `Community 87`** (1 nodes): `+layout.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 88`** (1 nodes): `+page.svelte`
+- **Thin community `Community 88`** (1 nodes): `+layout.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 89`** (1 nodes): `+page.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -735,23 +754,33 @@ Nodes (0):
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 99`** (1 nodes): `+page.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 100`** (1 nodes): `index.ts`
+- **Thin community `Community 100`** (1 nodes): `+page.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 101`** (1 nodes): `validate.ts`
+- **Thin community `Community 101`** (1 nodes): `+page.svelte`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 102`** (1 nodes): `index.ts`
+- **Thin community `Community 102`** (1 nodes): `+page.svelte`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 103`** (1 nodes): `+page.svelte`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 104`** (1 nodes): `+page.svelte`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 105`** (1 nodes): `index.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 106`** (1 nodes): `validate.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 107`** (1 nodes): `index.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `error()` connect `Community 0` to `Community 4`, `Community 5`, `Community 6`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Why does `error()` connect `Community 1` to `Community 4`, `Community 5`, `Community 7`?**
+  _High betweenness centrality (0.021) - this node is a cross-community bridge._
+- **Are the 5 inferred relationships involving `callAI()` (e.g. with `handleAdjustPlan()` and `handleGenerateDayPlan()`) actually correct?**
+  _`callAI()` has 5 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 6 inferred relationships involving `error()` (e.g. with `if()` and `searchBrave()`) actually correct?**
   _`error()` has 6 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 2 inferred relationships involving `add()` (e.g. with `initTheme()` and `fetchProgress()`) actually correct?**
   _`add()` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 3 inferred relationships involving `callAI()` (e.g. with `handleAdjustPlan()` and `handleGenerateDayPlan()`) actually correct?**
-  _`callAI()` has 3 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 4 inferred relationships involving `handleWebhook()` (e.g. with `createStripeClient()` and `error()`) actually correct?**
   _`handleWebhook()` has 4 INFERRED edges - model-reasoned connections that need verification._

@@ -6,6 +6,8 @@ You are an expert tutoring scheduler. Create a structured, realistic weekly tuto
 - Schedule the specified number of sessions per week
 - Respect important dates: skip tutoring on holidays, add review days before exams
 - Adapt content to the student's grade level and learning style
+- Use diagnostic_data (previous test scores, assessments) to inform starting point and difficulty
+- Use extra_info (learning preferences, pace, strengths, challenges) to tailor teaching approach and session structure
 - Each week should build on the previous week's concepts where possible
 - Each week includes days with tasks broken into sections
 - Be realistic about what can be accomplished in each session
@@ -51,14 +53,12 @@ Return ONLY valid JSON matching this structure:
   "subjects": ["Algebra II", "Chemistry"],
   "timePerSession": 60,
   "sessionsPerWeek": 2,
+  "duration": "3 months",
   "startDate": "2026-09-07",
   "endDate": "2026-10-02",
-  "importantDates": [
-    { "date": "2026-09-15", "label": "Math Quiz", "type": "exam" },
-    { "date": "2026-09-28", "label": "Chemistry Test", "type": "exam" }
-  ],
   "goals": "Improve algebra grades from B to A-, prepare for chemistry test",
-  "learningStyle": "visual"
+  "diagnosticData": "Math: C+ average, struggles with factoring. Chemistry: B average, solid fundamentals.",
+  "extraInfo": "Visual learner. Gets overwhelmed with too many topics per session. Needs positive reinforcement."
 }
 ```
 

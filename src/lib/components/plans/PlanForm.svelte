@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { planStore } from '$lib/stores/plan.svelte';
 	import { studentStore } from '$lib/stores/student.svelte';
@@ -13,39 +12,23 @@
 	import Card from '$lib/components/ui/Card.svelte';
 
 	let step = $state(0);
-	const steps = ['Student', 'Subjects', 'Schedule', 'Goals'];
+	const steps = ['Student', 'Schedule', 'Goals & Summary'];
 
-	let studentId = $state($page.url.searchParams.get('studentId') || '');
+	let studentId = $state('');
 	let grade = $state('');
 	let selectedSubjects = $state<string[]>([]);
 	let timePerSession = $state(60);
 	let sessionsPerWeek = $state(2);
-	let startDate = $state('');
-	let endDate = $state('');
-	let importantDates = $state<{ date: string; label: string; type: string }[]>([]);
+	let duration = $state('3 months');
+	let customEndDate = $state('');
 	let goals = $state('');
-	let learningStyle = $state('');
-	let newDateLabel = $state('');
-	let newDateValue = $state('');
-	let newDateType = $state('exam');
+	let generating = $state(false);
+
+	let selectedStudent = $derived(studentStore.students.find((s) => s.id === studentId));
 
 	onMount(() => {
 		studentStore.fetchAll();
 	});
-
-	function addImportantDate() {
-		if (!newDateValue || !newDateLabel) return;
-		importantDates = [
-			...importantDates,
-			{ date: newDateValue, label: newDateLabel.trim(), type: newDateType }
-		];
-		newDateLabel = '';
-		newDateValue = '';
-	}
-
-	function removeDate(index: number) {
-		importantDates = importantDates.filter((_, i) => i !== index);
-	}
 
 	function toggleSubject(s: string) {
 		selectedSubjects = selectedSubjects.includes(s)
@@ -55,8 +38,7 @@
 
 	function canProceed(): boolean {
 		if (step === 0) return !!studentId;
-		if (step === 1) return selectedSubjects.length > 0;
-		if (step === 2) return !!startDate && !!endDate && timePerSession > 0 && sessionsPerWeek > 0;
+		if (step === 1) return timePerSession > 0 && sessionsPerWeek > 0 && (duration !== 'custom' || !!customEndDate);
 		return true;
 	}
 
@@ -64,19 +46,37 @@
 		e.preventDefault();
 		if (!canProceed()) return;
 
+		generating = true;
+
+		const startDate = new Date().toISOString().split('T')[0];
+
+		let endDate: string;
+		if (duration === 'custom') {
+			endDate = customEndDate;
+		} else {
+			const days = duration === '3 months' ? 90 : duration === '6 months' ? 180 : 365;
+			const d = new Date();
+			d.setDate(d.getDate() + days);
+			endDate = d.toISOString().split('T')[0];
+		}
+
+		const student = selectedStudent;
+
 		const planId = await planStore.generateAndSave({
 			studentId,
 			grade,
 			subjects: selectedSubjects,
 			timePerSession,
 			sessionsPerWeek,
+			duration,
 			startDate,
 			endDate,
-			importantDates,
 			goals,
-			learningStyle
+			diagnosticData: student?.diagnostic_data || undefined,
+			extraInfo: student?.extra_info || undefined
 		});
-		if (planId) goto(`/dashboard/plans/${planId}`);
+
+		if (planId) goto(`/dashboard/students/${studentId}?tab=timeline`);
 	}
 </script>
 
@@ -155,7 +155,6 @@
 							studentId = s.id;
 							grade = s.grade;
 							selectedSubjects = s.subjects || [];
-							learningStyle = s.learning_style || '';
 						}}
 						class={`cursor-pointer rounded-2xl border-2 p-4 text-left transition-all duration-200
 						${studentId === s.id ? 'shadow-clay-sm border-[var(--color-primary-500)] bg-[var(--color-primary-100)]' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] hover:border-[var(--color-border-strong)]'}`}
@@ -219,6 +218,21 @@
 				</div>
 			{/if}
 
+			{#if selectedStudent}
+				<div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-4 space-y-2">
+					<div class="flex items-center gap-2">
+						<span class="text-xs font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">Grade</span>
+						<span class="text-sm font-semibold text-[var(--color-text-primary)]">{selectedStudent.grade}</span>
+					</div>
+					{#if selectedStudent.extra_info}
+						<div>
+							<span class="text-xs font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">About this student</span>
+							<p class="mt-1 text-sm text-[var(--color-text-secondary)]">{selectedStudent.extra_info}</p>
+						</div>
+					{/if}
+				</div>
+			{/if}
+
 			<Select
 				label="Grade"
 				name="grade"
@@ -230,7 +244,7 @@
 		</div>
 	{/if}
 
-	<!-- Step 1: Subjects -->
+	<!-- Step 1: Schedule -->
 	{#if step === 1}
 		<div class="animate-fade-in-up space-y-6">
 			<h2
@@ -255,36 +269,24 @@
 				{/each}
 			</div>
 
-			<Select
-				label="Learning Style"
-				name="learningStyle"
-				placeholder="Select (optional)"
-				options={[
-					{ value: 'visual', label: 'Visual — learns best by seeing' },
-					{ value: 'auditory', label: 'Auditory — learns best by hearing' },
-					{ value: 'hands-on', label: 'Hands-on — learns by doing' },
-					{ value: 'reading/writing', label: 'Reading/Writing' },
-					{ value: 'mixed', label: 'Mixed' }
-				]}
-				value={learningStyle}
-				onchange={(e) => (learningStyle = (e.target as HTMLSelectElement).value)}
-			/>
-		</div>
-	{/if}
-
-	<!-- Step 2: Schedule -->
-	{#if step === 2}
-		<div class="animate-fade-in-up space-y-6">
 			<h2
-				class="font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]"
+				class="font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)] pt-4"
 			>
-				When does tutoring happen?
+				Set the schedule
 			</h2>
 			<p class="text-sm text-[var(--color-text-secondary)]">
-				Set up the session schedule and plan duration.
+				How often and for how long?
 			</p>
 
 			<div class="grid gap-4 md:grid-cols-2">
+				<Select
+					label="Sessions per Week"
+					name="sessionsPerWeek"
+					options={[1, 2, 3, 4, 5, 6, 7].map((n) => ({ value: n.toString(), label: n.toString() }))}
+					value={sessionsPerWeek.toString()}
+					onchange={(e) => (sessionsPerWeek = parseInt((e.target as HTMLSelectElement).value))}
+					required
+				/>
 				<Input
 					label="Minutes per Session"
 					name="timePerSession"
@@ -295,88 +297,37 @@
 					oninput={(e) => (timePerSession = parseInt((e.target as HTMLInputElement).value))}
 					required
 				/>
-				<Input
-					label="Sessions per Week"
-					name="sessionsPerWeek"
-					type="number"
-					min="1"
-					max="14"
-					value={sessionsPerWeek}
-					oninput={(e) => (sessionsPerWeek = parseInt((e.target as HTMLInputElement).value))}
-					required
-				/>
 			</div>
 
 			<div class="grid gap-4 md:grid-cols-2">
-				<DatePicker
-					label="Start Date"
-					name="startDate"
-					value={startDate}
-					onchange={(e) => (startDate = (e.target as HTMLInputElement).value)}
+				<Select
+					label="Duration"
+					name="duration"
+					options={[
+						{ value: '3 months', label: '3 months' },
+						{ value: '6 months', label: '6 months' },
+						{ value: '1 year', label: '1 year' },
+						{ value: 'custom', label: 'Custom' }
+					]}
+					value={duration}
+					onchange={(e) => (duration = (e.target as HTMLSelectElement).value)}
 					required
 				/>
-				<DatePicker
-					label="End Date"
-					name="endDate"
-					value={endDate}
-					onchange={(e) => (endDate = (e.target as HTMLInputElement).value)}
-					required
-				/>
-			</div>
-
-			<div>
-				<label class="mb-2 block text-sm font-medium text-[var(--color-text-primary)]"
-					>Important Dates <span class="font-normal text-[var(--color-text-tertiary)]"
-						>(exams, holidays)</span
-					></label
-				>
-				<div class="mb-3 space-y-2">
-					{#each importantDates as d, i}
-						<div
-							class="flex items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)] px-3 py-2 text-sm"
-						>
-							<span class="font-medium text-[var(--color-text-primary)]">{d.date}</span>
-							<span class="text-[var(--color-text-tertiary)]">—</span>
-							<span class="text-[var(--color-text-secondary)]">{d.label}</span>
-							<span
-								class="rounded-lg bg-[var(--color-surface-tertiary)] px-1.5 py-0.5 text-xs text-[var(--color-text-secondary)] capitalize"
-								>{d.type}</span
-							>
-							<button
-								type="button"
-								onclick={() => removeDate(i)}
-								class="ml-auto cursor-pointer font-bold text-[var(--color-error)] hover:opacity-70"
-								>&times;</button
-							>
-						</div>
-					{/each}
-				</div>
-				<div class="flex flex-wrap gap-2">
-					<Input
-						name="newDateLabel"
-						value={newDateLabel}
-						oninput={(e) => (newDateLabel = (e.target as HTMLInputElement).value)}
-						placeholder="e.g. Math Exam"
-					/>
+				{#if duration === 'custom'}
 					<DatePicker
-						name="newDate"
-						value={newDateValue}
-						onchange={(e) => (newDateValue = (e.target as HTMLInputElement).value)}
+						label="End Date"
+						name="customEndDate"
+						value={customEndDate}
+						onchange={(e) => (customEndDate = (e.target as HTMLInputElement).value)}
+						required
 					/>
-					<select class="clay-input text-sm" bind:value={newDateType}>
-						<option value="exam">Exam</option>
-						<option value="holiday">Holiday</option>
-						<option value="other">Other</option>
-					</select>
-					<Button type="button" variant="secondary" size="sm" onclick={addImportantDate}>Add</Button
-					>
-				</div>
+				{/if}
 			</div>
 		</div>
 	{/if}
 
-	<!-- Step 3: Goals + Submit -->
-	{#if step === 3}
+	<!-- Step 2: Goals & Summary -->
+	{#if step === 2}
 		<div class="animate-fade-in-up space-y-6">
 			<h2
 				class="font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]"
@@ -406,7 +357,7 @@
 					<div>
 						<span class="text-[var(--color-text-tertiary)]">Student:</span>
 						<span class="font-medium text-[var(--color-text-primary)]"
-							>{studentStore.students.find((s) => s.id === studentId)?.name || '—'}</span
+							>{selectedStudent?.name || '—'}</span
 						>
 					</div>
 					<div>
@@ -426,12 +377,18 @@
 						>
 					</div>
 					<div class="col-span-2">
-						<span class="text-[var(--color-text-tertiary)]">Dates:</span>
+						<span class="text-[var(--color-text-tertiary)]">Duration:</span>
 						<span class="font-medium text-[var(--color-text-primary)]"
-							>{startDate} — {endDate || '—'}</span
+							>{duration === 'custom' ? customEndDate : duration}</span
 						>
 					</div>
 				</div>
+				{#if selectedStudent?.extra_info}
+					<div class="mt-3 border-t border-[var(--color-border)] pt-3">
+						<span class="text-xs font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">About this student</span>
+						<p class="mt-1 text-sm text-[var(--color-text-secondary)]">{selectedStudent.extra_info}</p>
+					</div>
+				{/if}
 			</Card>
 		</div>
 	{/if}
@@ -460,8 +417,8 @@
 					Continue
 				</Button>
 			{:else}
-				<Button type="submit" variant="gradient" size="lg" loading={planStore.generating}>
-					{planStore.generating ? 'Generating with AI...' : 'Generate Weekly Plan'}
+				<Button type="submit" variant="gradient" size="lg" loading={generating}>
+					{generating ? 'Generating...' : 'Generate Plan'}
 				</Button>
 			{/if}
 		</div>

@@ -1,16 +1,16 @@
-import { generateWeeklyPlanSchema } from '../lib/validate';
+import { pickResourcesSchema } from '../lib/validate';
 import { callAI } from '../lib/ai';
 
 // @ts-ignore - wrangler raw text import
-import systemPrompt from '../prompts/weekly-plan.txt';
+import systemPrompt from '../prompts/pick-resources.txt';
 
-export async function handleGenerateWeeklyPlan(
+export async function handlePickResources(
 	request: Request,
 	env: Record<string, string>
 ): Promise<Response> {
 	try {
 		const body = await request.json();
-		const parsed = generateWeeklyPlanSchema.safeParse(body);
+		const parsed = pickResourcesSchema.safeParse(body);
 
 		if (!parsed.success) {
 			return Response.json(
@@ -20,19 +20,21 @@ export async function handleGenerateWeeklyPlan(
 		}
 
 		const input = parsed.data;
+
 		const userMessage = JSON.stringify(
 			{
-				grade: input.grade,
-				subjects: input.subjects,
-				timePerSession: input.timePerSession,
-				sessionsPerWeek: input.sessionsPerWeek,
-				duration: input.duration,
-				startDate: input.startDate,
-				endDate: input.endDate,
-				goals: input.goals,
-				learningStyle: input.learningStyle,
-				diagnosticData: input.diagnosticData,
-				extraInfo: input.extraInfo
+				tasks: input.tasks.map((t) => ({
+					id: t.id,
+					title: t.title,
+					description: t.description,
+					section: t.section
+				})),
+				studentContext: {
+					grade: input.studentContext.grade,
+					subjects: input.studentContext.subjects,
+					preferredSites: input.studentContext.preferredSites
+				},
+				maxPerTask: input.maxPerTask
 			},
 			null,
 			2
@@ -41,8 +43,8 @@ export async function handleGenerateWeeklyPlan(
 		const result = await callAI({
 			systemPrompt,
 			userMessage,
-			maxTokens: 8192,
-			temperature: 0.7,
+			maxTokens: 4096,
+			temperature: 0.3,
 			env
 		});
 
@@ -51,9 +53,9 @@ export async function handleGenerateWeeklyPlan(
 			result.text.match(/```(?:json)?\s*([\s\S]*?)```/) || result.text.match(/(\{[\s\S]*\})/);
 		const jsonStr = jsonMatch ? jsonMatch[1].trim() : result.text.trim();
 
-		let plan;
+		let data: { resources: unknown[] };
 		try {
-			plan = JSON.parse(jsonStr);
+			data = JSON.parse(jsonStr);
 		} catch {
 			return Response.json(
 				{ error: 'Failed to parse AI response', raw: result.text.slice(0, 500) },
@@ -61,7 +63,9 @@ export async function handleGenerateWeeklyPlan(
 			);
 		}
 
-		return Response.json({ plan: plan.plan || plan, provider: result.provider });
+		const resources = Array.isArray(data.resources) ? data.resources : [];
+
+		return Response.json({ resources, provider: result.provider });
 	} catch (err: any) {
 		return Response.json({ error: err.message || 'Internal error' }, { status: 500 });
 	}

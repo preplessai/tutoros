@@ -24,6 +24,8 @@ export interface Student {
 	grade: string;
 	subjects: string[];
 	learning_style: string | null;
+	diagnostic_data: string | null;
+	extra_info: string | null;
 	notes: string | null;
 	preferred_resource_sites: PreferredResourceSite[];
 	created_at: string;
@@ -53,8 +55,9 @@ export interface WeeklyPlan {
 	subjects: string[];
 	time_per_session: number;
 	sessions_per_week: number;
-	start_date: string;
-	end_date: string;
+	duration: string;
+	start_date: string | null;
+	end_date: string | null;
 	important_dates: ImportantDate[];
 	goals: string;
 	learning_style: string;
@@ -68,8 +71,8 @@ export interface PlanWeek {
 	id: string;
 	plan_id: string;
 	week_number: number;
-	week_start: string;
-	week_end: string;
+	week_start: string | null;
+	week_end: string | null;
 	theme: string | null;
 	focus_areas: string[];
 	notes: string | null;
@@ -144,15 +147,18 @@ export interface Resource {
 // ── API Types ──
 
 export interface GenerateWeeklyPlanRequest {
+	studentId: string;
 	grade: string;
 	subjects: string[];
 	timePerSession: number;
 	sessionsPerWeek: number;
-	startDate: string;
-	endDate: string;
-	importantDates: ImportantDate[];
+	duration: string;
+	startDate?: string;
+	endDate?: string;
 	goals: string;
-	learningStyle: string;
+	learningStyle?: string;
+	diagnosticData?: string;
+	extraInfo?: string;
 }
 
 export interface AdjustPlanRequest {
@@ -182,11 +188,12 @@ export interface GenerateDayPlanRequest {
 	studentContext: {
 		grade: string;
 		subjects: string[];
-		learningStyle: string;
-		recentProgress: string;
-		grades: string;
-		struggleAreas: string;
-		energyLevel: EnergyLevel;
+		learningStyle?: string;
+		recentProgress?: string;
+		grades?: string;
+		struggleAreas?: string;
+		energyLevel?: EnergyLevel;
+		extraInfo?: string;
 	};
 }
 
@@ -241,4 +248,94 @@ export interface AiGeneratedResources {
 		type: ResourceType;
 		description: string;
 	}[];
+}
+
+// ── Homework ──
+
+export interface PlanWeekHomework {
+	id: string;
+	week_id: string;
+	title: string;
+	description: string | null;
+	url: string | null;
+	completed: boolean;
+	sort_order: number;
+	created_at: string;
+	updated_at: string;
+}
+
+// ── Prepless AI Chat ──
+
+export interface ChatMessage {
+	role: 'user' | 'assistant';
+	content: string;
+}
+
+export interface PlanChangeProposal {
+	type: 'week_theme' | 'focus_areas' | 'add_task' | 'remove_task' | 'adjust_schedule' | 'add_resources' | 'add_homework';
+	description: string;
+	mutations: PlanMutation[];
+}
+
+export interface PlanMutation {
+	table: 'plan_weeks' | 'plan_days' | 'plan_tasks' | 'resources' | 'plan_week_homework';
+	action: 'update' | 'insert';
+	data: Record<string, unknown>;
+}
+
+export interface PreplessChatRequest {
+	messages: ChatMessage[];
+	studentContext: {
+		id: string;
+		name: string;
+		grade: string;
+		subjects: string[];
+		diagnosticData?: string;
+		extraInfo?: string;
+	};
+	planContext?: {
+		id: string;
+		weeks: Array<{
+			id: string;
+			weekNumber: number;
+			theme: string | null;
+			focusAreas: string[];
+			notes: string | null;
+		}>;
+	};
+}
+
+export interface PreplessChatResponse {
+	message: string;
+	intent: 'info' | 'edit_plan' | 'edit_day' | 'add_resources' | 'unknown';
+	proposedChanges?: PlanChangeProposal;
+}
+
+// ── AI Resource Picker ──
+
+export interface AiPickResourcesRequest {
+	tasks: Array<{
+		id: string;
+		title: string;
+		description: string | null;
+		section: string;
+	}>;
+	studentContext: {
+		grade: string;
+		subjects: string[];
+		preferredSites: Array<{ name: string; url: string }>;
+	};
+	maxPerTask?: number;
+}
+
+export interface AiPickResourcesResponse {
+	resources: Array<{
+		taskId: string;
+		title: string;
+		url: string;
+		source: string;
+		type: ResourceType;
+		description: string;
+		relevance: string;
+	}>;
 }

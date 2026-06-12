@@ -5,6 +5,10 @@ import type {
 	AdjustPlanRequest,
 	GenerateDayPlanRequest,
 	SearchResourcesRequest,
+	AiPickResourcesRequest,
+	AiPickResourcesResponse,
+	PreplessChatRequest,
+	PreplessChatResponse,
 	AiGeneratedPlan,
 	AiGeneratedDayPlan,
 	AiGeneratedResources
@@ -57,5 +61,13 @@ export const api = {
 
 	searchResources(request: SearchResourcesRequest): Promise<AiGeneratedResources> {
 		return post<AiGeneratedResources>('/api/search-resources', request);
+	},
+
+	pickResources(params: AiPickResourcesRequest): Promise<AiPickResourcesResponse> {
+		return post<AiPickResourcesResponse>('/api/pick-resources', params);
+	},
+
+	preplessChat(params: PreplessChatRequest): Promise<PreplessChatResponse> {
+		return post<PreplessChatResponse>('/api/prepless-chat', params);
 	}
 };

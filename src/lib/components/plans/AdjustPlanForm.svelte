@@ -16,6 +16,8 @@
 	let goalUpdates = $state('');
 	let changedTimePerSession = $state('');
 	let changedSessionsPerWeek = $state('');
+	let editFocusAreaUpdates = $state('');
+	let editContextUpdates = $state('');
 
 	function addUnavailableDate() {
 		if (!newDateStr) return;
@@ -41,6 +43,9 @@
 		if (newSubjects.length) changes.newSubjects = newSubjects;
 		if (removedSubjects.length) changes.removedSubjects = removedSubjects;
 		if (goalUpdates.trim()) changes.goalUpdates = goalUpdates.trim();
+
+		if (editFocusAreaUpdates.trim()) changes.focusAreaUpdates = editFocusAreaUpdates.trim();
+		if (editContextUpdates.trim()) changes.contextUpdates = editContextUpdates.trim();
 
 		if (changedTimePerSession || changedSessionsPerWeek) {
 			changes.scheduleChanges = {};
@@ -137,6 +142,24 @@
 			oninput={(e) => (changedSessionsPerWeek = (e.target as HTMLInputElement).value)}
 		/>
 	</div>
+
+	<Textarea
+		label="Focus Areas to Change"
+		name="focusAreaUpdates"
+		value={editFocusAreaUpdates}
+		oninput={(e) => (editFocusAreaUpdates = (e.target as HTMLTextAreaElement).value)}
+		placeholder="Specify which topics to emphasize or add..."
+		rows={2}
+	/>
+
+	<Textarea
+		label="Updated Diagnostic Context"
+		name="contextUpdates"
+		value={editContextUpdates}
+		oninput={(e) => (editContextUpdates = (e.target as HTMLTextAreaElement).value)}
+		placeholder="Any new information about the student's progress or needs..."
+		rows={2}
+	/>
 
 	<Button type="submit" variant="gradient" size="lg" loading={planStore.generating} fullWidth>
 		{planStore.generating ? 'Adjusting with AI...' : 'Adjust Plan'}

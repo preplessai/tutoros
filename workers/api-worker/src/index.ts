@@ -5,6 +5,8 @@ import { handleGenerateWeeklyPlan } from './handlers/generate-weekly-plan';
 import { handleAdjustPlan } from './handlers/adjust-plan';
 import { handleGenerateDayPlan } from './handlers/generate-day-plan';
 import { handleSearchResources } from './handlers/search-resources';
+import { handlePickResources } from './handlers/pick-resources';
+import { handlePreplessChat } from './handlers/prepless-chat';
 
 const app = new Hono();
 
@@ -89,6 +91,8 @@ app.post('/api/generate-weekly-plan', async (c) => handleGenerateWeeklyPlan(c.re
 app.post('/api/adjust-plan', async (c) => handleAdjustPlan(c.req.raw, c.env as Record<string, string>));
 app.post('/api/generate-day-plan', async (c) => handleGenerateDayPlan(c.req.raw, c.env as Record<string, string>));
 app.post('/api/search-resources', async (c) => handleSearchResources(c.req.raw, c.env as Record<string, string>));
+app.post('/api/pick-resources', async (c) => handlePickResources(c.req.raw, c.env as Record<string, string>));
+app.post('/api/prepless-chat', async (c) => handlePreplessChat(c.req.raw, c.env as Record<string, string>));
 
 // 404
 app.all('*', (c) => c.json({ error: 'Not found' }, 404));

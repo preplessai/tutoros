@@ -78,7 +78,19 @@ export const planStore = {
 				}
 			}
 
-			const result: AiGeneratedPlan = await api.generateWeeklyPlan(request);
+			const result: AiGeneratedPlan = await api.generateWeeklyPlan({
+				studentId: request.studentId,
+				grade: request.grade,
+				subjects: request.subjects,
+				timePerSession: request.timePerSession,
+				sessionsPerWeek: request.sessionsPerWeek,
+				duration: request.duration,
+				startDate: request.startDate,
+				endDate: request.endDate,
+				goals: request.goals,
+				diagnosticData: request.diagnosticData,
+				extraInfo: request.extraInfo
+			});
 			const tutorId = await getTutorId();
 
 			// Insert plan
@@ -92,11 +104,10 @@ export const planStore = {
 					subjects: request.subjects,
 					time_per_session: request.timePerSession,
 					sessions_per_week: request.sessionsPerWeek,
+					duration: request.duration,
 					start_date: request.startDate,
 					end_date: request.endDate,
-					important_dates: request.importantDates,
 					goals: request.goals,
-					learning_style: request.learningStyle,
 					ai_raw_response: result,
 					status: 'active'
 				})

@@ -1,22 +1,71 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { studentStore } from '$lib/stores/student.svelte';
 	import { goto } from '$app/navigation';
-	import StudentForm from '$lib/components/students/StudentForm.svelte';
-	import StudentSettings from '$lib/components/students/StudentSettings.svelte';
+	import { studentStore } from '$lib/stores/student.svelte';
+	import { planStore } from '$lib/stores/plan.svelte';
+	import { supabase } from '$lib/lib/supabase';
+	import { auth } from '$lib/stores/auth.svelte';
+	import { canUseFeature } from '$lib/lib/constants';
+	import { formatDateShort } from '$lib/lib/date';
+	import PlanTimeline from '$lib/components/plans/PlanTimeline.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import EmptyState from '$lib/components/ui/EmptyState.svelte';
+	import PreplessChat from '$lib/components/chat/PreplessChat.svelte';
+	import type { PlanDay, PlanTask, PlanWeek, WeeklyPlan } from '$lib/lib/types';
 
-	let tab = $state('profile');
+	let tab = $state('timeline');
 	let deleting = $state(false);
+	let plansLoading = $state(false);
+	let studentPlans = $state<WeeklyPlan[]>([]);
+	let selectedPlanId = $state<string | null>(null);
+
+	const tier = $derived(auth.profile?.subscription_tier || 'free');
+
+	const tabs = [
+		{ value: 'timeline', label: 'Timeline' },
+		{ value: 'dayplans', label: 'Day Plans' },
+		{ value: 'progress', label: 'Progress' },
+		{ value: 'emails', label: 'Emails' },
+		{ value: 'prepless-ai', label: 'Prepless AI' }
+	];
 
 	onMount(() => {
+		// Read tab from URL
+		const urlTab = $page.url.searchParams.get('tab');
+		if (urlTab && tabs.some(t => t.value === urlTab)) {
+			tab = urlTab;
+		}
+
 		studentStore.fetchOne($page.params.studentId);
+		fetchStudentPlans();
 	});
+
+	function setTab(t: string) {
+		tab = t;
+		// Update URL without navigation
+		const url = new URL(window.location.href);
+		url.searchParams.set('tab', t);
+		window.history.replaceState({}, '', url.toString());
+	}
+
+	async function fetchStudentPlans() {
+		plansLoading = true;
+		const { data } = await supabase
+			.from('weekly_plans')
+			.select('*')
+			.eq('student_id', $page.params.studentId)
+			.order('created_at', { ascending: false });
+		studentPlans = (data || []) as WeeklyPlan[];
+		if (studentPlans.length > 0 && !selectedPlanId) {
+			selectedPlanId = studentPlans[0].id;
+		}
+		plansLoading = false;
+	}
 
 	async function handleDelete() {
 		if (!confirm('Delete this student and all their plans? This cannot be undone.')) return;
@@ -24,6 +73,83 @@
 		await studentStore.remove($page.params.studentId);
 		goto('/dashboard/students');
 	}
+
+	async function fetchDaysForPlan(planId: string): Promise<Array<PlanDay & { energy_level: string | null }>> {
+		const { data: weeks } = await supabase
+			.from('plan_weeks')
+			.select('id')
+			.eq('plan_id', planId);
+
+		const weekIds = (weeks || []).map(w => w.id);
+		if (weekIds.length === 0) return [];
+
+		const { data: days } = await supabase
+			.from('plan_days')
+			.select('*')
+			.in('week_id', weekIds)
+			.order('date', { ascending: false });
+
+		return (days || []) as Array<PlanDay & { energy_level: string | null }>;
+	}
+
+	async function fetchStudentProgress(studentId: string) {
+		const { data: plans } = await supabase
+			.from('weekly_plans')
+			.select('id')
+			.eq('student_id', studentId);
+
+		const planIds = (plans || []).map(p => p.id);
+		if (planIds.length === 0) {
+			return { totalTasks: 0, completedTasks: 0, completionRate: 0, totalDays: 0, totalMinutes: 0, struggleAreas: [] as string[] };
+		}
+
+		const { data: weeks } = await supabase
+			.from('plan_weeks')
+			.select('id')
+			.in('plan_id', planIds);
+
+		const weekIds = (weeks || []).map(w => w.id);
+		if (weekIds.length === 0) {
+			return { totalTasks: 0, completedTasks: 0, completionRate: 0, totalDays: 0, totalMinutes: 0, struggleAreas: [] as string[] };
+		}
+
+		const { data: days } = await supabase
+			.from('plan_days')
+			.select('id, struggle_areas, plan_tasks(id, completed, duration_minutes)')
+			.in('week_id', weekIds);
+
+		let totalTasks = 0;
+		let completedTasks = 0;
+		let totalMinutes = 0;
+		const struggleSet = new Set<string>();
+
+		for (const day of (days || [])) {
+			if (day.struggle_areas) {
+				for (const area of day.struggle_areas) struggleSet.add(area);
+			}
+			for (const task of (day.plan_tasks || [])) {
+				totalTasks++;
+				totalMinutes += task.duration_minutes || 0;
+				if (task.completed) completedTasks++;
+			}
+		}
+
+		return {
+			totalTasks,
+			completedTasks,
+			completionRate: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0,
+			totalDays: (days || []).length,
+			totalMinutes,
+			struggleAreas: Array.from(struggleSet).sort()
+		};
+	}
+
+	// Load initial plan for timeline
+	$effect(() => {
+		if (tab === 'timeline' && selectedPlanId && studentPlans.length > 0) {
+			planStore.fetchOne(selectedPlanId);
+		}
+	});
 </script>
 
 <svelte:head><title>{studentStore.current?.name || 'Student'} — Prepless AI</title></svelte:head>
@@ -33,14 +159,18 @@
 {:else if studentStore.current}
 	{@const s = studentStore.current}
 	<div class="space-y-6">
-		<div class="flex items-start justify-between">
-			<div>
-				<h1 class="text-2xl font-bold text-[var(--color-text-primary)]">{s.name}</h1>
-				<div class="mt-1 flex items-center gap-2">
+		<!-- Header -->
+		<div class="flex flex-wrap items-start justify-between gap-4">
+			<div class="min-w-0">
+				<h1 class="truncate text-2xl font-bold text-[var(--color-text-primary)]">{s.name}</h1>
+				<div class="mt-1 flex flex-wrap items-center gap-2">
 					<Badge variant="info">{s.grade}</Badge>
-					{#each s.subjects.slice(0, 3) as subject}
+					{#each s.subjects.slice(0, 4) as subject}
 						<Badge variant="primary">{subject}</Badge>
 					{/each}
+					{#if s.subjects.length > 4}
+						<span class="text-xs text-[var(--color-text-tertiary)]">+{s.subjects.length - 4} more</span>
+					{/if}
 				</div>
 			</div>
 			<div class="flex gap-2">
@@ -51,28 +181,183 @@
 			</div>
 		</div>
 
-		<Tabs
-			tabs={[
-				{ value: 'profile', label: 'Profile' },
-				{ value: 'settings', label: 'Settings' }
-			]}
-			activeTab={tab}
-			onchange={(t) => (tab = t)}
-		/>
+		<!-- Tab bar -->
+		<Tabs {tabs} activeTab={tab} onchange={(t: string) => setTab(t)} />
 
-		{#if tab === 'profile'}
-			<Card>
-				<StudentForm editStudent={s} />
-			</Card>
-		{:else if tab === 'settings'}
-			<Card>
-				<StudentSettings student={s} />
-			</Card>
-			<div class="mt-6">
-				<Button variant="gradient" href={`/dashboard/plans/new?studentId=${s.id}`}>
-					Create Plan for {s.name}
-				</Button>
-			</div>
+		<!-- ═══ Timeline Tab ═══ -->
+		{#if tab === 'timeline'}
+			{#if plansLoading}
+				<div class="flex justify-center py-12"><Spinner size="md" /></div>
+			{:else if studentPlans.length === 0}
+				<EmptyState
+					icon="calendar"
+					title="No plans yet"
+					description="Create a learning plan for {s.name} to get started."
+					action={{ label: 'Create Plan', href: `/dashboard/plans/new?studentId=${s.id}` }}
+				/>
+			{:else}
+				<!-- Plan selector -->
+				<div class="flex flex-wrap items-center gap-3">
+					<label class="text-sm text-[var(--color-text-secondary)]">Plan:</label>
+					<select
+						class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 py-1.5 text-sm text-[var(--color-text-primary)]"
+						bind:value={selectedPlanId}
+						onchange={() => { if (selectedPlanId) planStore.fetchOne(selectedPlanId); }}
+					>
+						{#each studentPlans as plan}
+							<option value={plan.id}>{plan.title} — {plan.grade} • {plan.subjects.join(', ')}</option>
+						{/each}
+					</select>
+				</div>
+
+				<div class="mt-4">
+					<PlanTimeline />
+				</div>
+			{/if}
+		{/if}
+
+		<!-- ═══ Day Plans Tab ═══ -->
+		{#if tab === 'dayplans'}
+			<DayPlanList {studentPlans} />
+		{/if}
+
+		<!-- ═══ Progress Tab ═══ -->
+		{#if tab === 'progress'}
+			{#if canUseFeature(tier, 'progress_reports')}
+				<StudentProgress studentId={s.id} />
+			{:else}
+				<Card>
+					<div class="py-8 text-center">
+						<svg class="mx-auto h-12 w-12 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+						</svg>
+						<h2 class="mt-4 text-lg font-semibold text-[var(--color-text-primary)]">Pro Feature</h2>
+						<p class="mt-2 text-sm text-[var(--color-text-secondary)]">
+							Progress reports are available on <strong>Pro</strong> and <strong>Enterprise</strong> plans.
+						</p>
+						<div class="mt-4">
+							<Button variant="gradient" href="/pricing">Upgrade to Pro</Button>
+						</div>
+					</div>
+				</Card>
+			{/if}
+		{/if}
+
+		<!-- ═══ Emails Tab ═══ -->
+		{#if tab === 'emails'}
+			<EmptyState
+				icon="mail"
+				title="Coming Soon"
+				description="Parent email updates will be available here."
+			/>
+		{/if}
+
+		<!-- ═══ Prepless AI Tab ═══ -->
+		{#if tab === 'prepless-ai'}
+			<PreplessChat studentId={s.id} planId={selectedPlanId ?? undefined} />
 		{/if}
 	</div>
 {/if}
+
+
+<!-- ═══════════ Day Plan List (inline component) ═══════════ -->
+{#snippet DayPlanList(p: { studentPlans: WeeklyPlan[] })}
+	{#if plansLoading}
+		<div class="flex justify-center py-12"><Spinner size="md" /></div>
+	{:else if p.studentPlans.length === 0}
+		<EmptyState
+			icon="calendar"
+			title="No plans yet"
+			description="Create a learning plan first, then generate day plans within each week."
+			action={{ label: 'Create Plan', href: `/dashboard/plans/new?studentId=${$page.params.studentId}` }}
+		/>
+	{:else}
+		{#each p.studentPlans as plan}
+			<div class="mb-8">
+				<h2 class="mb-3 text-lg font-semibold text-[var(--color-text-primary)]">{plan.title}</h2>
+				{#await fetchDaysForPlan(plan.id) then days}
+					{#if days.length === 0}
+						<p class="text-sm text-[var(--color-text-tertiary)]">No day plans yet. Open the timeline to generate day plans for each week.</p>
+					{:else}
+						<div class="grid gap-1.5">
+							{#each days as day}
+								<a
+									href="/dashboard/day-plans/{day.id}"
+									class="group flex items-center gap-3 rounded-lg border border-[var(--color-border)] px-4 py-2.5 no-underline transition-colors hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-secondary)]"
+								>
+									<svg class="h-4 w-4 shrink-0 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-primary-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+									</svg>
+									<span class="flex-1 text-sm font-medium text-[var(--color-text-primary)]">{formatDateShort(day.date)} — {day.day_of_week}</span>
+									<span class="text-xs text-[var(--color-text-tertiary)] capitalize">{day.energy_level || '—'}</span>
+									<svg class="h-4 w-4 text-[var(--color-text-tertiary)] transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+									</svg>
+								</a>
+							{/each}
+						</div>
+					{/if}
+				{/await}
+			</div>
+		{/each}
+	{/if}
+{/snippet}
+
+
+<!-- ═══════════ Student Progress (inline component) ═══════════ -->
+{#snippet StudentProgress(p: { studentId: string })}
+	{#await fetchStudentProgress(p.studentId) then progress}
+		{#if progress.totalTasks === 0}
+			<EmptyState
+				icon="chart"
+				title="No data yet"
+				description="Create a plan and generate day plans to start tracking progress."
+			/>
+		{:else}
+			<div class="space-y-6">
+				<!-- Summary cards -->
+				<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+					<Card padding={false}>
+						<div class="p-4 text-center">
+							<div class="text-2xl font-bold text-[var(--color-text-primary)]">{progress.completionRate}%</div>
+							<div class="mt-1 text-xs text-[var(--color-text-secondary)]">Completion</div>
+							<div class="mt-2 h-1.5 w-full rounded-full bg-[var(--color-surface-tertiary)]">
+								<div class="h-1.5 rounded-full {progress.completionRate >= 80 ? 'bg-[var(--color-success)]' : progress.completionRate >= 50 ? 'bg-[var(--color-warning)]' : 'bg-[var(--color-error)]'}" style="width: {progress.completionRate}%"></div>
+							</div>
+						</div>
+					</Card>
+					<Card padding={false}>
+						<div class="p-4 text-center">
+							<div class="text-2xl font-bold text-[var(--color-text-primary)]">{progress.completedTasks}<span class="text-sm font-normal text-[var(--color-text-tertiary)]">/{progress.totalTasks}</span></div>
+							<div class="mt-1 text-xs text-[var(--color-text-secondary)]">Tasks done</div>
+						</div>
+					</Card>
+					<Card padding={false}>
+						<div class="p-4 text-center">
+							<div class="text-2xl font-bold text-[var(--color-text-primary)]">{progress.totalDays}</div>
+							<div class="mt-1 text-xs text-[var(--color-text-secondary)]">Days planned</div>
+						</div>
+					</Card>
+					<Card padding={false}>
+						<div class="p-4 text-center">
+							<div class="text-2xl font-bold text-[var(--color-text-primary)]">{progress.totalMinutes}</div>
+							<div class="mt-1 text-xs text-[var(--color-text-secondary)]">Minutes planned</div>
+						</div>
+					</Card>
+				</div>
+
+				<!-- Struggle areas -->
+				{#if progress.struggleAreas.length > 0}
+					<Card>
+						<h3 class="mb-3 text-sm font-semibold text-[var(--color-text-primary)]">Struggle Areas</h3>
+						<div class="flex flex-wrap gap-2">
+							{#each progress.struggleAreas as area}
+								<Badge variant="warning">{area}</Badge>
+							{/each}
+						</div>
+					</Card>
+				{/if}
+			</div>
+		{/if}
+	{/await}
+{/snippet}

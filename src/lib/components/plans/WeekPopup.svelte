@@ -4,7 +4,7 @@
 	import { dayPlanStore } from '$lib/stores/dayPlan.svelte';
 	import { auth } from '$lib/stores/auth.svelte';
 	import { supabase } from '$lib/lib/supabase';
-	import { formatDateLong, formatDateShort } from '$lib/lib/date';
+	import { formatDateLong } from '$lib/lib/date';
 	import { exportDayPlan, exportDayPlanJson, openExport, downloadJson } from '$lib/lib/export';
 	import type { ExportDayPlanJson } from '$lib/lib/export';
 	import { parseImportJson } from '$lib/lib/export';
@@ -15,6 +15,7 @@
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import DayPlanGenerator from '$lib/components/day-plans/DayPlanGenerator.svelte';
 	import DayPlanView from '$lib/components/day-plans/DayPlanView.svelte';
+	import WeekHomework from '$lib/components/plans/WeekHomework.svelte';
 
 	let {
 		open = false,
@@ -166,17 +167,6 @@
 	>
 		{#if mode === 'view'}
 			<div class="space-y-4">
-				<div class="flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
-					<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-						><path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-						/></svg
-					>
-					{formatDateShort(week.week_start)} — {formatDateShort(week.week_end)}
-				</div>
 				{#if week.theme}
 					<h3 class="text-lg font-semibold text-[var(--color-text-primary)]">{week.theme}</h3>
 				{/if}
@@ -191,6 +181,9 @@
 				{#if !week.ai_generated}
 					<p class="text-xs text-[var(--color-warning)]">Manually edited</p>
 				{/if}
+
+				<!-- Homework -->
+				<WeekHomework weekId={week.id} />
 
 				<!-- Existing Day Plans -->
 				{#if dayPlanStore.weekDays.length > 0}
@@ -220,12 +213,12 @@
 													d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
 												/></svg
 											>
-											<span class="text-sm font-medium text-[var(--color-text-primary)]"
-												>{formatDateLong(day.date)}</span
-											>
-											<span class="text-xs text-[var(--color-text-tertiary)] capitalize"
+											<span class="text-sm font-medium text-[var(--color-text-primary)] capitalize"
 												>{day.day_of_week}</span
 											>
+											<span class="text-xs text-[var(--color-text-tertiary)]">
+												{formatDateLong(day.date)}
+											</span>
 										</div>
 									</button>
 
