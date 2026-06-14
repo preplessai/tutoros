@@ -17,7 +17,6 @@
 
 	let activeWeek = $state<PlanWeek | null>(null);
 	let popupOpen = $state(false);
-	let scrollEl = $state<HTMLDivElement>();
 
 	function openPopup(week: PlanWeek) {
 		activeWeek = week;
@@ -27,13 +26,6 @@
 	function closePopup() {
 		popupOpen = false;
 		activeWeek = null;
-	}
-
-	function scrollLeft() {
-		scrollEl?.scrollBy({ left: -320, behavior: 'smooth' });
-	}
-	function scrollRight() {
-		scrollEl?.scrollBy({ left: 320, behavior: 'smooth' });
 	}
 
 	// ── Export Plan (all weeks) ──
@@ -80,11 +72,9 @@
 		const allData = await fetchAllWeeksData();
 		const planTitle = planStore.current?.title || 'Plan';
 
-		// Build combined HTML
 		const css = `*{margin:0;padding:0;box-sizing:border-box}body{font-family:'DM Sans',-apple-system,sans-serif;background:#0C0E0F;color:#EDEFEF;padding:40px;line-height:1.6}h1{font-family:'Instrument Serif',Georgia,serif;font-size:28px;color:#00E5A0;margin-bottom:4px}h2{font-family:'Instrument Serif',Georgia,serif;font-size:22px;color:#EDEFEF;margin:24px 0 12px 0;border-bottom:1px solid rgba(237,239,239,0.1);padding-bottom:8px}@media print{body{background:#fff;color:#000;padding:20px}h1{color:#000}}`;
 		const weeksHtml = allData
 			.map(({ week, days }) => {
-				// Strip outer HTML wrapper from exportWeek, keep body content
 				const full = exportWeek(week, days);
 				const bodyMatch = full.match(/<body>(.*)<\/body>/s);
 				return bodyMatch ? bodyMatch[1] : '';
@@ -99,8 +89,6 @@
 	async function handleExportJson() {
 		const allData = await fetchAllWeeksData();
 		const planTitle = planStore.current?.title || 'Plan';
-		// Export as week_plan format so it can be re-imported.
-		// Use first week's metadata, merge all days from all weeks.
 		const firstWeek = allData[0]?.week;
 		const exportData: ExportWeekJson = {
 			type: 'week_plan',
@@ -162,7 +150,7 @@
 			} else {
 				throw new Error('Unrecognized export format.');
 			}
-		} catch {
+		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : 'Unknown error';
 			const { toast } = await import('$lib/stores/toast.svelte');
 			toast.error('Import failed: ' + message);
@@ -179,7 +167,7 @@
 		try {
 			const { url } = await stripeApi.createPortalSession();
 			window.location.href = url;
-		} catch {
+		} catch (err: unknown) {
 			const { toast } = await import('$lib/stores/toast.svelte');
 			toast.error('Failed to open subscription portal');
 		} finally {
@@ -189,38 +177,8 @@
 </script>
 
 <div class="space-y-6">
-	<!-- Header with breadcrumb -->
+	<!-- Header -->
 	<div>
-		<nav class="mb-2 flex items-center gap-2 text-sm text-[var(--color-text-tertiary)]">
-			<a
-				href="/dashboard"
-				class="no-underline transition-colors hover:text-[var(--color-text-primary)]">Dashboard</a
-			>
-			<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-				><path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M9 5l7 7-7 7"
-				/></svg
-			>
-			<a
-				href="/dashboard/plans"
-				class="no-underline transition-colors hover:text-[var(--color-text-primary)]">Plans</a
-			>
-			<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-				><path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M9 5l7 7-7 7"
-				/></svg
-			>
-			<span class="truncate text-[var(--color-text-secondary)]"
-				>{planStore.current?.title || 'Timeline'}</span
-			>
-		</nav>
-
 		<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 			<div>
 				<h1
@@ -370,8 +328,6 @@
 						class="hidden"
 					/>
 				{/if}
-
-				<Button variant="outline" size="sm" href="/dashboard/plans">All Plans</Button>
 			</div>
 		</div>
 	</div>
@@ -389,61 +345,13 @@
 			}}
 		/>
 	{:else}
-		<!-- Horizontal Scroll Timeline -->
-		<div class="relative">
-			<!-- Scroll arrows -->
-			<button
-				onclick={scrollLeft}
-				aria-label="Scroll timeline left"
-				class="shadow-clay-md hover:shadow-clay-lg absolute top-1/2 left-0 z-10 -ml-5 hidden h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-2 border-[var(--color-border)] bg-[var(--color-surface-elevated)] transition-all md:flex"
-			>
-				<svg
-					class="h-5 w-5 text-[var(--color-text-secondary)]"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					><path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M15 19l-7-7 7-7"
-					/></svg
-				>
-			</button>
-			<button
-				onclick={scrollRight}
-				aria-label="Scroll timeline right"
-				class="shadow-clay-md hover:shadow-clay-lg absolute top-1/2 right-0 z-10 -mr-5 hidden h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-2 border-[var(--color-border)] bg-[var(--color-surface-elevated)] transition-all md:flex"
-			>
-				<svg
-					class="h-5 w-5 text-[var(--color-text-secondary)]"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					><path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M9 5l7 7-7 7"
-					/></svg
-				>
-			</button>
-
-			<!-- Scroll container -->
-			<div
-				bind:this={scrollEl}
-				class="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-4 md:mx-0 md:px-0"
-				style="scrollbar-width: thin; scrollbar-color: var(--color-border) transparent"
-			>
-				{#each planStore.weeks as week, i (week.id)}
-					<div
-						class="w-[280px] shrink-0 snap-start sm:w-[320px]"
-						style="animation: fade-in-up 0.4s ease-out {i * 60}ms both"
-					>
-						<WeekCard {week} active={activeWeek?.id === week.id} onclick={() => openPopup(week)} />
-					</div>
-				{/each}
-			</div>
+		<!-- Vertical Week Grid -->
+		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+			{#each planStore.weeks as week, i (week.id)}
+				<div style="animation: fade-in-up 0.4s ease-out {i * 60}ms both">
+					<WeekCard {week} active={activeWeek?.id === week.id} onclick={() => openPopup(week)} />
+				</div>
+			{/each}
 		</div>
 	{/if}
 </div>

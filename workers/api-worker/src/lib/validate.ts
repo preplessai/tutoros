@@ -1,6 +1,8 @@
+// Shared Zod schemas for API validation
+
 import { z } from 'zod';
 
-const dayOfWeekSchema = z.enum([
+export const dayOfWeekSchema = z.enum([
 	'monday',
 	'tuesday',
 	'wednesday',
@@ -10,22 +12,27 @@ const dayOfWeekSchema = z.enum([
 	'sunday'
 ]);
 
+export const taskSectionSchema = z.enum([
+	'review_struggles',
+	'homework_help',
+	'project_help',
+	'learn_new',
+	'practice',
+	'wrap_up'
+]);
+
+export const resourceTypeSchema = z.enum(['video', 'article', 'practice', 'interactive']);
+
 // POST /api/generate-weekly-plan
 export const generateWeeklyPlanSchema = z.object({
 	studentId: z.string(),
-	grade: z.string().min(1),
-	subjects: z.array(z.string()).min(1),
-	timePerSession: z.number().int().positive().max(480),
-	sessionsPerWeek: z.number().int().positive().max(14),
+	grade: z.string(),
+	subjects: z.array(z.string()),
+	timePerSession: z.number().int().positive(),
+	sessionsPerWeek: z.number().int().positive(),
 	duration: z.string(),
-	startDate: z
-		.string()
-		.regex(/^\d{4}-\d{2}-\d{2}$/)
-		.optional(),
-	endDate: z
-		.string()
-		.regex(/^\d{4}-\d{2}-\d{2}$/)
-		.optional(),
+	startDate: z.string().optional(),
+	endDate: z.string().optional(),
 	goals: z.string(),
 	learningStyle: z.string().optional(),
 	diagnosticData: z.string().optional(),
@@ -37,17 +44,18 @@ export const adjustPlanSchema = z.object({
 	currentPlan: z.unknown(),
 	changes: z.object({
 		unavailableDates: z.array(z.string()).optional(),
-		newTargetDates: z.array(z.object({ subject: z.string(), targetDate: z.string() })).optional(),
+		newTargetDates: z
+			.array(z.object({ subject: z.string(), targetDate: z.string() }))
+			.optional(),
 		newSubjects: z.array(z.string()).optional(),
 		removedSubjects: z.array(z.string()).optional(),
 		gradeChange: z.string().optional(),
 		goalUpdates: z.string().optional(),
 		scheduleChanges: z
-			.object({
-				timePerSession: z.number().int().positive().max(480).optional(),
-				sessionsPerWeek: z.number().int().positive().max(14).optional()
-			})
-			.optional()
+			.object({ timePerSession: z.number().int().positive().optional(), sessionsPerWeek: z.number().int().positive().optional() })
+			.optional(),
+		focusAreaUpdates: z.string().optional(),
+		contextUpdates: z.string().optional()
 	})
 });
 
@@ -66,11 +74,12 @@ export const generateDayPlanSchema = z.object({
 	studentContext: z.object({
 		grade: z.string(),
 		subjects: z.array(z.string()),
-		learningStyle: z.string(),
-		recentProgress: z.string(),
-		grades: z.string(),
-		struggleAreas: z.string(),
-		energyLevel: z.enum(['low', 'medium', 'high'])
+		learningStyle: z.string().optional(),
+		recentProgress: z.string().optional(),
+		grades: z.string().optional(),
+		struggleAreas: z.string().optional(),
+		energyLevel: z.enum(['low', 'medium', 'high']).optional(),
+		extraInfo: z.string().optional()
 	})
 });
 
@@ -131,4 +140,47 @@ export const preplessChatSchema = z.object({
 			)
 		})
 		.optional()
+});
+
+// POST /api/prepless-chat response validation
+export const chatResponseSchema = z.object({
+	message: z.string(),
+	intent: z.enum(['info', 'edit_plan', 'edit_day', 'add_resources', 'add_homework', 'unknown']),
+	proposedChanges: z
+		.object({
+			type: z.enum([
+				'week_theme',
+				'focus_areas',
+				'add_task',
+				'remove_task',
+				'adjust_schedule',
+				'add_resources',
+				'add_homework'
+			]),
+			description: z.string(),
+			mutations: z.array(
+				z.object({
+					table: z.enum(['plan_weeks', 'plan_days', 'plan_tasks', 'resources', 'plan_week_homework']),
+					action: z.enum(['update', 'insert']),
+					data: z.record(z.unknown())
+				})
+			)
+		})
+		.nullable()
+		.optional()
+});
+
+// POST /api/pick-resources response validation
+export const pickResourcesResponseSchema = z.object({
+	resources: z.array(
+		z.object({
+			taskId: z.string(),
+			title: z.string(),
+			url: z.string(),
+			source: z.string(),
+			type: resourceTypeSchema,
+			description: z.string(),
+			relevance: z.string()
+		})
+	)
 });

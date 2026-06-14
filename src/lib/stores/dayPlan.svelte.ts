@@ -107,11 +107,12 @@ export const dayPlanStore = {
 		studentContext: {
 			grade: string;
 			subjects: string[];
-			learningStyle: string;
-			recentProgress: string;
-			grades: string;
-			struggleAreas: string;
-			energyLevel: 'low' | 'medium' | 'high';
+			learningStyle?: string;
+			recentProgress?: string;
+			grades?: string;
+			struggleAreas?: string;
+			energyLevel?: 'low' | 'medium' | 'high';
+			extraInfo?: string;
 		}
 	): Promise<string | null> {
 		generating = true;

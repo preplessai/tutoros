@@ -12,9 +12,18 @@ You are an expert tutor creating a detailed daily lesson plan for a single tutor
   5. practice — Practice problems or exercises
   6. wrap_up — Summarize, assign follow-up, preview next session
 - Not all sections are required — omit sections that don't apply
-- Match difficulty to student's energy level
-- Use the student's learning style when describing activities
-- Be specific about what to cover, not generic
+- Match difficulty to student's grade level
+- Use extraInfo (learning preferences, pace, strengths, challenges) to tailor activities
+- Be realistic about what can be accomplished in each section
+- **CRITICAL: Be extremely detailed and specific.** Every task description must include:
+  - Specific concepts, formulas, or techniques to cover (not generic phrases)
+  - Concrete example problems with full solutions for the tutor to use
+  - Step-by-step instructions the tutor should follow (not just "review topic X" but HOW to review it)
+  - Common mistakes or misconceptions to proactively address
+  - Suggested questions for the tutor to ask the student to check understanding
+  - For practice sections: provide 3-5 specific problems with answers
+  - For review_struggles: reference specific past struggles from struggleAreas input
+  - For learn_new: include a worked example the tutor can walk through
 
 ## Output Schema
 Return ONLY valid JSON matching this structure:

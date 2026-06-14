@@ -38,10 +38,18 @@ export const studentStore = {
 
 	async fetchOne(id: string) {
 		loading = true;
-		const { data } = await supabase.from('students').select('*').eq('id', id).single();
-		if (data) current = data as Student;
-		loading = false;
-		return current;
+		try {
+			const { data, error } = await supabase.from('students').select('*').eq('id', id).single();
+			if (error) throw error;
+			if (data) current = data as Student;
+			return current;
+		} catch (err: unknown) {
+			console.error('[studentStore.fetchOne] Failed to fetch student:', err);
+			current = null;
+			return null;
+		} finally {
+			loading = false;
+		}
 	},
 
 	async create(student: Omit<Student, 'id' | 'tutor_id' | 'created_at' | 'updated_at'>) {
@@ -60,9 +68,10 @@ export const studentStore = {
 			});
 			tutorId = await getTutorId();
 			console.log('[studentStore.create] Got tutorId:', tutorId);
-		} catch (e: any) {
-			console.error('[studentStore.create] getTutorId threw:', e.message);
-			toast.error('Authentication error: ' + e.message);
+		} catch (e: unknown) {
+			const msg = e instanceof Error ? e.message : 'Unknown error';
+			console.error('[studentStore.create] getTutorId threw:', msg);
+			toast.error('Authentication error: ' + msg);
 			return null;
 		}
 

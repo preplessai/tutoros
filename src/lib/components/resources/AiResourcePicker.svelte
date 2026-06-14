@@ -42,6 +42,7 @@
 	let savingAll = $state(false);
 
 	onMount(() => {
+		creditStore.fetch();
 		if (open) {
 			fetchRecommendations();
 		}
