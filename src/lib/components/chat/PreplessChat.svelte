@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { supabase } from '$lib/lib/supabase';
 	import { api } from '$lib/lib/api';
 	import { creditStore } from '$lib/stores/credits.svelte';
 	import { studentStore } from '$lib/stores/student.svelte';
-	import { planStore } from '$lib/stores/plan.svelte';
 	import { toast } from '$lib/stores/toast.svelte';
 	import ChatMessage from './ChatMessage.svelte';
 	import ChangeConfirmation from './ChangeConfirmation.svelte';
@@ -24,6 +24,26 @@
 	let executingMutations = $state(false);
 	let chatContainer: HTMLDivElement | undefined = $state();
 
+	// Plan selector state
+	interface PlanOption {
+		id: string;
+		label: string;
+		grade: string;
+	}
+	let availablePlans = $state<PlanOption[]>([]);
+	let selectedOption = $state<string>('all'); // 'all' | planId
+	let planContext = $state<{
+		id: string;
+		weeks: Array<{
+			id: string;
+			weekNumber: number;
+			theme: string | null;
+			focusAreas: string[];
+			notes: string | null;
+		}>;
+	} | null>(null);
+	let plansLoaded = $state(false);
+
 	// Build student context from already-loaded store data (avoids triggering global loading)
 	let studentContext = $derived.by(() => {
 		const s = studentStore.students.find((st) => st.id === studentId) || studentStore.current;
@@ -38,33 +58,116 @@
 		};
 	});
 
-	// Build plan context from store
-	let planContext = $derived.by(() => {
-		if (!planId) return null;
-		const p = planStore.current;
-		const weeks = p?.id === planId ? planStore.weeks : [];
-		if (weeks.length === 0) return null;
-		return {
-			id: planId,
-			weeks: weeks.map((w: PlanWeek) => ({
-				id: w.id,
-				weekNumber: w.week_number,
-				theme: w.theme,
-				focusAreas: w.focus_areas,
-				notes: w.notes
-			}))
-		};
+	onMount(async () => {
+		creditStore.fetch();
+		await fetchAvailablePlans();
+
+		// Set initial selection: passed planId, first available plan, or 'all'
+		if (planId && availablePlans.some((p) => p.id === planId)) {
+			selectedOption = planId;
+		} else if (availablePlans.length === 1) {
+			selectedOption = availablePlans[0].id;
+		}
+
+		if (selectedOption !== 'all') {
+			await loadPlanContext(selectedOption);
+		} else if (availablePlans.length === 0) {
+			// No plans at all — work with just student context
+			planContext = null;
+		} else {
+			await loadAllPlanContexts();
+		}
+
+		plansLoaded = true;
 	});
 
-	// Fetch credits + plan context on mount
-	let contextLoaded = $state(false);
-	$effect(() => {
-		creditStore.fetch();
-		if (planId && !contextLoaded) {
-			contextLoaded = true;
-			planStore.fetchOne(planId);
+	async function fetchAvailablePlans() {
+		const { data } = await supabase
+			.from('weekly_plans')
+			.select('id, grade, student_id')
+			.eq('student_id', studentId)
+			.order('created_at', { ascending: false });
+
+		if (data) {
+			availablePlans = (data as Array<{ id: string; grade: string }>).map((p, i) => ({
+				id: p.id,
+				label: `Plan ${i + 1} (${p.grade})`,
+				grade: p.grade
+			}));
 		}
-	});
+	}
+
+	async function loadPlanContext(planIdToLoad: string) {
+		const { data: weeks } = await supabase
+			.from('plan_weeks')
+			.select('id, week_number, theme, focus_areas, notes')
+			.eq('plan_id', planIdToLoad)
+			.order('week_number');
+
+		if (weeks && weeks.length > 0) {
+			planContext = {
+				id: planIdToLoad,
+				weeks: weeks.map((w: Record<string, unknown>) => ({
+					id: w.id as string,
+					weekNumber: w.week_number as number,
+					theme: (w.theme as string) || null,
+					focusAreas: (w.focus_areas as string[]) || [],
+					notes: (w.notes as string) || null
+				}))
+			};
+		} else {
+			planContext = { id: planIdToLoad, weeks: [] };
+		}
+	}
+
+	async function loadAllPlanContexts() {
+		if (availablePlans.length === 0) {
+			planContext = null;
+			return;
+		}
+
+		const planIds = availablePlans.map((p) => p.id);
+		const { data: weeks } = await supabase
+			.from('plan_weeks')
+			.select('id, week_number, theme, focus_areas, notes, plan_id')
+			.in('plan_id', planIds)
+			.order('week_number');
+
+		if (weeks && weeks.length > 0) {
+			// Group weeks by plan and use a synthetic id
+			const allWeeks = (weeks as Array<Record<string, unknown>>).map((w) => ({
+				id: w.id as string,
+				weekNumber: w.week_number as number,
+				theme: (w.theme as string) || null,
+				focusAreas: (w.focus_areas as string[]) || [],
+				notes: (w.notes as string) || null,
+				planId: w.plan_id as string
+			}));
+
+			planContext = {
+				id: 'all',
+				weeks: allWeeks.map((w) => ({
+					id: w.id,
+					weekNumber: w.weekNumber,
+					theme: w.theme,
+					focusAreas: w.focusAreas,
+					notes: w.notes
+				}))
+			};
+		} else {
+			planContext = { id: 'all', weeks: [] };
+		}
+	}
+
+	async function handlePlanChange(e: Event) {
+		const value = (e.target as HTMLSelectElement).value;
+		selectedOption = value;
+		if (value === 'all') {
+			await loadAllPlanContexts();
+		} else {
+			await loadPlanContext(value);
+		}
+	}
 
 	async function sendMessage() {
 		const text = inputText.trim();
@@ -169,16 +272,18 @@
 			}
 		}
 
-		if (planId) await planStore.fetchOne(planId);
+		// Refresh plan context after mutations
+		if (selectedOption === 'all') {
+			await loadAllPlanContexts();
+		} else if (selectedOption) {
+			await loadPlanContext(selectedOption);
+		}
 
 		if (failed.length === 0) {
 			toast.success(`All ${succeeded.length} change(s) applied successfully.`);
 			messages = [
 				...messages,
-				{
-					role: 'assistant',
-					content: "Changes applied! Anything else you'd like to adjust?"
-				}
+				{ role: 'assistant', content: "Changes applied! Anything else you'd like to adjust?" }
 			];
 		} else if (succeeded.length > 0) {
 			toast.warning(`${succeeded.length} change(s) succeeded, ${failed.length} failed.`);
@@ -195,10 +300,7 @@
 			toast.error(`All ${failed.length} change(s) failed.`);
 			messages = [
 				...messages,
-				{
-					role: 'assistant',
-					content: 'None of the changes could be applied. Please try again.'
-				}
+				{ role: 'assistant', content: 'None of the changes could be applied. Please try again.' }
 			];
 		}
 
@@ -232,12 +334,36 @@
 </script>
 
 <div class="flex h-full flex-col">
+	<!-- Plan selector bar -->
+	{#if plansLoaded && availablePlans.length > 0}
+		<div class="border-b border-[var(--color-border)] px-4 py-2">
+			<select
+				value={selectedOption}
+				onchange={handlePlanChange}
+				class="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 py-1.5 text-xs text-[var(--color-text-primary)] focus:border-[var(--color-primary-400)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-400)]"
+			>
+				<option value="all">All Plans ({availablePlans.length})</option>
+				{#each availablePlans as plan}
+					<option value={plan.id}>{plan.label}</option>
+				{/each}
+			</select>
+		</div>
+	{/if}
+
 	<div bind:this={chatContainer} class="flex-1 space-y-3 overflow-y-auto p-4">
 		{#if messages.length === 0}
 			<div class="flex h-full items-center justify-center">
 				<p class="max-w-sm text-center text-sm text-[var(--color-text-tertiary)]">
 					Ask me anything about your student's plan! I can help adjust themes, add tasks, suggest
 					resources, or provide learning recommendations.
+					{#if planContext}
+						<br /><br />
+						<span class="text-xs">
+							{selectedOption === 'all'
+								? `Context: all ${availablePlans.length} plan(s) loaded.`
+								: 'Context: 1 plan loaded.'}
+						</span>
+					{/if}
 				</p>
 			</div>
 		{:else}

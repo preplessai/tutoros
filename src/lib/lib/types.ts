@@ -322,8 +322,9 @@ export interface PreplessChatRequest {
 
 export interface PreplessChatResponse {
 	message: string;
-	intent: 'info' | 'edit_plan' | 'edit_day' | 'add_resources' | 'unknown';
+	intent: 'info' | 'edit_plan' | 'edit_day' | 'add_resources' | 'add_homework' | 'unknown';
 	proposedChanges?: PlanChangeProposal;
+	creditCost: number;
 }
 
 // ── Parent Emails ──

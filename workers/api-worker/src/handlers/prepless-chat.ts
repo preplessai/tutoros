@@ -40,7 +40,6 @@ const chatResponseSchema = z.object({
 
 /**
  * Extract a balanced JSON object or array from text that may have trailing content.
- * Counts braces/brackets to find the true end of the JSON structure.
  */
 function extractBalancedJSON(text: string): string {
 	const firstChar = text[0];
@@ -55,34 +54,19 @@ function extractBalancedJSON(text: string): string {
 	for (let i = 0; i < text.length; i++) {
 		const ch = text[i];
 
-		if (escaped) {
-			escaped = false;
-			continue;
-		}
-
-		if (ch === '\\' && inString) {
-			escaped = true;
-			continue;
-		}
-
-		if (ch === '"') {
-			inString = !inString;
-			continue;
-		}
-
+		if (escaped) { escaped = false; continue; }
+		if (ch === '\\' && inString) { escaped = true; continue; }
+		if (ch === '"') { inString = !inString; continue; }
 		if (inString) continue;
 
 		if (ch === openChar) {
 			depth++;
 		} else if (ch === closeChar) {
 			depth--;
-			if (depth === 0) {
-				return text.slice(0, i + 1);
-			}
+			if (depth === 0) return text.slice(0, i + 1);
 		}
 	}
 
-	// If we never balanced, return the original text (parser will handle the error)
 	return text;
 }
 
@@ -103,11 +87,7 @@ export async function handlePreplessChat(
 
 		const input = parsed.data;
 		const userMessage = JSON.stringify(
-			{
-				messages: input.messages,
-				studentContext: input.studentContext,
-				planContext: input.planContext
-			},
+			{ messages: input.messages, studentContext: input.studentContext, planContext: input.planContext },
 			null,
 			2
 		);
@@ -120,17 +100,13 @@ export async function handlePreplessChat(
 			env
 		});
 
-		// Extract JSON from AI response.
-		// Strategy: try direct parse first (AI returns clean JSON),
-		// then markdown code block extraction, then brace-balanced extraction.
+		// Extract JSON from AI response
 		let jsonStr = result.text.trim();
 
-		// Strip markdown code fences if present
 		const fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
 		if (fenceMatch) {
 			jsonStr = fenceMatch[1].trim();
 		} else if (jsonStr.startsWith('{') || jsonStr.startsWith('[')) {
-			// Looks like clean JSON — extract balanced braces/brackets
 			jsonStr = extractBalancedJSON(jsonStr);
 		}
 
@@ -144,8 +120,7 @@ export async function handlePreplessChat(
 			);
 		}
 
-		// Auto-wrap: if AI returned a raw JSON array (ignored system prompt format),
-		// wrap it into the expected { message, intent, proposedChanges } shape.
+		// Auto-wrap raw JSON arrays into structured format
 		if (Array.isArray(responseData)) {
 			const items = responseData as Record<string, unknown>[];
 			responseData = {
@@ -163,7 +138,7 @@ export async function handlePreplessChat(
 			};
 		}
 
-		// Validate AI response shape with Zod
+		// Validate response shape with Zod
 		const validated = chatResponseSchema.safeParse(responseData);
 		if (!validated.success) {
 			return Response.json(
@@ -178,11 +153,22 @@ export async function handlePreplessChat(
 
 		const data = validated.data;
 
+		// Usage-based credit cost (frontier model pricing: ~Gemini/GLM tier)
+		// 1 token ≈ 4 characters. Input: $0.10/M tokens. Output: $0.40/M tokens.
+		// 1 credit ≈ $0.10 (rough equivalence)
+		const inputChars = systemPrompt.length + userMessage.length;
+		const outputChars = result.text.length;
+		const inputTokens = inputChars / 4;
+		const outputTokens = outputChars / 4;
+		const rawCost = inputTokens * 0.0001 + outputTokens * 0.0004;
+		const creditCost = Math.max(0.05, Math.round(rawCost * 100) / 100);
+
 		return Response.json({
 			message: data.message,
 			intent: data.intent,
 			proposedChanges: data.proposedChanges ?? null,
-			provider: result.provider
+			provider: result.provider,
+			creditCost
 		});
 	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : 'Internal error';
