@@ -41,10 +41,10 @@
 	let saving = $state<Set<string>>(new Set());
 	let savingAll = $state(false);
 
-	onMount(() => {
-		creditStore.fetch();
+	onMount(async () => {
+		await creditStore.fetch();
 		if (open) {
-			fetchRecommendations();
+			await fetchRecommendations();
 		}
 	});
 
@@ -53,7 +53,15 @@
 		if (loading) return;
 
 		// Credit check
-		if (!creditStore.hasEnough(0.5)) {
+		if (!(await creditStore.hasEnoughAfterFetch(0.5))) {
+			toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
+			onclose?.();
+			return;
+		}
+
+		// Deduct credits BEFORE calling the AI API
+		const ok = await creditStore.useCredits(0.5, 'ai_pick_resources');
+		if (!ok) {
 			toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
 			onclose?.();
 			return;
@@ -81,12 +89,6 @@
 			});
 
 			resources = result.resources as RecommendedResource[];
-
-			// Deduct credits on successful generation
-			const credited = await creditStore.useCredits(0.5, 'ai_pick_resources');
-			if (!credited) {
-				toast.error('Failed to deduct credits, but resources were found.');
-			}
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : 'Failed to get AI recommendations';
 			error = message;

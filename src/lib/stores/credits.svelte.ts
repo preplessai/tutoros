@@ -24,40 +24,45 @@ export const creditStore = {
 	async fetch() {
 		if (!auth.user?.id) return;
 		loading = true;
-		const { data } = await supabase
-			.from('profiles')
-			.select('non_expiring_credits, refreshing_credits, refreshing_reset_at, subscription_tier')
-			.eq('id', auth.user.id)
-			.single();
+		try {
+			const { data } = await supabase
+				.from('profiles')
+				.select('non_expiring_credits, refreshing_credits, refreshing_reset_at, subscription_tier')
+				.eq('id', auth.user.id)
+				.single();
 
-		if (data) {
-			// Auto-refresh credits if subscription-based and reset time passed
-			if (data.subscription_tier !== 'free' && data.refreshing_reset_at) {
-				const resetAt = new Date(data.refreshing_reset_at);
-				if (resetAt <= new Date()) {
-					const tierConfig =
-						SUBSCRIPTION_TIERS[data.subscription_tier as keyof typeof SUBSCRIPTION_TIERS];
-					const refreshAmount = tierConfig?.monthlyCredits || 30;
-					await supabase.rpc('refresh_credits', {
-						p_user_id: auth.user.id,
-						p_amount: refreshAmount
-					});
-					// Re-fetch after refresh
-					const { data: refreshed } = await supabase
-						.from('profiles')
-						.select('non_expiring_credits, refreshing_credits')
-						.eq('id', auth.user.id)
-						.single();
-					if (refreshed) {
-						nonExpiring = refreshed.non_expiring_credits || 0;
-						refreshing = refreshed.refreshing_credits || 0;
-						loading = false;
-						return;
+			if (data) {
+				// Auto-refresh credits if subscription-based and reset time passed
+				if (data.subscription_tier !== 'free' && data.refreshing_reset_at) {
+					const resetAt = new Date(data.refreshing_reset_at);
+					if (resetAt <= new Date()) {
+						const tierConfig =
+							SUBSCRIPTION_TIERS[data.subscription_tier as keyof typeof SUBSCRIPTION_TIERS];
+						const refreshAmount = tierConfig?.monthlyCredits || 30;
+						await supabase.rpc('refresh_credits', {
+							p_user_id: auth.user.id,
+							p_amount: refreshAmount
+						});
+						// Re-fetch after refresh
+						const { data: refreshed } = await supabase
+							.from('profiles')
+							.select('non_expiring_credits, refreshing_credits')
+							.eq('id', auth.user.id)
+							.single();
+						if (refreshed) {
+							nonExpiring = refreshed.non_expiring_credits || 0;
+							refreshing = refreshed.refreshing_credits || 0;
+							loading = false;
+							return;
+						}
 					}
 				}
+				nonExpiring = data.non_expiring_credits || 0;
+				refreshing = data.refreshing_credits || 0;
 			}
-			nonExpiring = data.non_expiring_credits || 0;
-			refreshing = data.refreshing_credits || 0;
+		} catch {
+			nonExpiring = 0;
+			refreshing = 0;
 		}
 		loading = false;
 	},
@@ -98,5 +103,14 @@ export const creditStore = {
 	 */
 	hasEnough(amount: number): boolean {
 		return nonExpiring + refreshing >= amount;
+	},
+
+	/**
+	 * Fetch latest credits then check if user has enough.
+	 * Use this for gate checks before API calls.
+	 */
+	async hasEnoughAfterFetch(amount: number): Promise<boolean> {
+		await this.fetch();
+		return this.hasEnough(amount);
 	}
 };

@@ -64,6 +64,7 @@ export const planStore = {
 
 	async generateAndSave(request: any): Promise<string | null> {
 		generating = true;
+		let creditsDeducted = false;
 		try {
 			// Check for existing plan for this student
 			const { data: existingPlan } = await supabase
@@ -79,7 +80,7 @@ export const planStore = {
 			}
 
 			// Credit check before API call
-			if (!creditStore.hasEnough(1)) {
+			if (!(await creditStore.hasEnoughAfterFetch(1))) {
 				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
 				generating = false;
 				return null;
@@ -101,6 +102,15 @@ export const planStore = {
 					return null;
 				}
 			}
+
+			// Deduct credit BEFORE any AI/DB work
+			const ok = await creditStore.useCredits(1, 'weekly_plan_generation');
+			if (!ok) {
+				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
+				generating = false;
+				return null;
+			}
+			creditsDeducted = true;
 
 			const result: AiGeneratedPlan = await api.generateWeeklyPlan({
 				studentId: request.studentId,
@@ -187,13 +197,14 @@ export const planStore = {
 				}
 			}
 
-			// Deduct credit on success
-			await creditStore.useCredits(1, 'weekly_plan_generation');
-
 			toast.success('Plan generated successfully');
 			return plan.id;
 		} catch (err: any) {
-			toast.error('Failed to generate plan: ' + err.message);
+			if (creditsDeducted) {
+				toast.error('Credits were deducted but plan generation failed. Contact support for a refund.');
+			} else {
+				toast.error('Failed to generate plan: ' + err.message);
+			}
 			return null;
 		} finally {
 			generating = false;
@@ -202,13 +213,23 @@ export const planStore = {
 
 	async adjustPlan(planId: string, changes: any): Promise<boolean> {
 		generating = true;
+		let creditsDeducted = false;
 		try {
 			// Credit check
-			if (!creditStore.hasEnough(1)) {
+			if (!(await creditStore.hasEnoughAfterFetch(1))) {
 				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
 				generating = false;
 				return false;
 			}
+
+			// Deduct credit BEFORE any AI/DB work
+			const ok = await creditStore.useCredits(1, 'plan_adjustment');
+			if (!ok) {
+				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
+				generating = false;
+				return false;
+			}
+			creditsDeducted = true;
 
 			const result: AiGeneratedPlan = await api.adjustPlan({
 				currentPlan: current?.ai_raw_response || {},
@@ -286,13 +307,14 @@ export const planStore = {
 			await supabase.from('weekly_plans').update({ ai_raw_response: result }).eq('id', planId);
 			await this.fetchOne(planId);
 
-			// Deduct credit on success
-			await creditStore.useCredits(1, 'plan_adjustment');
-
 			toast.success('Plan adjusted');
 			return true;
 		} catch (err: any) {
-			toast.error('Failed to adjust plan: ' + err.message);
+			if (creditsDeducted) {
+				toast.error('Credits were deducted but plan adjustment failed. Contact support for a refund.');
+			} else {
+				toast.error('Failed to adjust plan: ' + err.message);
+			}
 			return false;
 		} finally {
 			generating = false;

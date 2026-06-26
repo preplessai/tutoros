@@ -93,7 +93,15 @@
 
 		try {
 			// Credit check — 0.1 per search
-			if (!creditStore.hasEnough(0.1)) {
+			if (!(await creditStore.hasEnoughAfterFetch(0.1))) {
+				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
+				searching = false;
+				return;
+			}
+
+			// Deduct credits BEFORE calling the search API
+			const ok = await creditStore.useCredits(0.1, 'resource_search');
+			if (!ok) {
 				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
 				searching = false;
 				return;
@@ -111,8 +119,6 @@
 				maxResults: 8
 			});
 			searchResults = result.resources;
-			// Deduct 0.1 credits on successful search
-			await creditStore.useCredits(0.1, 'resource_search');
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : 'Unknown error';
 			toast.error('Search failed: ' + message);

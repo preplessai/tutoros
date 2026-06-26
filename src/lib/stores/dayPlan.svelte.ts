@@ -116,13 +116,23 @@ export const dayPlanStore = {
 		}
 	): Promise<string | null> {
 		generating = true;
+		let creditsDeducted = false;
 		try {
 			// Credit check before API call
-			if (!creditStore.hasEnough(1)) {
+			if (!(await creditStore.hasEnoughAfterFetch(1))) {
 				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
 				generating = false;
 				return null;
 			}
+
+			// Deduct credit BEFORE any AI/DB work
+			const ok = await creditStore.useCredits(1, 'day_plan_generation');
+			if (!ok) {
+				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
+				generating = false;
+				return null;
+			}
+			creditsDeducted = true;
 
 			const result: AiGeneratedDayPlan = await api.generateDayPlan({
 				weekContext: {
@@ -170,15 +180,16 @@ export const dayPlanStore = {
 				});
 			}
 
-			// Deduct credit on success
-			await creditStore.useCredits(1, 'day_plan_generation');
-
 			toast.success('Day plan generated');
 			await this.fetchDay(day.id);
 			return day.id;
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : 'Unknown error';
-			toast.error('Failed to generate day plan: ' + message);
+			if (creditsDeducted) {
+				toast.error('Credits were deducted but day plan generation failed. Contact support for a refund.');
+			} else {
+				toast.error('Failed to generate day plan: ' + message);
+			}
 			return null;
 		} finally {
 			generating = false;
