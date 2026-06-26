@@ -142,6 +142,11 @@
 			};
 		}
 
+		const { data: homeworkItems } = await supabase
+			.from('plan_week_homework')
+			.select('completed, week_id')
+			.in('week_id', weekIds);
+
 		const { data: days } = await supabase
 			.from('plan_days')
 			.select('id, struggle_areas, plan_tasks(id, completed, duration_minutes)')
@@ -161,6 +166,11 @@
 				totalMinutes += task.duration_minutes || 0;
 				if (task.completed) completedTasks++;
 			}
+		}
+
+		for (const hw of homeworkItems || []) {
+			totalTasks++;
+			if (hw.completed) completedTasks++;
 		}
 
 		return {

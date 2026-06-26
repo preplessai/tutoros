@@ -126,7 +126,7 @@
 				messages: [
 					{
 						role: 'user',
-						content: `Suggest 3 homework assignments for ${weekContext}. Grade: ${planGrade}. Subjects: ${planSubjects.join(', ')}. Return ONLY a JSON array: [{"title":"...","description":"...","url":"..."}]. No markdown wrapping.`
+						content: `Suggest 3 homework assignments for ${weekContext}. Grade: ${planGrade}. Subjects: ${planSubjects.join(', ')}. Include: title, description, and url (a real, working URL to a practice resource).`
 					}
 				],
 				studentContext: {
@@ -137,22 +137,51 @@
 				}
 			});
 
-			// Parse homework suggestions from response
-			let raw = response.message;
-			const fenceMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-			if (fenceMatch) raw = fenceMatch[1];
-
+			// Parse homework suggestions from response.
+			// PRIMARY PATH: proposedChanges.mutations (structured format from system prompt).
+			// The system prompt tells AI to return { message, intent, proposedChanges: { mutations: [...] } }
+			// so the homework data lives in proposedChanges.mutations, NOT in the message text.
 			let suggestions: Array<{ title: string; description?: string; url?: string }> = [];
-			try {
-				suggestions = JSON.parse(raw);
-			} catch {
-				const arrMatch = raw.match(/\[\s*\{[\s\S]*\}\s*\]/);
-				if (arrMatch) {
-					try { suggestions = JSON.parse(arrMatch[0]); } catch { /* fall through */ }
+
+			if (response.proposedChanges?.mutations) {
+				suggestions = response.proposedChanges.mutations
+					.filter(
+						(m: Record<string, unknown>) =>
+							m.table === 'plan_week_homework' && m.action === 'insert'
+					)
+					.map((m: Record<string, unknown>) => {
+						const d = m.data as Record<string, unknown>;
+						return {
+							title: (d.title as string) || 'Untitled',
+							description: (d.description as string) || undefined,
+							url: (d.url as string) || undefined
+						};
+					});
+			}
+
+			// FALLBACK: try parsing JSON array from message text (for models that ignore system prompt format)
+			if (suggestions.length === 0) {
+				let raw = response.message;
+				const fenceMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+				if (fenceMatch) raw = fenceMatch[1];
+
+				try {
+					const parsed = JSON.parse(raw);
+					if (Array.isArray(parsed)) suggestions = parsed;
+				} catch {
+					const arrMatch = raw.match(/\[\s*\{[\s\S]*\}\s*\]/);
+					if (arrMatch) {
+						try {
+							const parsed = JSON.parse(arrMatch[0]);
+							if (Array.isArray(parsed)) suggestions = parsed;
+						} catch {
+							/* fall through */
+						}
+					}
 				}
 			}
 
-			if (!Array.isArray(suggestions) || suggestions.length === 0) {
+			if (suggestions.length === 0) {
 				toast.error('Could not parse AI suggestions. Try adding homework manually.');
 				aiSuggesting = false;
 				return;
@@ -259,7 +288,7 @@
 					AI Suggest
 				</Button>
 			{/if}
-			<a href="/dashboard/resources/search" class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--color-border)] px-4 py-2 text-xs font-medium text-[var(--color-primary-600)] no-underline transition-colors hover:bg-[var(--color-surface-secondary)]">
+			<a href="/dashboard/resources/search?weekId={weekId}&query={encodeURIComponent(homework.length > 0 ? homework.map(h => h.title).join(', ') : '')}" class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--color-border)] px-4 py-2 text-xs font-medium text-[var(--color-primary-600)] no-underline transition-colors hover:bg-[var(--color-surface-secondary)]">
 				<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
 				</svg>

@@ -7,7 +7,7 @@
 	import { dayPlanStore } from '$lib/stores/dayPlan.svelte';
 	import { creditStore } from '$lib/stores/credits.svelte';
 	import { RESOURCE_SITES } from '$lib/lib/constants';
-	import type { AiGeneratedResources, PlanTask } from '$lib/lib/types';
+	import type { AiGeneratedResources, PlanTask, PlanWeekHomework } from '$lib/lib/types';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Select from '$lib/components/ui/Select.svelte';
@@ -20,6 +20,7 @@
 	// URL params
 	let dayPlanId = $state('');
 	let initialTaskId = $state('');
+	let weekId = $state('');
 	let dayTitle = $state('');
 
 	// Search state
@@ -32,16 +33,22 @@
 	let searching = $state(false);
 	let searched = $state(false);
 
-	// Task selection
-	let tasks = $state<PlanTask[]>([]);
-	let selectedTaskId = $state('');
-
 	// Plan context for enriched queries
+	let contextGrade = $state('');
+	let contextSubjects = $state<string[]>([]);
+
+	// Task + homework selection
+	let tasks = $state<PlanTask[]>([]);
+	let homeworkItems = $state<PlanWeekHomework[]>([]);
+	let selectedTargetId = $state(''); // can be task_id or homework_id
+	let selectedTargetType = $state<'task' | 'homework'>('task');
 
 	$effect(() => {
 		dayPlanId = $page.url.searchParams.get('dayPlanId') || '';
 		initialTaskId = $page.url.searchParams.get('taskId') || '';
-		selectedTaskId = initialTaskId;
+		weekId = $page.url.searchParams.get('weekId') || '';
+		selectedTargetId = initialTaskId;
+		if (initialTaskId) selectedTargetType = 'task';
 		const q = $page.url.searchParams.get('query');
 		if (q) query = q;
 	});
@@ -80,6 +87,23 @@
 			}
 		}
 
+		// Load homework items when weekId is provided
+		if (weekId) {
+			const { data: hw } = await supabase
+				.from('plan_week_homework')
+				.select('*')
+				.eq('week_id', weekId)
+				.order('sort_order', { ascending: true });
+			if (hw) {
+				homeworkItems = hw as PlanWeekHomework[];
+				// Auto-select first homework item if no task selected
+				if (!selectedTargetId && homeworkItems.length > 0) {
+					selectedTargetId = homeworkItems[0].id;
+					selectedTargetType = 'homework';
+				}
+			}
+		}
+
 		// Auto-search if query param present
 		if (query.trim()) {
 			handleSearch();
@@ -110,8 +134,8 @@
 			const enabledSites = preferredSites.filter((s) => s.enabled);
 			const result = await api.searchResources({
 				query: query.trim(),
-				subjects: [],
-				grade: '',
+				subjects: contextSubjects,
+				grade: contextGrade,
 				preferredSites:
 					enabledSites.length > 0
 						? enabledSites.map((s) => ({ name: s.name, url: s.url }))
@@ -128,21 +152,49 @@
 	}
 
 	async function handleSave(resource: (typeof searchResults)[0]) {
-		if (!selectedTaskId) {
-			toast.error('Select a task first');
+		if (!selectedTargetId) {
+			toast.error('Select a task or homework item first');
 			return;
 		}
 
-		const saved = await resourceStore.save(selectedTaskId, {
-			title: resource.title,
-			url: resource.url,
-			source: resource.source,
-			type: resource.type,
-			description: resource.description
-		});
+		if (selectedTargetType === 'homework') {
+			// Save resource URL directly to the homework item
+			try {
+				const { error } = await supabase
+					.from('plan_week_homework')
+					.update({ url: resource.url })
+					.eq('id', selectedTargetId);
+				if (error) throw error;
+				savedUrls = new Set([...savedUrls, resource.url]);
+				toast.success('Resource saved to homework');
+			} catch (err: unknown) {
+				const message = err instanceof Error ? err.message : 'Unknown error';
+				toast.error('Failed to save: ' + message);
+			}
+		} else {
+			// Save to task via resourceStore
+			const saved = await resourceStore.save(selectedTargetId, {
+				title: resource.title,
+				url: resource.url,
+				source: resource.source,
+				type: resource.type,
+				description: resource.description
+			});
 
-		if (saved) {
-			savedUrls = new Set([...savedUrls, resource.url]);
+			if (saved) {
+				savedUrls = new Set([...savedUrls, resource.url]);
+			}
+		}
+	}
+
+	function handleTargetChange(e: Event) {
+		const value = (e.target as HTMLSelectElement).value;
+		if (value.startsWith('hw:')) {
+			selectedTargetId = value.slice(3);
+			selectedTargetType = 'homework';
+		} else {
+			selectedTargetId = value;
+			selectedTargetType = 'task';
 		}
 	}
 
@@ -184,7 +236,7 @@
 			Find Resources
 		</h1>
 		<p class="mt-1 text-sm text-[var(--color-text-secondary)]">
-			Search across learning platforms for real resources to assign to tasks.
+			Search across learning platforms for real resources to assign to tasks and homework.
 		</p>
 	</div>
 
@@ -244,19 +296,23 @@
 				</div>
 			</div>
 
-			<!-- Task selector -->
-			{#if tasks.length > 0}
+			<!-- Task + Homework selector -->
+			{#if tasks.length > 0 || homeworkItems.length > 0}
 				<div class="max-w-xs">
 					<Select
-						label="Save resources to task"
-						name="taskSelector"
-						value={selectedTaskId}
-						onchange={(e) => (selectedTaskId = (e.target as HTMLSelectElement).value)}
+						label="Save resources to"
+						name="targetSelector"
+						value={selectedTargetType === 'homework' ? `hw:${selectedTargetId}` : selectedTargetId}
+						onchange={handleTargetChange}
 						options={[
-							{ value: '', label: 'Select a task...' },
+							{ value: '', label: 'Select a task or homework...' },
 							...tasks.map((t) => ({
 								value: t.id,
 								label: `${t.title} (${t.duration_minutes}min)`
+							})),
+							...homeworkItems.map((h) => ({
+								value: `hw:${h.id}`,
+								label: `📋 ${h.title} (homework)`
 							}))
 						]}
 					/>

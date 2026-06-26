@@ -137,6 +137,11 @@
 			const weeksData = (weeks || []) as WeekInfo[];
 			const weekIds = weeksData.map((w) => w.id);
 
+			const { data: homeworkItems } = await supabase
+				.from('plan_week_homework')
+				.select('id, completed, week_id')
+				.in('week_id', weekIds);
+
 			const { data: days } = await supabase
 				.from('plan_days')
 				.select(
@@ -173,6 +178,16 @@
 						weekStats.total++;
 						if (task.completed) weekStats.completed++;
 					}
+				}
+			}
+
+			for (const hw of homeworkItems || []) {
+				totalTasks++;
+				if (hw.completed) completedTasks++;
+				const weekStats = weekMap.get(hw.week_id);
+				if (weekStats) {
+					weekStats.total++;
+					if (hw.completed) weekStats.completed++;
 				}
 			}
 

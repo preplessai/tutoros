@@ -68,31 +68,55 @@ export const creditStore = {
 	},
 
 	/**
-	 * Check if user has enough credits. Deducts refreshing first, then non-expiring.
-	 * Returns true if deduction succeeded, false if insufficient credits.
+	 * Deducts credits atomically via RPC. Returns true if deduction succeeded.
 	 */
 	async useCredits(amount: number, reason: string = 'plan_generation'): Promise<boolean> {
-		if (!auth.user?.id) return false;
+		if (!auth.user?.id) {
+			console.error('[credits] useCredits blocked — no auth user');
+			return false;
+		}
+
+		const params = {
+			p_user_id: auth.user.id,
+			p_amount: amount,
+			p_reason: reason
+		};
 
 		try {
-			const { data: success, error } = await supabase.rpc('use_credits', {
-				p_user_id: auth.user.id,
-				p_amount: amount,
-				p_reason: reason
-			});
+			console.log('[credits] Calling use_credits RPC:', JSON.stringify(params));
 
-			if (error) throw error;
+			const { data: success, error } = await supabase.rpc('use_credits', params);
+
+			if (error) {
+				const code = (error as unknown as Record<string, unknown>).code;
+				const msg = error.message;
+				const details = (error as unknown as Record<string, unknown>).details;
+				const hint = (error as unknown as Record<string, unknown>).hint;
+
+				console.error('[credits] RPC error:', { code, message: msg, details, hint });
+
+				if (code === 'PGRST202') {
+					toast.error(
+						'Credits system not configured. Run migration 003_credits_system.sql in the Supabase SQL Editor.'
+					);
+				} else if (msg?.includes('syntax')) {
+					toast.error(`Credit system error. Check Supabase logs. Code: ${code}`);
+				} else {
+					toast.error(`Credit operation failed: ${msg} (${code || 'unknown'})`);
+				}
+				return false;
+			}
 
 			if (success) {
-				// Optimistic local update — re-fetch to stay accurate
 				await this.fetch();
 				return true;
 			}
 
-			toast.error('Insufficient credits. Please upgrade or purchase more credits.');
+			toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
 			return false;
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : 'Unknown error';
+			console.error('[credits] Exception:', err);
 			toast.error('Credit check failed: ' + message);
 			return false;
 		}
@@ -107,7 +131,6 @@ export const creditStore = {
 
 	/**
 	 * Fetch latest credits then check if user has enough.
-	 * Use this for gate checks before API calls.
 	 */
 	async hasEnoughAfterFetch(amount: number): Promise<boolean> {
 		await this.fetch();
