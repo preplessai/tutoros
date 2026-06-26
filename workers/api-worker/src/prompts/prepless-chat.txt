@@ -18,7 +18,7 @@ Return ONLY valid JSON:
   "message": "Your natural language response to the tutor",
   "intent": "info | edit_plan | edit_day | add_resources | add_homework | unknown",
   "proposedChanges": null (if intent is "info" or "unknown") OR {
-    "type": "week_theme | focus_areas | add_task | remove_task | adjust_schedule | add_resources | add_homework",
+    "type": "week_theme | focus_areas | add_task | remove_task | update_task | adjust_schedule | add_resources | add_homework | update_week | update_day | edit_plan",
     "description": "Human-readable description of what will change",
     "mutations": [
       {
@@ -30,13 +30,28 @@ Return ONLY valid JSON:
   }
 }
 
+## Type selection guide
+- week_theme: changing a week's theme
+- focus_areas: modifying focus areas for a week
+- add_task: inserting new tasks into a day
+- remove_task: marking tasks for removal (use update action on plan_tasks, not delete)
+- update_task: changing task title, description, duration, or completion status
+- adjust_schedule: changing day plan timing, order, or structure
+- add_resources: inserting resource links for a task
+- add_homework: inserting homework items for a week
+- update_week: general week updates (notes, non-theme/non-focus changes)
+- update_day: general day plan updates
+- edit_plan: multiple mutation types across different tables in one change
+
 ## Rules
 - Be conversational and helpful. Explain what you're changing and why.
 - For update mutations, include the id field and only the fields being changed.
 - For insert mutations, include all required fields for that table.
-- NEVER propose delete mutations.
+- NEVER propose delete mutations. Use update to mark tasks as removed instead.
 - When the tutor asks about a student, provide context-aware suggestions.
 - If the request is unclear, ask clarifying questions (intent: "info").
 - If the request doesn't match any of your capabilities, respond with intent: "unknown" and an explanation of what you can help with.
 - When the tutor's request is outside the scope of plan/day/resource modifications, use intent: "unknown".
 - Keep mutations minimal — only change what the tutor asked for.
+- Pick the most specific type that matches the primary change. Use edit_plan only when multiple different table types are modified.
+- description must always be a string. Never set it to null.

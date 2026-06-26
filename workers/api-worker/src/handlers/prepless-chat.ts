@@ -15,11 +15,15 @@ const chatResponseSchema = z.object({
 				'focus_areas',
 				'add_task',
 				'remove_task',
+				'update_task',
 				'adjust_schedule',
 				'add_resources',
-				'add_homework'
+				'add_homework',
+				'update_week',
+				'update_day',
+				'edit_plan'
 			]),
-			description: z.string(),
+			description: z.string().nullable(),
 			mutations: z.array(
 				z.object({
 					table: z.enum([
@@ -141,11 +145,15 @@ export async function handlePreplessChat(
 		// Validate response shape with Zod
 		const validated = chatResponseSchema.safeParse(responseData);
 		if (!validated.success) {
+			const flat = validated.error.flatten();
+			const fieldErrors = Object.entries(flat.fieldErrors)
+				.map(([k, v]) => `${k}: ${(v as string[]).join(', ')}`)
+				.join('; ');
 			return Response.json(
 				{
-					error: 'AI response failed validation',
-					details: validated.error.flatten(),
-					raw: result.text.slice(0, 500)
+					error: `AI response failed validation${fieldErrors ? ` — ${fieldErrors}` : ''}`,
+					details: flat,
+					raw: result.text.slice(0, 800)
 				},
 				{ status: 500 }
 			);

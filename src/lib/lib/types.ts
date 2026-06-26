@@ -285,10 +285,14 @@ export interface PlanChangeProposal {
 		| 'focus_areas'
 		| 'add_task'
 		| 'remove_task'
+		| 'update_task'
 		| 'adjust_schedule'
 		| 'add_resources'
-		| 'add_homework';
-	description: string;
+		| 'add_homework'
+		| 'update_week'
+		| 'update_day'
+		| 'edit_plan';
+	description: string | null;
 	mutations: PlanMutation[];
 }
 
