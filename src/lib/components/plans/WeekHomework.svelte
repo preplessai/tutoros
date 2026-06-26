@@ -3,6 +3,8 @@
 	import { supabase } from '$lib/lib/supabase';
 	import { api } from '$lib/lib/api';
 	import { creditStore } from '$lib/stores/credits.svelte';
+	import { auth } from '$lib/stores/auth.svelte';
+	import { canUseFeature } from '$lib/lib/constants';
 	import type { PlanWeekHomework } from '$lib/lib/types';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -79,13 +81,22 @@
 	}
 
 	async function aiSuggestHomework() {
-		if (!creditStore.hasEnough(0.5)) {
-			toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
-			return;
-		}
-
 		aiSuggesting = true;
 		try {
+			// Fresh credit check and lock before any async work
+			await creditStore.fetch();
+			if (!creditStore.hasEnough(0.5)) {
+				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
+				aiSuggesting = false;
+				return;
+			}
+
+			const credited = await creditStore.useCredits(0.5, 'ai_suggest_homework');
+			if (!credited) {
+				aiSuggesting = false;
+				return;
+			}
+
 			const { data: week } = await supabase
 				.from('plan_weeks')
 				.select('week_number, theme, focus_areas, notes, plan_id')
@@ -109,12 +120,6 @@
 					planGrade = plan.grade;
 					planSubjects = plan.subjects;
 				}
-			}
-
-			const credited = await creditStore.useCredits(0.5, 'ai_suggest_homework');
-			if (!credited) {
-				aiSuggesting = false;
-				return;
 			}
 
 			const response = await api.preplessChat({
@@ -246,12 +251,14 @@
 				</svg>
 				Add Homework
 			</Button>
-			<Button variant="outline" size="sm" onclick={aiSuggestHomework} loading={aiSuggesting} fullWidth>
-				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-				</svg>
-				AI Suggest
-			</Button>
+			{#if canUseFeature(auth.profile?.subscription_tier || 'free', 'plan_regeneration')}
+				<Button variant="outline" size="sm" onclick={aiSuggestHomework} loading={aiSuggesting} fullWidth>
+					<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+					</svg>
+					AI Suggest
+				</Button>
+			{/if}
 			<a href="/dashboard/resources/search" class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--color-border)] px-4 py-2 text-xs font-medium text-[var(--color-primary-600)] no-underline transition-colors hover:bg-[var(--color-surface-secondary)]">
 				<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

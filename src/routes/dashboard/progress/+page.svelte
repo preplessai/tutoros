@@ -17,7 +17,7 @@
 
 	interface Student {
 		id: string;
-		display_name: string;
+		name: string;
 		grade: string | null;
 	}
 
@@ -72,9 +72,9 @@
 
 		const { data } = await supabase
 			.from('students')
-			.select('id, display_name, grade')
+			.select('id, name, grade')
 			.eq('tutor_id', auth.user?.id)
-			.order('display_name');
+			.order('name');
 
 		students = (data || []) as Student[];
 		loading = false;
@@ -256,7 +256,7 @@
 				<Select
 					label="Student"
 					name="student"
-					options={students.map((s) => ({ value: s.id, label: s.display_name }))}
+					options={students.map((s) => ({ value: s.id, label: s.name }))}
 					value={selectedStudentId}
 					onchange={(e) => {
 						selectedStudentId = (e.target as HTMLSelectElement).value;
@@ -288,7 +288,7 @@
 					<div class="space-y-4">
 						{#if compareAll && progress.length > 1}
 							<h2 class="text-lg font-semibold text-[var(--color-text-primary)]">
-								{sp.student.display_name}
+								{sp.student.name}
 							</h2>
 						{/if}
 

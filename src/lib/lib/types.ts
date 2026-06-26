@@ -166,6 +166,7 @@ export interface GenerateWeeklyPlanRequest {
 	learningStyle?: string;
 	diagnosticData?: string;
 	extraInfo?: string;
+	preferredResourceSites?: PreferredResourceSite[];
 }
 
 export interface AdjustPlanRequest {
@@ -323,6 +324,32 @@ export interface PreplessChatResponse {
 	message: string;
 	intent: 'info' | 'edit_plan' | 'edit_day' | 'add_resources' | 'unknown';
 	proposedChanges?: PlanChangeProposal;
+}
+
+// ── Parent Emails ──
+
+export interface ParentEmail {
+	id: string;
+	tutor_id: string;
+	student_id: string;
+	subject: string;
+	body: string;
+	status: 'draft' | 'sent' | 'failed';
+	sent_at: string | null;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface GenerateEmailRequest {
+	studentId: string;
+	planId?: string;
+	focusAreas?: string[];
+	additionalNotes?: string;
+}
+
+export interface GenerateEmailResponse {
+	subject: string;
+	body: string;
 }
 
 // ── AI Resource Picker ──

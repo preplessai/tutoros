@@ -7,6 +7,7 @@ import { handleGenerateDayPlan } from './handlers/generate-day-plan';
 import { handleSearchResources } from './handlers/search-resources';
 import { handlePickResources } from './handlers/pick-resources';
 import { handlePreplessChat } from './handlers/prepless-chat';
+import { handleGenerateEmail } from './handlers/generate-email';
 
 const app = new Hono();
 
@@ -104,6 +105,9 @@ app.post('/api/pick-resources', async (c) =>
 );
 app.post('/api/prepless-chat', async (c) =>
 	handlePreplessChat(c.req.raw, c.env as Record<string, string>)
+);
+app.post('/api/generate-email', async (c) =>
+	handleGenerateEmail(c.req.raw, c.env as Record<string, string>)
 );
 
 // 404

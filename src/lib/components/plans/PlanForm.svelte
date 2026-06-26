@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { planStore } from '$lib/stores/plan.svelte';
 	import { studentStore } from '$lib/stores/student.svelte';
 	import { GRADES, SUBJECTS } from '$lib/lib/constants';
@@ -26,8 +27,18 @@
 
 	let selectedStudent = $derived(studentStore.students.find((s) => s.id === studentId));
 
-	onMount(() => {
-		studentStore.fetchAll();
+	onMount(async () => {
+		await studentStore.fetchAll();
+		const studentIdParam = $page.url.searchParams.get('studentId');
+		if (studentIdParam) {
+			const student = studentStore.students.find(s => s.id === studentIdParam);
+			if (student) {
+				studentId = studentIdParam;
+				grade = student.grade;
+				selectedSubjects = student.subjects || [];
+				step = 1;
+			}
+		}
 	});
 
 	function toggleSubject(s: string) {
@@ -76,7 +87,8 @@
 			endDate,
 			goals,
 			diagnosticData: student?.diagnostic_data || undefined,
-			extraInfo: student?.extra_info || undefined
+			extraInfo: student?.extra_info || undefined,
+			preferredResourceSites: student?.preferred_resource_sites || undefined
 		});
 
 		if (planId) goto(`/dashboard/students/${studentId}?tab=timeline`);

@@ -75,6 +75,7 @@
 
 			if (editStudent) {
 				await studentStore.update(editStudent.id, data);
+				goto('/dashboard/students');
 			} else {
 				const created = await studentStore.create(data);
 				console.log('[StudentForm] studentStore.create returned:', created);
@@ -86,9 +87,9 @@
 					saving = false;
 					return;
 				}
+				goto('/dashboard/plans/new?studentId=${created.id}');
 			}
 
-			goto('/dashboard/students');
 		} catch (err: any) {
 			console.error('[StudentForm] Caught exception:', err);
 			console.error('[StudentForm] Error name:', err?.name);

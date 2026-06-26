@@ -2,7 +2,8 @@
 	import { planStore } from '$lib/stores/plan.svelte';
 	import { toast } from '$lib/stores/toast.svelte';
 	import { goto } from '$app/navigation';
-	import { SUBJECTS } from '$lib/lib/constants';
+	import { SUBJECTS, GRADES } from '$lib/lib/constants';
+	import Select from '$lib/components/ui/Select.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Textarea from '$lib/components/ui/Textarea.svelte';
@@ -13,6 +14,7 @@
 	let newSubjects = $state<string[]>([]);
 	let removedSubjects = $state<string[]>([]);
 	let goalUpdates = $state('');
+	let gradeChange = $state('');
 	let changedTimePerSession = $state('');
 	let changedSessionsPerWeek = $state('');
 	let editFocusAreaUpdates = $state('');
@@ -34,6 +36,12 @@
 			: [...newSubjects, s];
 	}
 
+	function toggleRemovedSubject(s: string) {
+		removedSubjects = removedSubjects.includes(s)
+			? removedSubjects.filter((x) => x !== s)
+			: [...removedSubjects, s];
+	}
+
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
 		const changes: any = {};
@@ -42,6 +50,7 @@
 		if (newSubjects.length) changes.newSubjects = newSubjects;
 		if (removedSubjects.length) changes.removedSubjects = removedSubjects;
 		if (goalUpdates.trim()) changes.goalUpdates = goalUpdates.trim();
+		if (gradeChange) changes.gradeChange = gradeChange;
 
 		if (editFocusAreaUpdates.trim()) changes.focusAreaUpdates = editFocusAreaUpdates.trim();
 		if (editContextUpdates.trim()) changes.contextUpdates = editContextUpdates.trim();
@@ -113,6 +122,31 @@
 			{/each}
 		</div>
 	</div>
+
+	<div>
+		<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]"
+			>Remove Subjects</label
+		>
+		<div class="flex flex-wrap gap-2">
+			{#each planStore.current?.subjects || [] as subject}
+				<button
+					type="button"
+					onclick={() => toggleRemovedSubject(subject)}
+					class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
+					${removedSubjects.includes(subject) ? 'border-[var(--color-error)] bg-[var(--color-error-bg)] text-[var(--color-error)] line-through' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
+				>
+					{subject}
+				</button>
+			{/each}
+		</div>
+	</div>
+
+	<Select
+		label="Change Grade (optional)"
+		name="gradeChange"
+		options={GRADES.map((g) => ({ value: g, label: g }))}
+		bind:value={gradeChange}
+	/>
 
 	<Textarea
 		label="Goal Updates"

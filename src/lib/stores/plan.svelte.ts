@@ -65,6 +65,19 @@ export const planStore = {
 	async generateAndSave(request: any): Promise<string | null> {
 		generating = true;
 		try {
+			// Check for existing plan for this student
+			const { data: existingPlan } = await supabase
+				.from('weekly_plans')
+				.select('id')
+				.eq('student_id', request.studentId)
+				.maybeSingle();
+
+			if (existingPlan) {
+				throw new Error(
+					'A plan already exists for this student. Go to their dashboard to adjust it instead.'
+				);
+			}
+
 			// Credit check before API call
 			if (!creditStore.hasEnough(1)) {
 				toast.error('Insufficient credits. Upgrade your plan or purchase more credits.');
@@ -100,7 +113,8 @@ export const planStore = {
 				endDate: request.endDate,
 				goals: request.goals,
 				diagnosticData: request.diagnosticData,
-				extraInfo: request.extraInfo
+				extraInfo: request.extraInfo,
+				preferredResourceSites: request.preferredResourceSites
 			});
 			const tutorId = await getTutorId();
 
@@ -219,8 +233,8 @@ export const planStore = {
 						}
 						await supabase.from('plan_days').delete().eq('week_id', wid);
 					}
-					await supabase.from('plan_weeks').delete().eq('plan_id', planId);
 				}
+				await supabase.from('plan_weeks').delete().eq('plan_id', planId);
 			}
 
 			// Insert new

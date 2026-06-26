@@ -16,6 +16,7 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	import PreplessChat from '$lib/components/chat/PreplessChat.svelte';
+		import EmailTab from '$lib/components/emails/EmailTab.svelte';
 	import type { PlanDay, WeeklyPlan } from '$lib/lib/types';
 
 	let tab = $state('timeline');
@@ -75,10 +76,8 @@
 
 		// Reset selectedPlanId if the old plan is gone, or set to first if not set
 		if (studentPlans.length > 0) {
-			const planStillExists = studentPlans.some((p) => p.id === selectedPlanId);
-			if (!planStillExists) {
+			if (selectedPlanId === null || !studentPlans.some((p) => p.id === selectedPlanId)) {
 				selectedPlanId = studentPlans[0].id;
-				planStore.fetchOne(selectedPlanId);
 			}
 		} else {
 			selectedPlanId = null;
@@ -282,7 +281,7 @@
 				<div class="mt-4">
 					<PlanTimeline />
 				</div>
-			{/if}
+		{/if}
 		{/if}
 
 		<!-- ═══ Day Plans Tab ═══ -->
@@ -308,8 +307,14 @@
 						</h2>
 						{#if days.length === 0}
 							<p class="text-sm text-[var(--color-text-tertiary)]">
-								No day plans yet. Open the timeline to generate day plans for each week.
+								No day plans yet. Generate them from the plan timeline.
 							</p>
+							<a
+								href="?tab=timeline"
+								class="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 py-1.5 text-sm font-medium text-[var(--color-primary-500)] no-underline transition-colors hover:bg-[var(--color-surface-secondary)]"
+							>
+								View Plan Timeline to Generate Day Plans
+							</a>
 						{:else}
 							<div class="grid gap-1.5">
 								{#each days as day}
@@ -355,7 +360,7 @@
 						{/if}
 					</div>
 				{/each}
-			{/if}
+		{/if}
 		{/if}
 
 		<!-- ═══ Progress Tab ═══ -->
@@ -460,16 +465,12 @@
 						</div>
 					</div>
 				</Card>
-			{/if}
+		{/if}
 		{/if}
 
 		<!-- ═══ Emails Tab ═══ -->
 		{#if tab === 'emails'}
-			<EmptyState
-				icon="mail"
-				title="Coming Soon"
-				description="Parent email updates will be available here."
-			/>
+			<EmailTab studentId={$page.params.studentId} />
 		{/if}
 
 		<!-- ═══ Prepless AI Tab ═══ -->

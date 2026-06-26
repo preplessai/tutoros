@@ -133,24 +133,46 @@
 	async function approveChanges() {
 		if (!pendingProposal) return;
 		executingMutations = true;
-		try {
-			for (const mutation of pendingProposal.mutations) {
-				if (mutation.action === 'update') {
-					const id = mutation.data.id as string;
-					if (!id) {
-						toast.error('Invalid mutation: missing id');
-						continue;
-					}
+		const succeeded: string[] = [];
+		const failed: string[] = [];
+
+		for (const mutation of pendingProposal.mutations) {
+			if (mutation.action === 'update') {
+				const id = mutation.data.id as string;
+				if (!id) {
+					failed.push('Update mutation missing id');
+					continue;
+				}
+				try {
 					const { error } = await supabase.from(mutation.table).update(mutation.data).eq('id', id);
-					if (error) throw error;
-				} else if (mutation.action === 'insert') {
+					if (error) {
+						failed.push(`${mutation.table}(${id}): ${error.message}`);
+					} else {
+						succeeded.push(`${mutation.table}(${id})`);
+					}
+				} catch (err: unknown) {
+					const msg = err instanceof Error ? err.message : 'Unknown error';
+					failed.push(`${mutation.table}(${id}): ${msg}`);
+				}
+			} else if (mutation.action === 'insert') {
+				try {
 					const { error } = await supabase.from(mutation.table).insert(mutation.data);
-					if (error) throw error;
+					if (error) {
+						failed.push(`Insert into ${mutation.table}: ${error.message}`);
+					} else {
+						succeeded.push(`Insert into ${mutation.table}`);
+					}
+				} catch (err: unknown) {
+					const msg = err instanceof Error ? err.message : 'Unknown error';
+					failed.push(`Insert into ${mutation.table}: ${msg}`);
 				}
 			}
+		}
 
-			if (planId) await planStore.fetchOne(planId);
+		if (planId) await planStore.fetchOne(planId);
 
+		if (failed.length === 0) {
+			toast.success(`All ${succeeded.length} change(s) applied successfully.`);
 			messages = [
 				...messages,
 				{
@@ -158,14 +180,31 @@
 					content: "Changes applied! Anything else you'd like to adjust?"
 				}
 			];
-			pendingProposal = null;
-		} catch (err: unknown) {
-			const msg = err instanceof Error ? err.message : 'An error occurred';
-			toast.error('Failed to apply changes: ' + msg);
-		} finally {
-			executingMutations = false;
-			scrollToBottom();
+		} else if (succeeded.length > 0) {
+			toast.warning(`${succeeded.length} change(s) succeeded, ${failed.length} failed.`);
+			messages = [
+				...messages,
+				{
+					role: 'assistant',
+					content:
+						`Some changes applied (${succeeded.length} succeeded, ${failed.length} failed). ` +
+						'The successful changes are already saved. You may want to retry the failed ones.'
+				}
+			];
+		} else {
+			toast.error(`All ${failed.length} change(s) failed.`);
+			messages = [
+				...messages,
+				{
+					role: 'assistant',
+					content: 'None of the changes could be applied. Please try again.'
+				}
+			];
 		}
+
+		pendingProposal = null;
+		executingMutations = false;
+		scrollToBottom();
 	}
 
 	function rejectChanges() {

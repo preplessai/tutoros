@@ -170,6 +170,20 @@ export const chatResponseSchema = z.object({
 		.optional()
 });
 
+// POST /api/generate-email
+export const generateEmailSchema = z.object({
+	studentId: z.string(),
+	planId: z.string().optional(),
+	focusAreas: z.array(z.string()).optional(),
+	additionalNotes: z.string().optional()
+});
+
+// POST /api/generate-email response validation
+export const generateEmailResponseSchema = z.object({
+	subject: z.string(),
+	body: z.string()
+});
+
 // POST /api/pick-resources response validation
 export const pickResourcesResponseSchema = z.object({
 	resources: z.array(

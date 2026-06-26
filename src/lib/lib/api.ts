@@ -9,6 +9,8 @@ import type {
 	AiPickResourcesResponse,
 	PreplessChatRequest,
 	PreplessChatResponse,
+	GenerateEmailRequest,
+	GenerateEmailResponse,
 	AiGeneratedPlan,
 	AiGeneratedDayPlan,
 	AiGeneratedResources
@@ -69,5 +71,9 @@ export const api = {
 
 	preplessChat(params: PreplessChatRequest): Promise<PreplessChatResponse> {
 		return post<PreplessChatResponse>('/api/prepless-chat', params);
+	},
+
+	generateEmail(params: GenerateEmailRequest): Promise<GenerateEmailResponse> {
+		return post<GenerateEmailResponse>('/api/generate-email', params);
 	}
 };

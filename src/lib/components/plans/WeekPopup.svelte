@@ -417,16 +417,21 @@
 				</div>
 			</div>
 		{:else if mode === 'dayplan'}
-			<DayPlanGenerator
-				weekId={week.id}
-				weekContext={{
-					theme: week.theme,
-					focusAreas: week.focus_areas,
-					notes: week.notes,
-					weekNumber: week.week_number
-				}}
-				onComplete={onDayPlanGenerated}
-			/>
+			<div class="space-y-4">
+				<DayPlanGenerator
+					weekId={week.id}
+					weekContext={{
+						theme: week.theme,
+						focusAreas: week.focus_areas,
+						notes: week.notes,
+						weekNumber: week.week_number
+					}}
+					onComplete={onDayPlanGenerated}
+				/>
+				<div class="flex gap-3 border-t border-[var(--color-border)] pt-3">
+					<Button variant="ghost" onclick={() => (mode = 'view')}>Cancel</Button>
+				</div>
+			</div>
 		{:else if mode === 'view_day' && selectedDayId}
 			<div class="space-y-4">
 				<DayPlanView dayId={selectedDayId} />
