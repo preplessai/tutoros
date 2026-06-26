@@ -184,9 +184,18 @@
 		loading = true;
 
 		try {
+			console.group('%c🔮 PreplessChat.sendMessage', 'color: #a78bfa; font-weight: bold');
+			console.log('📤 User message:', text);
+			console.log('👤 Student context:', studentContext);
+			console.log('📋 Plan context:', planContext);
+			console.log('💬 Full conversation length:', messages.length, 'messages (including current)');
+
 			await creditStore.fetch();
+			console.log('💰 Credits after fetch:', creditStore.credits, 'available, needs 0.5');
 
 			if (!creditStore.hasEnough(0.5)) {
+				console.warn('❌ Insufficient credits — aborting');
+				console.groupEnd();
 				messages = [
 					...messages,
 					{
@@ -195,11 +204,16 @@
 							'Insufficient credits. Please upgrade your plan or purchase more credits to continue using the AI chat.'
 					}
 				];
+				loading = false;
+				scrollToBottom();
 				return;
 			}
 
 			const credited = await creditStore.useCredits(0.5, 'ai_chat_message');
+			console.log('💰 Credit deduction result:', credited);
 			if (!credited) {
+				console.warn('❌ Credit deduction failed — aborting');
+				console.groupEnd();
 				messages = [
 					...messages,
 					{
@@ -207,25 +221,66 @@
 						content: 'Failed to deduct credits. Please try again or upgrade your plan.'
 					}
 				];
+				loading = false;
+				scrollToBottom();
 				return;
 			}
 
-			const response = await api.preplessChat({
+			console.log('🚀 Calling API /api/prepless-chat...');
+			const requestBody = {
 				messages: messages.map((m) => ({ role: m.role, content: m.content })),
 				studentContext: studentContext,
 				planContext: planContext || undefined
-			});
+			};
+			console.log('📦 Request body (first 3000 chars):', JSON.stringify(requestBody, null, 2).slice(0, 3000));
+
+			const response = await api.preplessChat(requestBody);
+
+			console.log('✅ API response received');
+			console.log('  intent:', response.intent);
+			console.log('  message (first 500 chars):', response.message?.slice(0, 500));
+			console.log('  creditCost:', response.creditCost);
+			console.log('  proposedChanges present:', !!response.proposedChanges);
+			if (response.proposedChanges) {
+				console.log('  proposedChanges.type:', response.proposedChanges.type);
+				console.log('  proposedChanges.description:', response.proposedChanges.description);
+				console.log('  proposedChanges.mutations count:', response.proposedChanges.mutations?.length);
+				console.log(
+					'  proposedChanges (full):',
+					JSON.stringify(response.proposedChanges, null, 2)
+				);
+			}
 
 			if (response.intent === 'info' || response.intent === 'unknown') {
+				console.log('ℹ️ Info/unknown intent — showing message only');
 				messages = [...messages, { role: 'assistant', content: response.message }];
 			} else if (response.proposedChanges) {
+				console.log('🔧 Edit intent with proposedChanges — showing ChangeConfirmation');
 				messages = [...messages, { role: 'assistant', content: response.message }];
 				pendingProposal = response.proposedChanges;
 			} else {
+				console.warn('⚠️ Non-info intent but NO proposedChanges object');
+				console.warn('  intent was:', response.intent);
+				console.warn('  full response keys:', Object.keys(response));
 				messages = [...messages, { role: 'assistant', content: response.message }];
 			}
+			console.groupEnd();
 		} catch (err: unknown) {
 			const msg = err instanceof Error ? err.message : 'An error occurred';
+			console.group('%c💥 PreplessChat ERROR', 'color: #ef4444; font-weight: bold');
+			console.error('Error message:', msg);
+			console.error('Error constructor:', (err as Error)?.constructor?.name ?? typeof err);
+			console.error('Full error object:', err);
+			if (err instanceof Error && err.stack) {
+				console.error('Stack trace:', err.stack);
+			}
+			// Try to extract more from the error
+			try {
+				console.error('Error JSON:', JSON.stringify(err, Object.getOwnPropertyNames(err)));
+			} catch {
+				console.error('(could not serialize error)');
+			}
+			console.groupEnd();
 			messages = [...messages, { role: 'assistant', content: `Error: ${msg}` }];
 		} finally {
 			loading = false;
@@ -235,57 +290,99 @@
 
 	async function approveChanges() {
 		if (!pendingProposal) return;
+
+		console.group('%c✅ PreplessChat.approveChanges', 'color: #34d399; font-weight: bold');
+		console.log('📋 Proposal type:', pendingProposal.type);
+		console.log('📋 Proposal description:', pendingProposal.description);
+		console.log('📋 Total mutations:', pendingProposal.mutations.length);
+
 		executingMutations = true;
 		const succeeded: string[] = [];
 		const failed: string[] = [];
 
-		for (const mutation of pendingProposal.mutations) {
+		for (let i = 0; i < pendingProposal.mutations.length; i++) {
+			const mutation = pendingProposal.mutations[i];
+			console.group(`🔨 Mutation ${i + 1}/${pendingProposal.mutations.length}`);
+			console.log('  table:', mutation.table);
+			console.log('  action:', mutation.action);
+			console.log('  data keys:', Object.keys(mutation.data));
+			console.log('  data:', JSON.stringify(mutation.data, null, 2));
+
 			if (mutation.action === 'update') {
 				const id = mutation.data.id as string;
 				if (!id) {
+					console.error('  ❌ Update mutation missing "id" in data');
 					failed.push('Update mutation missing id');
+					console.groupEnd();
 					continue;
 				}
+				console.log(`  📡 supabase.from('${mutation.table}').update(...).eq('id', '${id}')`);
+				// Log the actual update payload (exclude id since it's in the WHERE)
+				const updatePayload = { ...mutation.data };
+				delete updatePayload.id;
+				console.log('  📦 Update payload:', JSON.stringify(updatePayload, null, 2));
 				try {
 					const { error } = await supabase.from(mutation.table).update(mutation.data).eq('id', id);
 					if (error) {
+						console.error(`  ❌ Supabase error:`, error);
+						console.error(`     code: ${error.code}, message: ${error.message}, details: ${error.details}`);
 						failed.push(`${mutation.table}(${id}): ${error.message}`);
 					} else {
+						console.log(`  ✅ Updated ${mutation.table} row ${id}`);
 						succeeded.push(`${mutation.table}(${id})`);
 					}
 				} catch (err: unknown) {
 					const msg = err instanceof Error ? err.message : 'Unknown error';
+					console.error(`  ❌ Exception during update:`, err);
 					failed.push(`${mutation.table}(${id}): ${msg}`);
 				}
 			} else if (mutation.action === 'insert') {
+				console.log(`  📡 supabase.from('${mutation.table}').insert(...)`);
+				console.log('  📦 Insert payload:', JSON.stringify(mutation.data, null, 2));
 				try {
 					const { error } = await supabase.from(mutation.table).insert(mutation.data);
 					if (error) {
+						console.error(`  ❌ Supabase insert error:`, error);
+						console.error(`     code: ${error.code}, message: ${error.message}, details: ${error.details}`);
 						failed.push(`Insert into ${mutation.table}: ${error.message}`);
 					} else {
+						console.log(`  ✅ Inserted into ${mutation.table}`);
 						succeeded.push(`Insert into ${mutation.table}`);
 					}
 				} catch (err: unknown) {
 					const msg = err instanceof Error ? err.message : 'Unknown error';
+					console.error(`  ❌ Exception during insert:`, err);
 					failed.push(`Insert into ${mutation.table}: ${msg}`);
 				}
+			} else {
+				console.error(`  ❌ Unknown action: "${(mutation as Record<string, unknown>).action}"`);
+				failed.push(`Unknown action: ${(mutation as Record<string, unknown>).action}`);
 			}
+			console.groupEnd();
 		}
 
+		console.log('📊 Mutation results — succeeded:', succeeded.length, 'failed:', failed.length);
+		if (succeeded.length > 0) console.log('  ✅', succeeded);
+		if (failed.length > 0) console.warn('  ❌', failed);
+
 		// Refresh plan context after mutations
+		console.log('🔄 Refreshing plan context...');
 		if (selectedOption === 'all') {
 			await loadAllPlanContexts();
 		} else if (selectedOption) {
 			await loadPlanContext(selectedOption);
 		}
+		console.log('🔄 Plan context refreshed');
 
 		if (failed.length === 0) {
+			console.log('🎉 All mutations succeeded!');
 			toast.success(`All ${succeeded.length} change(s) applied successfully.`);
 			messages = [
 				...messages,
 				{ role: 'assistant', content: "Changes applied! Anything else you'd like to adjust?" }
 			];
 		} else if (succeeded.length > 0) {
+			console.warn('⚠️ Partial success — some mutations failed');
 			toast.warning(`${succeeded.length} change(s) succeeded, ${failed.length} failed.`);
 			messages = [
 				...messages,
@@ -297,6 +394,7 @@
 				}
 			];
 		} else {
+			console.error('💀 All mutations failed!');
 			toast.error(`All ${failed.length} change(s) failed.`);
 			messages = [
 				...messages,
@@ -307,9 +405,11 @@
 		pendingProposal = null;
 		executingMutations = false;
 		scrollToBottom();
+		console.groupEnd();
 	}
 
 	function rejectChanges() {
+		console.log('🚫 Changes rejected by user');
 		messages = [
 			...messages,
 			{ role: 'assistant', content: "Changes rejected. Let me know if you'd like to try something else." }
