@@ -84,14 +84,14 @@
 	async function fetchAvailablePlans() {
 		const { data } = await supabase
 			.from('weekly_plans')
-			.select('id, grade, student_id')
+			.select('id, title, grade, student_id')
 			.eq('student_id', studentId)
 			.order('created_at', { ascending: false });
 
 		if (data) {
-			availablePlans = (data as Array<{ id: string; grade: string }>).map((p, i) => ({
+			availablePlans = (data as Array<{ id: string; title: string; grade: string }>).map((p) => ({
 				id: p.id,
-				label: `Plan ${i + 1} (${p.grade})`,
+				label: p.title || `${p.grade} Plan`,
 				grade: p.grade
 			}));
 		}
