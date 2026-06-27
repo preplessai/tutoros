@@ -93,7 +93,7 @@
 		if (!confirm('Delete this student and all their plans? This cannot be undone.')) return;
 		deleting = true;
 		await studentStore.remove($page.params.studentId);
-		goto('/dashboard/students');
+		goto('/dashboard');
 	}
 
 	async function fetchDaysForPlan(

@@ -404,6 +404,6 @@
 		<Button type="submit" variant="gradient" size="lg" loading={saving} disabled={saving}>
 			{isEdit ? 'Save Changes' : saving ? 'Creating Student & Plan...' : 'Create Student & Generate Plan'}
 		</Button>
-		<Button variant="ghost" href="/dashboard/students">Cancel</Button>
+		<Button variant="ghost" href="/dashboard">Cancel</Button>
 	</div>
 </form>

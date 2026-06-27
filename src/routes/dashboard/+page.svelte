@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { studentStore } from '$lib/stores/student.svelte';
-	import { planStore } from '$lib/stores/plan.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 
 	onMount(() => {
 		studentStore.fetchAll();
-		planStore.fetchAll();
 	});
 
 </script>
@@ -38,16 +36,9 @@
 
 	<!-- Students Section -->
 	<div>
-		<div class="mb-4 flex items-center justify-between">
-			<h2 class="font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]">
-				Your Students
-			</h2>
-			<Button variant="primary" size="sm" href="/dashboard/students/new">
-				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-					><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-				Add New Student
-			</Button>
-		</div>
+		<h2 class="mb-4 font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]">
+			Your Students
+		</h2>
 
 		{#if studentStore.loading}
 			<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -112,27 +103,4 @@
 		{/if}
 	</div>
 
-	<!-- Recent Plans -->
-	{#if planStore.plans.length > 0}
-		<Card>
-			<div class="mb-4 flex items-center justify-between">
-				<h3 class="font-[family-name:var(--font-heading)] font-semibold text-[var(--color-text-primary)]">Recent Plans</h3>
-				<a href="/dashboard/plans" class="text-sm font-medium text-[var(--color-primary-500)] no-underline hover:text-[var(--color-primary-600)]">View all</a>
-			</div>
-			<div class="divide-y divide-[var(--color-border)]">
-				{#each planStore.plans.slice(0, 3) as plan}
-					<div class="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
-						<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-surface-tertiary)] text-xs font-bold text-[var(--color-text-tertiary)]">
-							{plan.subjects[0]?.[0] || 'P'}
-						</div>
-						<div class="flex-1 min-w-0">
-							<p class="truncate text-sm font-medium text-[var(--color-text-primary)]">{plan.title}</p>
-							<p class="text-xs text-[var(--color-text-secondary)]">{plan.grade} · {plan.subjects.slice(0, 2).join(', ')}</p>
-						</div>
-						<a href="/dashboard/plans/{plan.id}" class="shrink-0 text-xs font-medium text-[var(--color-primary-500)] no-underline hover:text-[var(--color-primary-600)]">Open →</a>
-					</div>
-				{/each}
-			</div>
-		</Card>
-	{/if}
 </div>
