@@ -19,7 +19,6 @@
 
 	const isEdit = !!editStudent;
 
-	// ── Student fields ──
 	let name = $state(editStudent?.name || '');
 	let studentEmail = $state(editStudent?.email || '');
 	let parentName = $state(editStudent?.parent_name || '');
@@ -32,12 +31,15 @@
 	let extraInfo = $state(editStudent?.extra_info || '');
 	let notes = $state(editStudent?.notes || '');
 
-	// ── Plan fields (only for new student onboarding) ──
 	let goal = $state('');
-	let sessionsPerWeek = $state(0);
-	let timePerSession = $state(0);
 	let duration = $state('');
 	let customEndDate = $state('');
+
+	// Numeric selects — use strings internally for bind:value compatibility
+	let sessionsPerWeekStr = $state('0');
+	let timePerSessionStr = $state('0');
+	let sessionsPerWeek = $derived(parseInt(sessionsPerWeekStr) || 0);
+	let timePerSession = $derived(parseInt(timePerSessionStr) || 0);
 
 	let step = $state(0);
 	let saving = $state(false);
@@ -176,72 +178,58 @@
 		</div>
 	{/if}
 
-	<!-- Step indicators -->
 	{#if !isEdit}
 		<div class="flex items-center gap-1.5">
 			<div class="flex items-center gap-1.5 {step === 0 ? '' : 'opacity-50'}">
-				<span class="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white {step >= 0 ? 'bg-[var(--color-primary-500)]' : ''}">0</span>
+				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">0</span>
 				<span class="text-sm font-medium text-[var(--color-text-primary)]">Contact</span>
 			</div>
 			<div class="h-px w-6 bg-[var(--color-border)]"></div>
 			<div class="flex items-center gap-1.5 {step === 1 ? '' : 'opacity-50'}">
-				<span class="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white {step >= 1 ? 'bg-[var(--color-primary-500)]' : ''}">1</span>
+				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">1</span>
 				<span class="text-sm font-medium text-[var(--color-text-primary)]">Plan</span>
 			</div>
 			<div class="h-px w-6 bg-[var(--color-border)]"></div>
 			<div class="flex items-center gap-1.5 {step === 2 ? '' : 'opacity-50'}">
-				<span class="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white {step >= 2 ? 'bg-[var(--color-primary-500)]' : ''}">2</span>
+				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">2</span>
 				<span class="text-sm font-medium text-[var(--color-text-primary)]">More</span>
 			</div>
 		</div>
-	{/if}
 
-	{#if !isEdit}
-		<!-- ═══ Screen 0: Contact Info ═══ -->
+		<!-- Screen 0: Contact Info -->
 		{#if step === 0}
 			<section class="space-y-5">
-				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
-					Contact Info
-				</h2>
+				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">Contact Info</h2>
 
 				<Input label="Student Name" name="name" placeholder="Full name" required bind:value={name} />
-
 				<Input label="Student Email / Contact" name="studentEmail" type="email" placeholder="student@example.com" bind:value={studentEmail} />
-
 				<Input label="Parent / Guardian Name" name="parentName" placeholder="Parent full name" bind:value={parentName} />
-
 				<Input label="Parent Email / Contact" name="parentEmail" type="email" placeholder="parent@example.com" bind:value={parentEmail} />
 
 				<Select
 					label="Preferred Contact Method (for updates, progress reports, homework)"
 					name="preferredContactMethod"
 					options={contactMethodOptions}
-					value={preferredContactMethod}
-					onchange={(e) => (preferredContactMethod = (e.target as HTMLSelectElement).value)}
+					bind:value={preferredContactMethod}
 				/>
 			</section>
 
 			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
-				<Button type="button" variant="gradient" size="lg" onclick={goToStep1}>
-					Next: Plan Setup
-				</Button>
+				<Button type="button" variant="gradient" size="lg" onclick={goToStep1}>Next: Plan Setup</Button>
 				<Button variant="ghost" href="/dashboard">Cancel</Button>
 			</div>
 		{/if}
 
-		<!-- ═══ Screen 1: Plan Setup ═══ -->
+		<!-- Screen 1: Plan Setup -->
 		{#if step === 1}
 			<section class="space-y-5">
-				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
-					Plan Setup
-				</h2>
+				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">Plan Setup</h2>
 
 				<Select
 					label="Grade Level"
 					name="grade"
 					options={GRADES.map((g) => ({ value: g, label: g }))}
-					value={grade}
-					onchange={(e) => (grade = (e.target as HTMLSelectElement).value)}
+					bind:value={grade}
 					required
 				/>
 
@@ -251,120 +239,55 @@
 					</label>
 					<div class="flex flex-wrap gap-2">
 						{#each SUBJECTS as subject}
-							<button
-								type="button"
-								onclick={() => toggleSubject(subject)}
-								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
-								${selectedSubjects.includes(subject)
-									? 'border-[var(--color-primary-500)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'
-									: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
-							>
-								{subject}
-							</button>
+							<button type="button" onclick={() => toggleSubject(subject)}
+								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all ${selectedSubjects.includes(subject) ? 'border-[var(--color-primary-500)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)]' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
+							>{subject}</button>
 						{/each}
 					</div>
 				</div>
 
-				<Textarea
-					label="Goal"
-					name="goal"
-					placeholder="e.g., Improve Algebra grade from B to A by semester end, ace the TAG prep test, master quadratic equations..."
-					bind:value={goal}
-					rows={3}
-					required
-				/>
+				<Textarea label="Goal" name="goal" placeholder="e.g., Improve Algebra grade from B to A by semester end..." bind:value={goal} rows={3} required />
 
 				<div>
-					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
-						Timeframe
-					</label>
+					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">Timeframe</label>
 					<div class="grid gap-4 sm:grid-cols-3">
-						<Select
-							label="Duration"
-							name="duration"
-							options={DURATIONS.map((d) => ({ value: d.value, label: d.label }))}
-							value={duration}
-							onchange={(e) => (duration = (e.target as HTMLSelectElement).value)}
-						/>
-						<Select
-							label="Sessions / Week"
-							name="sessionsPerWeek"
-							options={[1, 2, 3, 4, 5, 6, 7].map((n) => ({ value: n.toString(), label: n.toString() }))}
-							value={sessionsPerWeek.toString()}
-							onchange={(e) => (sessionsPerWeek = parseInt((e.target as HTMLSelectElement).value))}
-						/>
-						<Select
-							label="Minutes / Session"
-							name="timePerSession"
-							options={SESSION_MINUTES_OPTIONS.map((n) => ({ value: n.toString(), label: `${n} min` }))}
-							value={timePerSession.toString()}
-							onchange={(e) => (timePerSession = parseInt((e.target as HTMLSelectElement).value))}
-						/>
+						<Select label="Duration" name="duration" options={DURATIONS.map((d) => ({ value: d.value, label: d.label }))} bind:value={duration} />
+						<Select label="Sessions / Week" name="sessionsPerWeek" options={[1,2,3,4,5,6,7].map((n) => ({ value: n.toString(), label: n.toString() }))} bind:value={sessionsPerWeekStr} />
+						<Select label="Minutes / Session" name="timePerSession" options={SESSION_MINUTES_OPTIONS.map((n) => ({ value: n.toString(), label: `${n} min` }))} bind:value={timePerSessionStr} />
 					</div>
 					{#if duration === 'custom'}
 						<div class="mt-3">
-							<Input
-								label="Custom End Date"
-								name="customEndDate"
-								type="date"
-								bind:value={customEndDate}
-							/>
+							<Input label="Custom End Date" name="customEndDate" type="date" bind:value={customEndDate} />
 						</div>
 					{/if}
 				</div>
 			</section>
 
 			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
-				<Button type="button" variant="gradient" size="lg" onclick={goToStep2}>
-					Next: Preferences
-				</Button>
+				<Button type="button" variant="gradient" size="lg" onclick={goToStep2}>Next: Preferences</Button>
 				<Button type="button" variant="ghost" onclick={() => (step = 0)}>Back</Button>
 				<Button variant="ghost" href="/dashboard">Cancel</Button>
 			</div>
 		{/if}
 
-		<!-- ═══ Screen 2: Preferences & Context ═══ -->
+		<!-- Screen 2: Preferences & Context -->
 		{#if step === 2}
 			<section class="space-y-5">
-				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
-					Preferences & Context
-				</h2>
+				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">Preferences & Context</h2>
 
 				<div>
-					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
-						Preferred Learning Platforms
-					</label>
+					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">Preferred Learning Platforms</label>
 					<div class="flex flex-wrap gap-2">
 						{#each LEARNING_PLATFORMS as platform}
-							<button
-								type="button"
-								onclick={() => togglePlatform(platform.name)}
-								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
-								${selectedPlatforms.includes(platform.name)
-									? 'border-[var(--color-accent-500)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]'
-									: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
-							>
-								{platform.name}
-							</button>
+							<button type="button" onclick={() => togglePlatform(platform.name)}
+								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all ${selectedPlatforms.includes(platform.name) ? 'border-[var(--color-accent-500)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
+							>{platform.name}</button>
 						{/each}
 					</div>
 				</div>
 
-				<Textarea
-					label="Student Diagnostic Results (if any)"
-					name="diagnosticData"
-					placeholder="e.g., PSAT score 1150 (Math: 580, Reading: 570), failed Algebra quiz on quadratic equations, currently at grade level in Chemistry..."
-					bind:value={diagnosticData}
-					rows={3}
-				/>
-
-				<Textarea
-					label="Anything else I need to know about this student?"
-					name="extraInfo"
-					placeholder="Learning style, pace, preferences, strengths, challenges, attention span, motivation level, or any other relevant information..."
-					bind:value={extraInfo}
-					rows={3}
-				/>
+				<Textarea label="Student Diagnostic Results (if any)" name="diagnosticData" placeholder="e.g., PSAT score 1150 (Math: 580, Reading: 570)..." bind:value={diagnosticData} rows={3} />
+				<Textarea label="Anything else I need to know about this student?" name="extraInfo" placeholder="Learning style, pace, preferences, strengths, challenges..." bind:value={extraInfo} rows={3} />
 			</section>
 
 			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
@@ -376,100 +299,43 @@
 			</div>
 		{/if}
 	{:else}
-		<!-- ═══ Edit mode: all fields in one page ═══ -->
+		<!-- Edit mode -->
 		<section class="space-y-5">
-			<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
-				Basic Contact Info
-			</h2>
+			<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">Basic Contact Info</h2>
 
 			<Input label="Student Name" name="name" placeholder="Full name" required bind:value={name} />
-
 			<Input label="Student Email / Contact" name="studentEmail" type="email" placeholder="student@example.com" bind:value={studentEmail} />
-
 			<Input label="Parent / Guardian Name" name="parentName" placeholder="Parent full name" bind:value={parentName} />
-
 			<Input label="Parent Email / Contact" name="parentEmail" type="email" placeholder="parent@example.com" bind:value={parentEmail} />
 
-			<Select
-				label="Preferred Contact Method (for updates, progress reports, homework)"
-				name="preferredContactMethod"
-				options={contactMethodOptions}
-				value={preferredContactMethod}
-				onchange={(e) => (preferredContactMethod = (e.target as HTMLSelectElement).value)}
-			/>
-
-			<Select
-				label="Grade Level"
-				name="grade"
-				options={GRADES.map((g) => ({ value: g, label: g }))}
-				value={grade}
-				onchange={(e) => (grade = (e.target as HTMLSelectElement).value)}
-				required
-			/>
+			<Select label="Preferred Contact Method (for updates, progress reports, homework)" name="preferredContactMethod" options={contactMethodOptions} bind:value={preferredContactMethod} />
+			<Select label="Grade Level" name="grade" options={GRADES.map((g) => ({ value: g, label: g }))} bind:value={grade} required />
 
 			<div>
-				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
-					Subjects <span class="text-[var(--color-error)]">*</span>
-				</label>
+				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">Subjects <span class="text-[var(--color-error)]">*</span></label>
 				<div class="flex flex-wrap gap-2">
 					{#each SUBJECTS as subject}
-						<button
-							type="button"
-							onclick={() => toggleSubject(subject)}
-							class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
-							${selectedSubjects.includes(subject)
-								? 'border-[var(--color-primary-500)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'
-								: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
-						>
-							{subject}
-						</button>
+						<button type="button" onclick={() => toggleSubject(subject)}
+							class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all ${selectedSubjects.includes(subject) ? 'border-[var(--color-primary-500)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)]' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
+						>{subject}</button>
 					{/each}
 				</div>
 			</div>
 
 			<div>
-				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
-					Preferred Learning Platforms
-				</label>
+				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">Preferred Learning Platforms</label>
 				<div class="flex flex-wrap gap-2">
 					{#each LEARNING_PLATFORMS as platform}
-						<button
-							type="button"
-							onclick={() => togglePlatform(platform.name)}
-							class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
-							${selectedPlatforms.includes(platform.name)
-								? 'border-[var(--color-accent-500)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]'
-								: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
-						>
-							{platform.name}
-						</button>
+						<button type="button" onclick={() => togglePlatform(platform.name)}
+							class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all ${selectedPlatforms.includes(platform.name) ? 'border-[var(--color-accent-500)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
+						>{platform.name}</button>
 					{/each}
 				</div>
 			</div>
 
-			<Textarea
-				label="Previous Diagnostic Data (if any)"
-				name="diagnosticData"
-				placeholder="Any previous test scores, assessments, or diagnostic results..."
-				bind:value={diagnosticData}
-				rows={3}
-			/>
-
-			<Textarea
-				label="Anything else I should know about this student?"
-				name="extraInfo"
-				placeholder="Learning style, pace, preferences, strengths, challenges..."
-				bind:value={extraInfo}
-				rows={3}
-			/>
-
-			<Textarea
-				label="Notes"
-				name="notes"
-				placeholder="Any notes about this student..."
-				bind:value={notes}
-				rows={3}
-			/>
+			<Textarea label="Previous Diagnostic Data (if any)" name="diagnosticData" placeholder="Any previous test scores, assessments, or diagnostic results..." bind:value={diagnosticData} rows={3} />
+			<Textarea label="Anything else I should know about this student?" name="extraInfo" placeholder="Learning style, pace, preferences, strengths, challenges..." bind:value={extraInfo} rows={3} />
+			<Textarea label="Notes" name="notes" placeholder="Any notes about this student..." bind:value={notes} rows={3} />
 		</section>
 
 		<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
