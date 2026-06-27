@@ -54,10 +54,17 @@
 		}
 	}
 
-	onMount(async () => {
-		await dayPlanStore.fetchDay(dayId);
-		if (dayPlanStore.currentDay) {
-			await resourceStore.fetchByDay(dayId);
+onMount(async () => {
+		console.log('[DayPlanView] Mounting for dayId:', dayId);
+		try {
+			await dayPlanStore.fetchDay(dayId);
+			console.log('[DayPlanView] fetchDay complete. currentDay:', !!dayPlanStore.currentDay, 'error:', dayPlanStore.error);
+			if (dayPlanStore.currentDay) {
+				await resourceStore.fetchByDay(dayId);
+				console.log('[DayPlanView] Resources loaded, count:', Object.keys(resourceStore.resourcesByTask).length);
+			}
+		} catch (err) {
+			console.error('[DayPlanView] onMount error:', err);
 		}
 	});
 

@@ -36,15 +36,17 @@ export const dayPlanStore = {
 	async fetchDay(dayId: string) {
 		loading = true;
 		error = null;
+		console.log('[dayPlanStore.fetchDay] Fetching day:', dayId);
 
-		// Fetch day with ownership check via join
+		// Step 1: Fetch the day plan row
 		const { data: day, error: dayErr } = await supabase
 			.from('plan_days')
-			.select('*, plan_weeks!inner(plan_id)')
+			.select('*')
 			.eq('id', dayId)
 			.single();
 
 		if (dayErr || !day) {
+			console.error('[dayPlanStore.fetchDay] Day not found:', dayErr);
 			currentDay = null;
 			tasks = [];
 			loading = false;
@@ -52,16 +54,31 @@ export const dayPlanStore = {
 			return;
 		}
 
-		// Check ownership: plan_day → plan_week → weekly_plan.tutor_id
-		const weekData = day.plan_weeks as { plan_id: string } | undefined;
-		if (weekData?.plan_id) {
+		console.log('[dayPlanStore.fetchDay] Day found, week_id:', day.week_id);
+
+		// Step 2: Walk ownership chain — day → week → plan → check tutor
+		const { data: week } = await supabase
+			.from('plan_weeks')
+			.select('plan_id')
+			.eq('id', day.week_id)
+			.single();
+
+		console.log('[dayPlanStore.fetchDay] Week plan_id:', week?.plan_id);
+
+		if (week?.plan_id) {
 			const { data: plan } = await supabase
 				.from('weekly_plans')
 				.select('tutor_id')
-				.eq('id', weekData.plan_id)
+				.eq('id', week.plan_id)
 				.single();
 
+			console.log('[dayPlanStore.fetchDay] Plan tutor check:', {
+				found: !!plan,
+				matches: plan?.tutor_id === auth.user?.id
+			});
+
 			if (!plan || plan.tutor_id !== auth.user?.id) {
+				console.warn('[dayPlanStore.fetchDay] Permission denied');
 				currentDay = null;
 				tasks = [];
 				loading = false;
@@ -82,6 +99,7 @@ export const dayPlanStore = {
 			.order('sort_order');
 		if (ts) tasks = ts as PlanTask[];
 
+		console.log('[dayPlanStore.fetchDay] Loaded', tasks.length, 'tasks');
 		loading = false;
 	},
 
