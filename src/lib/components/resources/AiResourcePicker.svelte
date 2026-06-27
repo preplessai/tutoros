@@ -85,7 +85,8 @@
 					preferredSites: (student.preferred_resource_sites?.filter((s) => s.enabled) || []).map(
 						(s) => ({ name: s.name, url: s.url })
 					)
-				}
+				},
+				maxPerTask: 3
 			});
 
 			resources = result.resources as RecommendedResource[];

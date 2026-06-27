@@ -24,7 +24,7 @@ async function searchBrave(
 	query: string,
 	apiKey: string,
 	preferredSites?: { name: string; url: string }[],
-	count = 10
+	count = 15
 ): Promise<BraveWebResult[]> {
 	// Build query with site: filters
 	let searchQuery = query;

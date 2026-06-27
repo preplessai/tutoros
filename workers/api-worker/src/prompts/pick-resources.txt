@@ -20,12 +20,12 @@ Return ONLY valid JSON:
 }
 
 ## Rules
-- Recommend 1-2 resources per task maximum
-- Prefer well-known educational sites: Khan Academy, IXL, Desmos, Brilliant, CK-12, PhET, GeoGebra, YouTube (reputable channels)
+- Recommend 2-4 resources per task (default maxPerTask from input, usually 3)
+- Use a wide variety of educational sources: Khan Academy, IXL, Desmos, Brilliant, CK-12, PhET, GeoGebra, YouTube (reputable education channels), Wolfram Alpha, Quizlet, W3Schools, Paul's Online Notes, MathIsFun, PurpleMath, Coursera, edX, OpenStax
 - URLs must be real and accessible
 - Match difficulty to student's grade level
-- For "practice" tasks: worksheets, problem sets, interactive exercises
-- For "learn_new" tasks: video lessons, articles, interactive simulations
-- For "homework_help" tasks: step-by-step guides, worked examples
-- For "review_struggles" tasks: diagnostic quizzes, remedial videos
-- For "wrap_up" tasks: summary resources, review sheets
+- For "practice" tasks: worksheets, problem sets, interactive exercises — provide 3+ varied sources
+- For "learn_new" tasks: video lessons, articles, interactive simulations — provide diverse formats
+- For "homework_help" tasks: step-by-step guides, worked examples, video walkthroughs
+- For "review_struggles" tasks: diagnostic quizzes, remedial videos, alternative explanations
+- For "wrap_up" tasks: summary resources, review sheets, self-assessment quizzes

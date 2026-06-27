@@ -89,7 +89,7 @@ export const searchResourcesSchema = z.object({
 	subjects: z.array(z.string()),
 	grade: z.string(),
 	preferredSites: z.array(z.object({ name: z.string(), url: z.string() })),
-	maxResults: z.number().int().positive().max(20).optional()
+	maxResults: z.number().int().positive().max(25).optional()
 });
 
 // POST /api/pick-resources
@@ -107,7 +107,7 @@ export const pickResourcesSchema = z.object({
 		subjects: z.array(z.string()),
 		preferredSites: z.array(z.object({ name: z.string(), url: z.string() }))
 	}),
-	maxPerTask: z.number().optional().default(2)
+	maxPerTask: z.number().optional().default(3)
 });
 
 // POST /api/prepless-chat

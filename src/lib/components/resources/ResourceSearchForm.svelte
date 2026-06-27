@@ -25,10 +25,14 @@
 				grade: plan?.grade || '',
 				preferredSites: [
 					{ name: 'Khan Academy', url: 'https://www.khanacademy.org' },
-					{ name: 'W3Schools', url: 'https://www.w3schools.com' },
-					{ name: 'IXL', url: 'https://www.ixl.com' }
+					{ name: 'IXL', url: 'https://www.ixl.com' },
+					{ name: 'Quizlet', url: 'https://quizlet.com' },
+					{ name: 'CK-12', url: 'https://www.ck12.org' },
+					{ name: 'Desmos', url: 'https://www.desmos.com' },
+					{ name: 'Brilliant', url: 'https://brilliant.org' },
+					{ name: 'Wolfram Alpha', url: 'https://www.wolframalpha.com' }
 				],
-				maxResults: 3
+				maxResults: 12
 			});
 			searchResults = result.resources;
 		} catch (err: any) {
