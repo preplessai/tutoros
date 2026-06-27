@@ -52,28 +52,4 @@ import{t as e}from"./DjVrrERs.js";function t(e){return e?e.replace(/&/g,`&amp;`)
 		${i.map(r).join(``)}
 	`).join(``)}
 	${i(c)}
-</body></html>`}function s(i,o){let s=`Week ${i.week_number} — ${i.theme||`Plan`}`,c=i.week_start&&i.week_end?`${new Date(i.week_start+`T00:00:00`).toLocaleDateString(`en-US`,{month:`short`,day:`numeric`})} — ${new Date(i.week_end+`T00:00:00`).toLocaleDateString(`en-US`,{month:`short`,day:`numeric`,year:`numeric`})}`:`Week ${i.week_number}`;return`<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8"><title>${t(s)}</title><style>${a()}</style></head>
-<body>
-	<h1>Week ${i.week_number}</h1>
-	<div class="meta">
-		${c}
-		${i.theme?`<span class="badge badge-focus">${t(i.theme)}</span>`:``}
-	</div>
-	${i.focus_areas?.length?`<p class="meta" style="margin-top: 4px;">Focus areas: ${t(i.focus_areas.join(`, `))}</p>`:``}
-	${i.notes?`<p class="meta">${t(i.notes)}</p>`:``}
-
-	${o.map(({day:i,tasks:a})=>{let o=new Map;for(let e of a){let t=o.get(e.section)||[];t.push(e),o.set(e.section,t)}return`
-		<div class="day-block">
-			<div class="day-date">${e(i.date)}</div>
-			<div class="day-subtitle">
-				${i.energy_level?`<span class="badge badge-focus">⚡ ${t(i.energy_level)}</span>`:``}
-				${i.struggle_areas?.length?`<span style="margin-left: 8px;">Focus: ${t(i.struggle_areas.join(`, `))}</span>`:``}
-			</div>
-			${[...o.entries()].map(([e,i])=>`
-				<h3>${t(n[e]||e)}</h3>
-				${i.map(r).join(``)}
-			`).join(``)}
-		</div>`}).join(``)}
-</body></html>`}function c(e){let t=window.open(``,`_blank`,`width=900,height=700`);t&&(t.document.write(e),t.document.close(),t.focus())}function l(e,t,n){return{type:`day_plan`,version:1,exported_at:new Date().toISOString(),day:{date:e.date,day_of_week:e.day_of_week,energy_level:e.energy_level,recent_progress:e.recent_progress,struggle_areas:e.struggle_areas,grades_context:e.grades_context},tasks:t.map(e=>({section:e.section,title:e.title,description:e.description,duration_minutes:e.duration_minutes})),resources:n.map(e=>({title:e.title,url:e.url,source:e.source,type:e.type,description:e.description}))}}function u(e,t){let n=new Blob([e],{type:`application/json`}),r=URL.createObjectURL(n),i=document.createElement(`a`);i.href=r,i.download=t,document.body.appendChild(i),i.click(),document.body.removeChild(i),URL.revokeObjectURL(r)}function d(e){let t;try{t=JSON.parse(e)}catch{throw Error(`Invalid JSON file.`)}let n=t;if(!n.type||!n.version)throw Error(`Not a valid Prepless AI export file. Missing type or version.`);if(n.type!==`day_plan`&&n.type!==`week_plan`)throw Error(`Unknown export type: "${n.type}". Expected "day_plan" or "week_plan".`);return{type:n.type,data:n}}export{c as a,s as i,o as n,d as o,l as r,u as t};
+</body></html>`}function s(e){let t=window.open(``,`_blank`,`width=900,height=700`);t&&(t.document.write(e),t.document.close(),t.focus())}function c(e,t,n){return{type:`day_plan`,version:1,exported_at:new Date().toISOString(),day:{date:e.date,day_of_week:e.day_of_week,energy_level:e.energy_level,recent_progress:e.recent_progress,struggle_areas:e.struggle_areas,grades_context:e.grades_context},tasks:t.map(e=>({section:e.section,title:e.title,description:e.description,duration_minutes:e.duration_minutes})),resources:n.map(e=>({title:e.title,url:e.url,source:e.source,type:e.type,description:e.description}))}}function l(e,t){let n=new Blob([e],{type:`application/json`}),r=URL.createObjectURL(n),i=document.createElement(`a`);i.href=r,i.download=t,document.body.appendChild(i),i.click(),document.body.removeChild(i),URL.revokeObjectURL(r)}function u(e){let t;try{t=JSON.parse(e)}catch{throw Error(`Invalid JSON file.`)}let n=t;if(!n.type||!n.version)throw Error(`Not a valid Prepless AI export file. Missing type or version.`);if(n.type!==`day_plan`&&n.type!==`week_plan`)throw Error(`Unknown export type: "${n.type}". Expected "day_plan" or "week_plan".`);return{type:n.type,data:n}}export{u as a,s as i,o as n,c as r,l as t};
