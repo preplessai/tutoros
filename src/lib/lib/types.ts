@@ -228,10 +228,20 @@ export interface AiGeneratedPlan {
 			theme: string;
 			focusAreas: string[];
 			notes: string;
-			homework: {
+			homework?: {
 				title: string;
 				description: string;
 				url: string;
+			}[];
+			days?: {
+				date: string;
+				dayOfWeek: DayOfWeek;
+				tasks: {
+					section: TaskSection;
+					title: string;
+					description: string;
+					durationMinutes: number;
+				}[];
 			}[];
 		}[];
 	};

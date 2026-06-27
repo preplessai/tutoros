@@ -168,16 +168,34 @@ export const planStore = {
 					.select()
 					.single();
 
-				if (weekRow && week.homework) {
-					for (const hw of week.homework) {
-						await supabase.from('plan_week_homework').insert({
-							week_id: weekRow.id,
-							title: hw.title,
-							description: hw.description,
-							url: hw.url,
-							completed: false,
-							sort_order: week.homework.indexOf(hw)
-						});
+				if (weekRow) {
+					// New format: homework
+					if (week.homework) {
+						for (const hw of week.homework) {
+							await supabase.from('plan_week_homework').insert({
+								week_id: weekRow.id,
+								title: hw.title,
+								description: hw.description || null,
+								url: hw.url || null,
+								completed: false,
+								sort_order: week.homework.indexOf(hw)
+							});
+						}
+					}
+					// Old format: days with tasks → convert to homework
+					if (week.days) {
+						for (const day of week.days) {
+							for (const task of day.tasks) {
+								await supabase.from('plan_week_homework').insert({
+									week_id: weekRow.id,
+									title: task.title,
+									description: task.description || null,
+									url: null,
+									completed: false,
+									sort_order: week.days.indexOf(day) * 10 + day.tasks.indexOf(task)
+								});
+							}
+						}
 					}
 				}
 			}
@@ -185,11 +203,8 @@ export const planStore = {
 			toast.success('Plan generated successfully');
 			return plan.id;
 		} catch (err: any) {
-			if (creditsDeducted) {
-				toast.error('Credits were deducted but plan generation failed. Contact support for a refund.');
-			} else {
-				toast.error('Failed to generate plan: ' + err.message);
-			}
+			console.error('[generateAndSave]', err);
+			toast.error('Plan generation failed: ' + (err.message || err));
 			return null;
 		} finally {
 			generating = false;
@@ -251,16 +266,32 @@ export const planStore = {
 					.select()
 					.single();
 
-				if (weekRow && week.homework) {
-					for (const hw of week.homework) {
-						await supabase.from('plan_week_homework').insert({
-							week_id: weekRow.id,
-							title: hw.title,
-							description: hw.description,
-							url: hw.url,
-							completed: false,
-							sort_order: week.homework.indexOf(hw)
-						});
+				if (weekRow) {
+					if (week.homework) {
+						for (const hw of week.homework) {
+							await supabase.from('plan_week_homework').insert({
+								week_id: weekRow.id,
+								title: hw.title,
+								description: hw.description || null,
+								url: hw.url || null,
+								completed: false,
+								sort_order: week.homework.indexOf(hw)
+							});
+						}
+					}
+					if (week.days) {
+						for (const day of week.days) {
+							for (const task of day.tasks) {
+								await supabase.from('plan_week_homework').insert({
+									week_id: weekRow.id,
+									title: task.title,
+									description: task.description || null,
+									url: null,
+									completed: false,
+									sort_order: week.days.indexOf(day) * 10 + day.tasks.indexOf(task)
+								});
+							}
+						}
 					}
 				}
 			}
@@ -271,11 +302,8 @@ export const planStore = {
 			toast.success('Plan adjusted');
 			return true;
 		} catch (err: any) {
-			if (creditsDeducted) {
-				toast.error('Credits were deducted but plan adjustment failed. Contact support for a refund.');
-			} else {
-				toast.error('Failed to adjust plan: ' + err.message);
-			}
+			console.error('[adjustPlan]', err);
+			toast.error('Plan adjustment failed: ' + (err.message || err));
 			return false;
 		} finally {
 			generating = false;

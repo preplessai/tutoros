@@ -67,8 +67,9 @@
 	}
 
 	function computeEndDate(): string {
-		if (!duration || duration === 'custom') return customEndDate;
+		if (duration === 'custom') return customEndDate || new Date().toISOString().split('T')[0];
 		if (duration === '1 session') return new Date().toISOString().split('T')[0];
+		if (!duration) return new Date(Date.now() + 90 * 86400000).toISOString().split('T')[0];
 		const days = duration === '3 months' ? 90 : duration === '6 months' ? 180 : 365;
 		const d = new Date();
 		d.setDate(d.getDate() + days);
