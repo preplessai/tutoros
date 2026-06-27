@@ -64,6 +64,8 @@
 		let endDate: string;
 		if (duration === 'custom') {
 			endDate = customEndDate;
+		} else if (duration === '1 session') {
+			endDate = new Date().toISOString().split('T')[0];
 		} else {
 			const days = duration === '3 months' ? 90 : duration === '6 months' ? 180 : 365;
 			const d = new Date();

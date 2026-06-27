@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlanWeek, PlanTask } from '$lib/lib/types';
+	import type { PlanWeek, PlanDay } from '$lib/lib/types';
 	import { planStore } from '$lib/stores/plan.svelte';
 	import { auth } from '$lib/stores/auth.svelte';
 	import { canUseFeature } from '$lib/lib/constants';
@@ -7,34 +7,50 @@
 	import { exportWeek, openExport, downloadJson } from '$lib/lib/export';
 	import type { ExportWeekJson } from '$lib/lib/export';
 	import { parseImportJson } from '$lib/lib/export';
-	import WeekCard from './WeekCard.svelte';
-	import WeekPopup from './WeekPopup.svelte';
+	import SessionCard from './SessionCard.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { goto } from '$app/navigation';
 	import { stripeApi } from '$lib/lib/stripe';
 
-	let activeWeek = $state<PlanWeek | null>(null);
-	let popupOpen = $state(false);
-	let popupOpenedAt = $state(0);
+	// ── Fetch all sessions (days) across all weeks ──
+	let sessions = $state<{ day: PlanDay; week: PlanWeek }[]>([]);
+	let sessionsLoading = $state(true);
+	let lastPlanId = $state<string | null>(null);
 
-	function openPopup(week: PlanWeek) {
-		console.log('[PlanTimeline] openPopup called for week:', week.week_number, 'id:', week.id);
-		activeWeek = week;
-		popupOpen = true;
-		popupOpenedAt = Date.now();
+	$effect(() => {
+		const planId = planStore.current?.id;
+		if (planId && planId !== lastPlanId) {
+			lastPlanId = planId;
+			fetchAllSessions();
+		}
+	});
+
+	async function fetchAllSessions() {
+		sessionsLoading = true;
+		const weeks = planStore.weeks;
+		const all: { day: PlanDay; week: PlanWeek }[] = [];
+
+		for (const week of weeks) {
+			const { data: days } = await supabase
+				.from('plan_days')
+				.select('*')
+				.eq('week_id', week.id)
+				.order('sort_order');
+
+			if (days) {
+				for (const day of days as PlanDay[]) {
+					all.push({ day, week });
+				}
+			}
+		}
+		sessions = all;
+		sessionsLoading = false;
 	}
 
-	function closePopup() {
-		const elapsed = Date.now() - popupOpenedAt;
-		console.log('[PlanTimeline] closePopup called, elapsed:', elapsed, 'ms');
-		if (elapsed < 300) {
-			console.log('[PlanTimeline] closePopup IGNORED — within 300ms guard window');
-			return;
-		}
-		popupOpen = false;
-		activeWeek = null;
+	function onSessionUpdate() {
+		fetchAllSessions();
 	}
 
 	// ── Export Plan (all weeks) ──
@@ -48,7 +64,7 @@
 	}
 
 	async function fetchAllWeeksData(): Promise<
-		{ week: PlanWeek; days: { day: import('$lib/lib/types').PlanDay; tasks: PlanTask[] }[] }[]
+		{ week: PlanWeek; days: { day: PlanDay; tasks: import('$lib/lib/types').PlanTask[] }[] }[]
 	> {
 		const weeks = planStore.weeks;
 		const result = await Promise.all(
@@ -66,8 +82,8 @@
 							.eq('day_id', day.id)
 							.order('sort_order');
 						return {
-							day: day as import('$lib/lib/types').PlanDay,
-							tasks: (tasks as PlanTask[]) || []
+							day: day as PlanDay,
+							tasks: (tasks as import('$lib/lib/types').PlanTask[]) || []
 						};
 					})
 				);
@@ -183,6 +199,8 @@
 			managingSubscription = false;
 		}
 	}
+
+	const completedCount = $derived(sessions.filter((s) => s.day.completed).length);
 </script>
 
 <div class="space-y-6">
@@ -210,6 +228,11 @@
 						<span class="text-xs text-[var(--color-text-tertiary)]"
 							>{planStore.weeks.length} weeks</span
 						>
+						{#if completedCount > 0}
+							<span class="text-xs text-[var(--color-success)]"
+								>&middot; {completedCount}/{sessions.length} sessions done</span
+							>
+						{/if}
 					{/if}
 				</div>
 			</div>
@@ -234,7 +257,6 @@
 					</Button>
 				{/if}
 
-				<!-- Subscription-aware buttons -->
 				{#if auth.profile?.subscription_tier === 'free'}
 					<Button variant="gradient" size="sm" href="/pricing">Upgrade to Pro</Button>
 				{:else if auth.profile?.cancel_at_period_end}
@@ -249,7 +271,6 @@
 				{/if}
 
 				{#if (auth.profile?.subscription_tier || 'free') !== 'free'}
-					<!-- Export Plan dropdown -->
 					<div class="relative" onfocusout={handleExportBlur}>
 						<Button
 							variant="secondary"
@@ -282,36 +303,16 @@
 									onclick={handleExportPage}
 									class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
 								>
-									<svg
-										class="h-4 w-4 text-[var(--color-text-tertiary)]"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										><path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-										/></svg
-									>
+									<svg class="h-4 w-4 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+										><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
 									Printable Page
 								</button>
 								<button
 									onclick={handleExportJson}
 									class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
 								>
-									<svg
-										class="h-4 w-4 text-[var(--color-text-tertiary)]"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										><path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-										/></svg
-									>
+									<svg class="h-4 w-4 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+										><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
 									JSON File
 								</button>
 							</div>
@@ -320,13 +321,7 @@
 
 					<Button variant="ghost" size="sm" onclick={triggerImportWeek} loading={importingWeek}>
 						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-							><path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-							/></svg
-						>
+							><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
 						Import Week
 					</Button>
 					<input
@@ -341,12 +336,12 @@
 		</div>
 	</div>
 
-	{#if planStore.loading}
+	{#if planStore.loading || sessionsLoading}
 		<div class="flex justify-center py-20"><Spinner size="lg" /></div>
-	{:else if planStore.weeks.length === 0}
+	{:else if sessions.length === 0}
 		<EmptyState
 			icon="calendar"
-			title="No weeks generated"
+			title="No sessions generated"
 			description="Something went wrong with the plan generation. Try adjusting the plan."
 			action={{
 				label: 'Adjust Plan',
@@ -354,15 +349,18 @@
 			}}
 		/>
 	{:else}
-		<!-- Week List -->
+		<!-- Session List -->
 		<div class="space-y-3">
-			{#each planStore.weeks as week, i (week.id)}
-				<div style="animation: fade-in-up 0.4s ease-out {i * 60}ms both">
-					<WeekCard {week} active={activeWeek?.id === week.id} onclick={() => openPopup(week)} />
+			{#each sessions as session, i (session.day.id)}
+				<div style="animation: fade-in-up 0.4s ease-out {i * 50}ms both">
+					<SessionCard
+						sessionNumber={i + 1}
+						day={session.day}
+						week={session.week}
+						onupdate={onSessionUpdate}
+					/>
 				</div>
 			{/each}
 		</div>
 	{/if}
 </div>
-
-<WeekPopup open={popupOpen} onclose={closePopup} week={activeWeek} />

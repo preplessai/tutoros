@@ -44,15 +44,7 @@ export const GRADES = [
 	'5th',
 	'6th',
 	'7th',
-	'8th',
-	'9th',
-	'10th',
-	'11th',
-	'12th',
-	'College Freshman',
-	'College Sophomore',
-	'College Junior',
-	'College Senior'
+	'8th'
 ];
 
 export const SUBJECTS = [
@@ -107,6 +99,7 @@ export const RESOURCE_SITES = [
 ];
 
 export const DURATIONS = [
+	{ value: '1 session', label: '1 session' },
 	{ value: '3 months', label: '3 months' },
 	{ value: '6 months', label: '6 months' },
 	{ value: '1 year', label: '1 year' },

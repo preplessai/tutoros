@@ -37,7 +37,7 @@ export interface Student {
 	notes: string | null;
 	parent_name: string | null;
 	parent_email: string | null;
-	preferred_contact_method: 'email' | 'sms' | 'both' | null;
+	preferred_contact_method: 'student_email' | 'parent_email' | 'email' | 'sms' | 'both' | null;
 	learning_platforms: string[];
 	preferred_resource_sites: PreferredResourceSite[];
 	created_at: string;
@@ -115,6 +115,7 @@ export interface PlanDay {
 	grades_context: string | null;
 	ai_raw_response: unknown | null;
 	ai_generated: boolean;
+	completed: boolean;
 	sort_order: number;
 	created_at: string;
 	updated_at: string;

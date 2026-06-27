@@ -4,7 +4,6 @@
 		GRADES,
 		SUBJECTS,
 		LEARNING_PLATFORMS,
-		CONTACT_METHODS,
 		DURATIONS,
 		SESSION_MINUTES_OPTIONS,
 		RESOURCE_SITES
@@ -26,7 +25,7 @@
 	let studentEmail = $state(editStudent?.email || '');
 	let parentName = $state(editStudent?.parent_name || '');
 	let parentEmail = $state(editStudent?.parent_email || '');
-	let preferredContactMethod = $state(editStudent?.preferred_contact_method || 'email');
+	let preferredContactMethod = $state(editStudent?.preferred_contact_method || 'student_email');
 	let grade = $state(editStudent?.grade || '');
 	let selectedSubjects = $state<string[]>(editStudent?.subjects || []);
 	let selectedPlatforms = $state<string[]>(editStudent?.learning_platforms || []);
@@ -42,11 +41,17 @@
 	let goal = $state('');
 	let sessionsPerWeek = $state(2);
 	let timePerSession = $state(60);
-	let duration = $state('3 months');
+	let duration = $state('1 session');
 	let customEndDate = $state('');
 
+	let step = $state(1);
 	let saving = $state(false);
 	let errors = $state<string[]>([]);
+
+	const contactMethodOptions = [
+		{ value: 'student_email', label: 'Student Email' },
+		{ value: 'parent_email', label: 'Parent Email' }
+	];
 
 	function toggleSubject(subject: string) {
 		if (selectedSubjects.includes(subject)) {
@@ -66,17 +71,31 @@
 
 	function computeEndDate(): string {
 		if (duration === 'custom') return customEndDate;
+		if (duration === '1 session') return new Date().toISOString().split('T')[0];
 		const days = duration === '3 months' ? 90 : duration === '6 months' ? 180 : 365;
 		const d = new Date();
 		d.setDate(d.getDate() + days);
 		return d.toISOString().split('T')[0];
 	}
 
+	function validateStep1(): boolean {
+		errors = [];
+		if (!name.trim()) errors = [...errors, 'Student name is required.'];
+		if (!grade) errors = [...errors, 'Grade is required.'];
+		if (selectedSubjects.length === 0) errors = [...errors, 'Select at least one subject.'];
+		return errors.length === 0;
+	}
+
+	function goToStep2() {
+		if (validateStep1()) {
+			step = 2;
+		}
+	}
+
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
 		errors = [];
 
-		// Validate
 		if (!name.trim()) errors = [...errors, 'Student name is required.'];
 		if (!grade) errors = [...errors, 'Grade is required.'];
 		if (selectedSubjects.length === 0) errors = [...errors, 'Select at least one subject.'];
@@ -95,7 +114,7 @@
 				notes: notes.trim() || null,
 				parent_name: parentName.trim() || null,
 				parent_email: parentEmail.trim() || null,
-				preferred_contact_method: preferredContactMethod as 'email' | 'sms' | 'both',
+				preferred_contact_method: preferredContactMethod as 'student_email' | 'parent_email',
 				learning_platforms: selectedPlatforms,
 				preferred_resource_sites: preferredSites,
 				learning_style: null
@@ -112,7 +131,6 @@
 					return;
 				}
 
-				// Auto-generate plan
 				const startDate = new Date().toISOString().split('T')[0];
 				const endDate = computeEndDate();
 
@@ -159,152 +177,224 @@
 		</div>
 	{/if}
 
-	<!-- ═══ Basic Student Info ═══ -->
-	<section class="space-y-5">
-		<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
-			Basic Student Info
-		</h2>
+	<!-- Step indicators -->
+	<div class="flex items-center gap-2">
+		<div class="flex items-center gap-1.5 {step === 1 ? '' : 'opacity-50'}">
+			<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">1</span>
+			<span class="text-sm font-medium text-[var(--color-text-primary)]">Basic Info</span>
+		</div>
+		<div class="h-px w-8 bg-[var(--color-border)]"></div>
+		<div class="flex items-center gap-1.5 {step === 2 ? '' : 'opacity-50'}">
+			<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">2</span>
+			<span class="text-sm font-medium text-[var(--color-text-primary)]">Plan Info</span>
+		</div>
+	</div>
 
-		<Input label="Student Name" name="name" placeholder="Full name" required bind:value={name} />
-
-		<Input label="Student Email / Contact" name="studentEmail" type="email" placeholder="student@example.com" bind:value={studentEmail} />
-
-		<Input label="Parent / Guardian Name" name="parentName" placeholder="Parent full name" bind:value={parentName} />
-
-		<Input label="Parent Email / Contact" name="parentEmail" type="email" placeholder="parent@example.com" bind:value={parentEmail} />
-
-		<Select
-			label="Preferred Contact Method"
-			name="preferredContactMethod"
-			options={CONTACT_METHODS.map((c) => ({ value: c.value, label: c.label }))}
-			value={preferredContactMethod}
-			onchange={(e) => (preferredContactMethod = (e.target as HTMLSelectElement).value)}
-		/>
-	</section>
-
-	<!-- ═══ Plan Info ═══ -->
 	{#if !isEdit}
-		<section class="space-y-5 border-t border-[var(--color-border)] pt-8">
-			<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
-				Plan Info
-			</h2>
+		<!-- ═══ Step 1: Basic Student Info ═══ -->
+		{#if step === 1}
+			<section class="space-y-5">
+				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
+					Basic Student Info
+				</h2>
 
-			<Select
-				label="Grade Level"
-				name="grade"
-				options={GRADES.map((g) => ({ value: g, label: g }))}
-				value={grade}
-				onchange={(e) => (grade = (e.target as HTMLSelectElement).value)}
-				required
-			/>
+				<Input label="Student Name" name="name" placeholder="Full name" required bind:value={name} />
 
-			<div>
-				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
-					Subjects <span class="text-[var(--color-error)]">*</span>
-				</label>
-				<div class="flex flex-wrap gap-2">
-					{#each SUBJECTS as subject}
-						<button
-							type="button"
-							onclick={() => toggleSubject(subject)}
-							class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
-							${selectedSubjects.includes(subject)
-								? 'border-[var(--color-primary-500)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'
-								: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
-						>
-							{subject}
-						</button>
-					{/each}
+				<Input label="Student Email / Contact" name="studentEmail" type="email" placeholder="student@example.com" bind:value={studentEmail} />
+
+				<Input label="Parent / Guardian Name" name="parentName" placeholder="Parent full name" bind:value={parentName} />
+
+				<Input label="Parent Email / Contact" name="parentEmail" type="email" placeholder="parent@example.com" bind:value={parentEmail} />
+
+				<Select
+					label="Preferred Contact Method (for updates, progress reports, homework)"
+					name="preferredContactMethod"
+					options={contactMethodOptions}
+					value={preferredContactMethod}
+					onchange={(e) => (preferredContactMethod = (e.target as HTMLSelectElement).value)}
+				/>
+
+				<Select
+					label="Grade Level"
+					name="grade"
+					options={GRADES.map((g) => ({ value: g, label: g }))}
+					value={grade}
+					onchange={(e) => (grade = (e.target as HTMLSelectElement).value)}
+					required
+				/>
+
+				<div>
+					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
+						Subjects <span class="text-[var(--color-error)]">*</span>
+					</label>
+					<div class="flex flex-wrap gap-2">
+						{#each SUBJECTS as subject}
+							<button
+								type="button"
+								onclick={() => toggleSubject(subject)}
+								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
+								${selectedSubjects.includes(subject)
+									? 'border-[var(--color-primary-500)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'
+									: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
+							>
+								{subject}
+							</button>
+						{/each}
+					</div>
 				</div>
+
+				<div>
+					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
+						Learning Platforms
+					</label>
+					<div class="flex flex-wrap gap-2">
+						{#each LEARNING_PLATFORMS as platform}
+							<button
+								type="button"
+								onclick={() => togglePlatform(platform.name)}
+								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
+								${selectedPlatforms.includes(platform.name)
+									? 'border-[var(--color-accent-500)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]'
+									: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
+							>
+								{platform.name}
+							</button>
+						{/each}
+					</div>
+				</div>
+
+				<div>
+					<label class="mb-3 block text-sm font-medium text-[var(--color-text-secondary)]">
+						Preferred Resource Sites
+					</label>
+					<div class="flex flex-wrap gap-2">
+						{#each preferredSites as site, i}
+							<button
+								type="button"
+								onclick={() => (preferredSites[i].enabled = !preferredSites[i].enabled)}
+								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
+								${preferredSites[i].enabled
+									? 'border-[var(--color-primary-500)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'
+									: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-tertiary)] hover:border-[var(--color-border-strong)]'}`}
+							>
+								{site.name}
+							</button>
+						{/each}
+					</div>
+				</div>
+			</section>
+
+			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
+				<Button type="button" variant="gradient" size="lg" onclick={goToStep2}>
+					Next: Plan Info
+				</Button>
+				<Button variant="ghost" href="/dashboard">Cancel</Button>
 			</div>
+		{/if}
 
-			<Textarea
-				label="Goal"
-				name="goal"
-				placeholder="e.g., Improve Algebra grade from B to A by semester end, ace the TAG prep test, master quadratic equations..."
-				bind:value={goal}
-				rows={3}
-				required
-			/>
+		<!-- ═══ Step 2: Plan Info ═══ -->
+		{#if step === 2}
+			<section class="space-y-5">
+				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
+					Plan Info
+				</h2>
 
-			<div>
-				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
-					Learning Platforms
-				</label>
-				<div class="flex flex-wrap gap-2">
-					{#each LEARNING_PLATFORMS as platform}
-						<button
-							type="button"
-							onclick={() => togglePlatform(platform.name)}
-							class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
-							${selectedPlatforms.includes(platform.name)
-								? 'border-[var(--color-accent-500)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]'
-								: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
-						>
-							{platform.name}
-						</button>
-					{/each}
-				</div>
-			</div>
+				<Textarea
+					label="Goal"
+					name="goal"
+					placeholder="e.g., Improve Algebra grade from B to A by semester end, ace the TAG prep test, master quadratic equations..."
+					bind:value={goal}
+					rows={3}
+					required
+				/>
 
-			<div>
-				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
-					Timeframe
-				</label>
-				<div class="grid gap-4 sm:grid-cols-3">
-					<Select
-						label="Duration"
-						name="duration"
-						options={DURATIONS.map((d) => ({ value: d.value, label: d.label }))}
-						value={duration}
-						onchange={(e) => (duration = (e.target as HTMLSelectElement).value)}
-					/>
-					<Select
-						label="Sessions / Week"
-						name="sessionsPerWeek"
-						options={[1, 2, 3, 4, 5, 6, 7].map((n) => ({ value: n.toString(), label: n.toString() }))}
-						value={sessionsPerWeek.toString()}
-						onchange={(e) => (sessionsPerWeek = parseInt((e.target as HTMLSelectElement).value))}
-					/>
-					<Select
-						label="Minutes / Session"
-						name="timePerSession"
-						options={SESSION_MINUTES_OPTIONS.map((n) => ({ value: n.toString(), label: `${n} min` }))}
-						value={timePerSession.toString()}
-						onchange={(e) => (timePerSession = parseInt((e.target as HTMLSelectElement).value))}
-					/>
-				</div>
-				{#if duration === 'custom'}
-					<div class="mt-3">
-						<Input
-							label="Custom End Date"
-							name="customEndDate"
-							type="date"
-							bind:value={customEndDate}
+				<div>
+					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
+						Timeframe
+					</label>
+					<div class="grid gap-4 sm:grid-cols-3">
+						<Select
+							label="Duration"
+							name="duration"
+							options={DURATIONS.map((d) => ({ value: d.value, label: d.label }))}
+							value={duration}
+							onchange={(e) => (duration = (e.target as HTMLSelectElement).value)}
+						/>
+						<Select
+							label="Sessions / Week"
+							name="sessionsPerWeek"
+							options={[1, 2, 3, 4, 5, 6, 7].map((n) => ({ value: n.toString(), label: n.toString() }))}
+							value={sessionsPerWeek.toString()}
+							onchange={(e) => (sessionsPerWeek = parseInt((e.target as HTMLSelectElement).value))}
+						/>
+						<Select
+							label="Minutes / Session"
+							name="timePerSession"
+							options={SESSION_MINUTES_OPTIONS.map((n) => ({ value: n.toString(), label: `${n} min` }))}
+							value={timePerSession.toString()}
+							onchange={(e) => (timePerSession = parseInt((e.target as HTMLSelectElement).value))}
 						/>
 					</div>
-				{/if}
+					{#if duration === 'custom'}
+						<div class="mt-3">
+							<Input
+								label="Custom End Date"
+								name="customEndDate"
+								type="date"
+								bind:value={customEndDate}
+							/>
+						</div>
+					{/if}
+				</div>
+
+				<Textarea
+					label="Student Diagnostic Results (if any)"
+					name="diagnosticData"
+					placeholder="e.g., PSAT score 1150 (Math: 580, Reading: 570), failed Algebra quiz on quadratic equations, currently at grade level in Chemistry..."
+					bind:value={diagnosticData}
+					rows={3}
+				/>
+
+				<Textarea
+					label="Anything else I need to know about this student?"
+					name="extraInfo"
+					placeholder="Learning style, pace, preferences, strengths, challenges, attention span, motivation level, or any other relevant information..."
+					bind:value={extraInfo}
+					rows={3}
+				/>
+			</section>
+
+			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
+				<Button type="submit" variant="gradient" size="lg" loading={saving} disabled={saving}>
+					{saving ? 'Creating Student & Plan...' : 'Create Student & Generate Plan'}
+				</Button>
+				<Button type="button" variant="ghost" onclick={() => (step = 1)}>Back</Button>
+				<Button variant="ghost" href="/dashboard">Cancel</Button>
 			</div>
-
-			<Textarea
-				label="Student Diagnostic Results (if any)"
-				name="diagnosticData"
-				placeholder="e.g., PSAT score 1150 (Math: 580, Reading: 570), failed Algebra quiz on quadratic equations, currently at grade level in Chemistry..."
-				bind:value={diagnosticData}
-				rows={3}
-			/>
-
-			<Textarea
-				label="Anything else I need to know about this student?"
-				name="extraInfo"
-				placeholder="Learning style, pace, preferences, strengths, challenges, attention span, motivation level, or any other relevant information..."
-				bind:value={extraInfo}
-				rows={3}
-			/>
-		</section>
+		{/if}
 	{:else}
-		<!-- In edit mode, show grade + subjects + diagnostic + extra -->
+		<!-- ═══ Edit mode: all fields in one page ═══ -->
 		<section class="space-y-5">
+			<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
+				Basic Student Info
+			</h2>
+
+			<Input label="Student Name" name="name" placeholder="Full name" required bind:value={name} />
+
+			<Input label="Student Email / Contact" name="studentEmail" type="email" placeholder="student@example.com" bind:value={studentEmail} />
+
+			<Input label="Parent / Guardian Name" name="parentName" placeholder="Parent full name" bind:value={parentName} />
+
+			<Input label="Parent Email / Contact" name="parentEmail" type="email" placeholder="parent@example.com" bind:value={parentEmail} />
+
+			<Select
+				label="Preferred Contact Method (for updates, progress reports, homework)"
+				name="preferredContactMethod"
+				options={contactMethodOptions}
+				value={preferredContactMethod}
+				onchange={(e) => (preferredContactMethod = (e.target as HTMLSelectElement).value)}
+			/>
+
 			<Select
 				label="Grade Level"
 				name="grade"
@@ -398,12 +488,12 @@
 				</div>
 			</div>
 		</section>
-	{/if}
 
-	<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
-		<Button type="submit" variant="gradient" size="lg" loading={saving} disabled={saving}>
-			{isEdit ? 'Save Changes' : saving ? 'Creating Student & Plan...' : 'Create Student & Generate Plan'}
-		</Button>
-		<Button variant="ghost" href="/dashboard">Cancel</Button>
-	</div>
+		<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
+			<Button type="submit" variant="gradient" size="lg" loading={saving} disabled={saving}>
+				{isEdit ? 'Save Changes' : saving ? 'Creating Student & Plan...' : 'Create Student & Generate Plan'}
+			</Button>
+			<Button variant="ghost" href="/dashboard">Cancel</Button>
+		</div>
+	{/if}
 </form>
