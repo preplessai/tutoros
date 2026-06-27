@@ -1,12 +1,30 @@
 <script lang="ts">
-	import type { PlanWeekHomework } from '$lib/lib/types';
+	import type { PlanWeek, PlanWeekHomework } from '$lib/lib/types';
 	import { planStore } from '$lib/stores/plan.svelte';
 	import { supabase } from '$lib/lib/supabase';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import WeekPopup from '$lib/components/plans/WeekPopup.svelte';
 
 	let homeworkByWeek = $state<Record<string, PlanWeekHomework[]>>({});
 	let loading = $state(true);
 	let lastPlanId = $state<string | null>(null);
+
+	let activeWeek = $state<PlanWeek | null>(null);
+	let popupOpen = $state(false);
+	let popupOpenedAt = $state(0);
+
+	function openPopup(week: PlanWeek) {
+		activeWeek = week;
+		popupOpen = true;
+		popupOpenedAt = Date.now();
+	}
+
+	function closePopup() {
+		const elapsed = Date.now() - popupOpenedAt;
+		if (elapsed < 300) return;
+		popupOpen = false;
+		activeWeek = null;
+	}
 
 	$effect(() => {
 		const planId = planStore.current?.id;
@@ -59,7 +77,11 @@
 		{#each planStore.weeks as week, i (week.id)}
 			{@const accent = colors[i % colors.length]}
 			<div style="animation: fade-in-up 0.4s ease-out {i * 60}ms both">
-				<div class="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-5">
+				<button
+					type="button"
+					onclick={() => openPopup(week)}
+					class="w-full cursor-pointer rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-5 text-left transition-all hover:border-[var(--color-border-strong)] hover:shadow-md"
+				>
 					<div class="flex items-center gap-3">
 						<div
 							class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
@@ -77,13 +99,19 @@
 								</p>
 							{/if}
 						</div>
+						<svg class="h-5 w-5 shrink-0 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+						</svg>
 					</div>
 
-					<!-- Homework -->
+					<!-- Homework preview -->
 					{#if homeworkByWeek[week.id]?.length > 0}
 						<div class="mt-4 space-y-1.5 border-t border-[var(--color-border)] pt-4">
 							{#each homeworkByWeek[week.id] as hw (hw.id)}
-								<div class="flex items-start gap-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-secondary)] px-3 py-2.5">
+								<div class="flex items-start gap-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-secondary)] px-3 py-2.5"
+									onclick={(e: MouseEvent) => e.stopPropagation()}
+									onkeydown={(e: KeyboardEvent) => e.stopPropagation()}
+								>
 									<button
 										type="button"
 										onclick={() => toggleCompleted(week.id, hw)}
@@ -113,6 +141,7 @@
 												target="_blank"
 												rel="noopener noreferrer"
 												class="mt-1 inline-flex items-center gap-1 text-xs text-[var(--color-primary-500)] hover:underline"
+												onclick={(e: MouseEvent) => e.stopPropagation()}
 											>
 												<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
@@ -127,8 +156,10 @@
 					{:else}
 						<p class="mt-3 text-xs text-[var(--color-text-tertiary)]">No homework assigned.</p>
 					{/if}
-				</div>
+				</button>
 			</div>
 		{/each}
 	{/if}
 </div>
+
+<WeekPopup open={popupOpen} onclose={closePopup} week={activeWeek} />
