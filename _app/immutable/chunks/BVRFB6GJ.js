@@ -1,0 +1,5 @@
+import{D as e,J as t,O as n,T as r,Y as i,a,i as o,k as s,l as c,lt as l,ut as u,x as d}from"./RXFxC9kp.js";import"./xihTtKlq.js";var f=new Set([`$$slots`,`$$events`,`$$legacy`,`padding`,`hover`,`href`,`children`,`onclick`]),p=s(`<a><!></a>`),m=s(`<div><!></div>`);function h(s,h){let g=o(h,`padding`,3,!0),_=o(h,`hover`,3,!1),v=a(h,f);var y=n(),b=i(y),x=n=>{var r=p();c(r,()=>({href:h.href,class:`block clay-card
+		${_()?`clay-card-hover clay-card-pressed cursor-pointer`:``}
+		${g()?`p-5`:``}`,...v})),d(t(r),()=>h.children??u),l(r),e(n,r)},S=n=>{var r=m();c(r,()=>({class:`clay-card
+		${_()?`clay-card-hover clay-card-pressed cursor-pointer`:``}
+		${g()?`p-5`:``}`,onclick:h.onclick,role:h.onclick?`button`:void 0,tabindex:h.onclick?0:void 0,...v})),d(t(r),()=>h.children??u),l(r),e(n,r)};r(b,e=>{h.href?e(x):e(S,-1)}),e(s,y)}export{h as t};
