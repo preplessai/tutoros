@@ -354,8 +354,8 @@
 			}}
 		/>
 	{:else}
-		<!-- Vertical Week Grid -->
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		<!-- Week List -->
+		<div class="space-y-3">
 			{#each planStore.weeks as week, i (week.id)}
 				<div style="animation: fade-in-up 0.4s ease-out {i * 60}ms both">
 					<WeekCard {week} active={activeWeek?.id === week.id} onclick={() => openPopup(week)} />
