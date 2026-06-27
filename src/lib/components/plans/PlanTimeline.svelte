@@ -1,366 +1,134 @@
 <script lang="ts">
-	import type { PlanWeek, PlanDay } from '$lib/lib/types';
+	import type { PlanWeekHomework } from '$lib/lib/types';
 	import { planStore } from '$lib/stores/plan.svelte';
-	import { auth } from '$lib/stores/auth.svelte';
-	import { canUseFeature } from '$lib/lib/constants';
 	import { supabase } from '$lib/lib/supabase';
-	import { exportWeek, openExport, downloadJson } from '$lib/lib/export';
-	import type { ExportWeekJson } from '$lib/lib/export';
-	import { parseImportJson } from '$lib/lib/export';
-	import SessionCard from './SessionCard.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { goto } from '$app/navigation';
-	import { stripeApi } from '$lib/lib/stripe';
 
-	// ── Fetch all sessions (days) across all weeks ──
-	let sessions = $state<{ day: PlanDay; week: PlanWeek }[]>([]);
-	let sessionsLoading = $state(true);
+	let homeworkByWeek = $state<Record<string, PlanWeekHomework[]>>({});
+	let loading = $state(true);
 	let lastPlanId = $state<string | null>(null);
 
 	$effect(() => {
 		const planId = planStore.current?.id;
 		if (planId && planId !== lastPlanId) {
 			lastPlanId = planId;
-			fetchAllSessions();
+			fetchHomework();
 		}
 	});
 
-	async function fetchAllSessions() {
-		sessionsLoading = true;
-		const weeks = planStore.weeks;
-		const all: { day: PlanDay; week: PlanWeek }[] = [];
+	async function fetchHomework() {
+		loading = true;
+		const map: Record<string, PlanWeekHomework[]> = {};
 
-		for (const week of weeks) {
-			const { data: days } = await supabase
-				.from('plan_days')
+		for (const week of planStore.weeks) {
+			const { data } = await supabase
+				.from('plan_week_homework')
 				.select('*')
 				.eq('week_id', week.id)
 				.order('sort_order');
-
-			if (days) {
-				for (const day of days as PlanDay[]) {
-					all.push({ day, week });
-				}
-			}
+			if (data) map[week.id] = data as PlanWeekHomework[];
 		}
-		sessions = all;
-		sessionsLoading = false;
+		homeworkByWeek = map;
+		loading = false;
 	}
 
-	function onSessionUpdate() {
-		fetchAllSessions();
-	}
-
-	// ── Export Plan (all weeks) ──
-
-	let showExportMenu = $state(false);
-
-	function handleExportBlur() {
-		setTimeout(() => {
-			showExportMenu = false;
-		}, 150);
-	}
-
-	async function fetchAllWeeksData(): Promise<
-		{ week: PlanWeek; days: { day: PlanDay; tasks: import('$lib/lib/types').PlanTask[] }[] }[]
-	> {
-		const weeks = planStore.weeks;
-		const result = await Promise.all(
-			weeks.map(async (week) => {
-				const { data: days } = await supabase
-					.from('plan_days')
-					.select('*')
-					.eq('week_id', week.id)
-					.order('date');
-				const daysWithTasks = await Promise.all(
-					(days || []).map(async (day) => {
-						const { data: tasks } = await supabase
-							.from('plan_tasks')
-							.select('*')
-							.eq('day_id', day.id)
-							.order('sort_order');
-						return {
-							day: day as PlanDay,
-							tasks: (tasks as import('$lib/lib/types').PlanTask[]) || []
-						};
-					})
-				);
-				return { week, days: daysWithTasks };
-			})
+	async function toggleCompleted(weekId: string, item: PlanWeekHomework) {
+		const updated = !item.completed;
+		await supabase.from('plan_week_homework').update({ completed: updated }).eq('id', item.id);
+		homeworkByWeek[weekId] = homeworkByWeek[weekId].map((h) =>
+			h.id === item.id ? { ...h, completed: updated } : h
 		);
-		return result;
 	}
 
-	async function handleExportPage() {
-		const allData = await fetchAllWeeksData();
-		const planTitle = planStore.current?.title || 'Plan';
-
-		const css = `*{margin:0;padding:0;box-sizing:border-box}body{font-family:'DM Sans',-apple-system,sans-serif;background:#0C0E0F;color:#EDEFEF;padding:40px;line-height:1.6}h1{font-family:'Instrument Serif',Georgia,serif;font-size:28px;color:#00E5A0;margin-bottom:4px}h2{font-family:'Instrument Serif',Georgia,serif;font-size:22px;color:#EDEFEF;margin:24px 0 12px 0;border-bottom:1px solid rgba(237,239,239,0.1);padding-bottom:8px}@media print{body{background:#fff;color:#000;padding:20px}h1{color:#000}}`;
-		const weeksHtml = allData
-			.map(({ week, days }) => {
-				const full = exportWeek(week, days);
-				const bodyMatch = full.match(/<body>(.*)<\/body>/s);
-				return bodyMatch ? bodyMatch[1] : '';
-			})
-			.join('');
-
-		const html = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>${planTitle}</title><style>${css}</style></head><body><h1>${planTitle}</h1>${weeksHtml}</body></html>`;
-		openExport(html);
-		showExportMenu = false;
-	}
-
-	async function handleExportJson() {
-		const allData = await fetchAllWeeksData();
-		const planTitle = planStore.current?.title || 'Plan';
-		const firstWeek = allData[0]?.week;
-		const exportData: ExportWeekJson = {
-			type: 'week_plan',
-			version: 1,
-			exported_at: new Date().toISOString(),
-			week: {
-				week_number: firstWeek?.week_number ?? 1,
-				week_start: firstWeek?.week_start ?? '',
-				week_end: allData[allData.length - 1]?.week.week_end ?? firstWeek?.week_end ?? '',
-				theme: planTitle,
-				focus_areas: firstWeek?.focus_areas ?? [],
-				notes: firstWeek?.notes ?? null
-			},
-			days: allData.flatMap(({ days }) =>
-				days.map(({ day, tasks }) => ({
-					date: day.date,
-					day_of_week: day.day_of_week,
-					energy_level: day.energy_level,
-					recent_progress: day.recent_progress,
-					struggle_areas: day.struggle_areas,
-					grades_context: day.grades_context,
-					tasks: tasks.map((t) => ({
-						section: t.section,
-						title: t.title,
-						description: t.description,
-						duration_minutes: t.duration_minutes
-					}))
-				}))
-			)
-		};
-		const json = JSON.stringify(exportData, null, 2);
-		const filename = `${planTitle.toLowerCase().replace(/\s+/g, '-')}.json`;
-		downloadJson(json, filename);
-		showExportMenu = false;
-	}
-
-	// ── Import Week ──
-
-	let importWeekInput = $state<HTMLInputElement>();
-	let importingWeek = $state(false);
-
-	function triggerImportWeek() {
-		importWeekInput?.click();
-	}
-
-	async function handleImportWeek(e: Event) {
-		const file = (e.target as HTMLInputElement).files?.[0];
-		if (!file) return;
-
-		importingWeek = true;
-		try {
-			const text = await file.text();
-			const parsed = parseImportJson(text);
-
-			if (parsed.type === 'week_plan') {
-				await planStore.importWeekFromJson(parsed.data as ExportWeekJson);
-			} else if (parsed.type === 'day_plan') {
-				throw new Error('This file is a day plan export. Import it from the week popup instead.');
-			} else {
-				throw new Error('Unrecognized export format.');
-			}
-		} catch (err: unknown) {
-			const message = err instanceof Error ? err.message : 'Unknown error';
-			const { toast } = await import('$lib/stores/toast.svelte');
-			toast.error('Import failed: ' + message);
-		} finally {
-			importingWeek = false;
-			if (importWeekInput) importWeekInput.value = '';
-		}
-	}
-
-	let managingSubscription = $state(false);
-
-	async function handleManageSubscription() {
-		managingSubscription = true;
-		try {
-			const { url } = await stripeApi.createPortalSession();
-			window.location.href = url;
-		} catch (err: unknown) {
-			const { toast } = await import('$lib/stores/toast.svelte');
-			toast.error('Failed to open subscription portal');
-		} finally {
-			managingSubscription = false;
-		}
-	}
-
-	const completedCount = $derived(sessions.filter((s) => s.day.completed).length);
+	const colors = [
+		'var(--color-primary-500)',
+		'var(--color-accent-500)',
+		'var(--color-success)',
+		'var(--color-primary-400)',
+		'var(--color-accent-400)',
+		'var(--color-warning)'
+	];
 </script>
 
-<div class="space-y-6">
-	<!-- Header -->
-	<div>
-		<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-			<div>
-				<h1
-					class="font-[family-name:var(--font-heading)] text-2xl font-bold text-[var(--color-text-primary)] md:text-3xl"
-				>
-					{planStore.current?.title || 'Plan'}
-				</h1>
-				<div class="mt-2 flex flex-wrap items-center gap-2">
-					{#if planStore.current}
-						<span
-							class="inline-flex items-center gap-1 rounded-lg bg-[var(--color-primary-100)] px-2 py-0.5 text-xs font-medium text-[var(--color-primary-700)]"
-							>{planStore.current.grade}</span
+<div class="space-y-4">
+	{#if planStore.loading || loading}
+		<div class="flex justify-center py-20"><Spinner size="lg" /></div>
+	{:else if planStore.weeks.length === 0}
+		<p class="py-10 text-center text-sm text-[var(--color-text-tertiary)]">No weeks yet.</p>
+	{:else}
+		{#each planStore.weeks as week, i (week.id)}
+			{@const accent = colors[i % colors.length]}
+			<div style="animation: fade-in-up 0.4s ease-out {i * 60}ms both">
+				<div class="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-5">
+					<div class="flex items-center gap-3">
+						<div
+							class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
+							style="background:{accent}"
 						>
-						{#each planStore.current.subjects.slice(0, 3) as subj (subj)}
-							<span
-								class="inline-flex items-center gap-1 rounded-lg bg-[var(--color-surface-tertiary)] px-2 py-0.5 text-xs font-medium text-[var(--color-text-secondary)]"
-								>{subj}</span
-							>
-						{/each}
-						<span class="text-xs text-[var(--color-text-tertiary)]"
-							>{planStore.weeks.length} weeks</span
-						>
-						{#if completedCount > 0}
-							<span class="text-xs text-[var(--color-success)]"
-								>&middot; {completedCount}/{sessions.length} sessions done</span
-							>
-						{/if}
+							{week.week_number}
+						</div>
+						<div class="min-w-0 flex-1">
+							<p class="text-sm font-semibold text-[var(--color-text-primary)]">
+								{week.theme || `Week ${week.week_number}`}
+							</p>
+							{#if week.focus_areas?.length > 0}
+								<p class="mt-0.5 text-xs text-[var(--color-text-secondary)]">
+									{week.focus_areas.join(' &middot; ')}
+								</p>
+							{/if}
+						</div>
+					</div>
+
+					<!-- Homework -->
+					{#if homeworkByWeek[week.id]?.length > 0}
+						<div class="mt-4 space-y-1.5 border-t border-[var(--color-border)] pt-4">
+							{#each homeworkByWeek[week.id] as hw (hw.id)}
+								<div class="flex items-start gap-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-secondary)] px-3 py-2.5">
+									<button
+										type="button"
+										onclick={() => toggleCompleted(week.id, hw)}
+										class="mt-0.5 shrink-0 cursor-pointer"
+									>
+										{#if hw.completed}
+											<svg class="h-4 w-4 text-[var(--color-success)]" fill="currentColor" viewBox="0 0 24 24">
+												<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+											</svg>
+										{:else}
+											<div class="h-4 w-4 rounded border border-[var(--color-border-strong)]"></div>
+										{/if}
+									</button>
+									<div class="min-w-0 flex-1">
+										<span
+											class="text-sm font-medium text-[var(--color-text-primary)]"
+											class:line-through={hw.completed}
+										>
+											{hw.title}
+										</span>
+										{#if hw.description}
+											<p class="mt-0.5 text-xs text-[var(--color-text-tertiary)]">{hw.description}</p>
+										{/if}
+										{#if hw.url}
+											<a
+												href={hw.url}
+												target="_blank"
+												rel="noopener noreferrer"
+												class="mt-1 inline-flex items-center gap-1 text-xs text-[var(--color-primary-500)] hover:underline"
+											>
+												<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+												</svg>
+												{hw.url}
+											</a>
+										{/if}
+									</div>
+								</div>
+							{/each}
+						</div>
+					{:else}
+						<p class="mt-3 text-xs text-[var(--color-text-tertiary)]">No homework assigned.</p>
 					{/if}
 				</div>
 			</div>
-			<div class="flex flex-wrap gap-2">
-				{#if canUseFeature(auth.profile?.subscription_tier || 'free', 'plan_regeneration')}
-					<Button
-						variant="secondary"
-						size="sm"
-						href={`/dashboard/plans/${planStore.current?.id}/adjust`}>Adjust Plan</Button
-					>
-				{:else}
-					<Button variant="secondary" size="sm" href="/pricing">
-						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-							/>
-						</svg>
-						Upgrade to Adjust
-					</Button>
-				{/if}
-
-				{#if auth.profile?.subscription_tier === 'free'}
-					<Button variant="gradient" size="sm" href="/pricing">Upgrade to Pro</Button>
-				{:else if auth.profile?.cancel_at_period_end}
-					<Button variant="gradient" size="sm" href="/pricing">Resubscribe</Button>
-				{:else if auth.profile?.subscription_status === 'active'}
-					<Button
-						variant="secondary"
-						size="sm"
-						onclick={handleManageSubscription}
-						loading={managingSubscription}>Manage Plan</Button
-					>
-				{/if}
-
-				{#if (auth.profile?.subscription_tier || 'free') !== 'free'}
-					<div class="relative" onfocusout={handleExportBlur}>
-						<Button
-							variant="secondary"
-							size="sm"
-							onclick={() => (showExportMenu = !showExportMenu)}
-						>
-							<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-								><path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-								/></svg
-							>
-							Export Plan
-							<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-								><path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M19 9l-7 7-7-7"
-								/></svg
-							>
-						</Button>
-						{#if showExportMenu}
-							<div
-								class="absolute right-0 z-50 mt-1 min-w-[180px] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] py-1 shadow-lg"
-							>
-								<button
-									onclick={handleExportPage}
-									class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
-								>
-									<svg class="h-4 w-4 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-										><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-									Printable Page
-								</button>
-								<button
-									onclick={handleExportJson}
-									class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
-								>
-									<svg class="h-4 w-4 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-										><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-									JSON File
-								</button>
-							</div>
-						{/if}
-					</div>
-
-					<Button variant="ghost" size="sm" onclick={triggerImportWeek} loading={importingWeek}>
-						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-							><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-						Import Week
-					</Button>
-					<input
-						type="file"
-						accept=".json"
-						bind:this={importWeekInput}
-						onchange={handleImportWeek}
-						class="hidden"
-					/>
-				{/if}
-			</div>
-		</div>
-	</div>
-
-	{#if planStore.loading || sessionsLoading}
-		<div class="flex justify-center py-20"><Spinner size="lg" /></div>
-	{:else if sessions.length === 0}
-		<EmptyState
-			icon="calendar"
-			title="No sessions generated"
-			description="Something went wrong with the plan generation. Try adjusting the plan."
-			action={{
-				label: 'Adjust Plan',
-				onclick: () => goto(`/dashboard/plans/${planStore.current?.id}/adjust`)
-			}}
-		/>
-	{:else}
-		<!-- Session List -->
-		<div class="space-y-3">
-			{#each sessions as session, i (session.day.id)}
-				<div style="animation: fade-in-up 0.4s ease-out {i * 50}ms both">
-					<SessionCard
-						sessionNumber={i + 1}
-						day={session.day}
-						week={session.week}
-						onupdate={onSessionUpdate}
-					/>
-				</div>
-			{/each}
-		</div>
+		{/each}
 	{/if}
 </div>

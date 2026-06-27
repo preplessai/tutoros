@@ -2,7 +2,6 @@
 	import type { PlanDay, PlanTask, Resource } from '$lib/lib/types';
 	import type { PlanWeek } from '$lib/lib/types';
 	import { supabase } from '$lib/lib/supabase';
-	import { formatDateLong } from '$lib/lib/date';
 	import { toast } from '$lib/stores/toast.svelte';
 
 	let {
@@ -110,7 +109,7 @@
 	onkeydown={(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') toggleExpanded(); }}
 	role="button"
 	tabindex="0"
-	class="cursor-pointer rounded-2xl border p-4 text-left transition-all hover:border-[var(--color-border-strong)] {completed ? 'border-[var(--color-success)]/30 bg-[var(--color-success)]/5 opacity-60' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)]'}"
+	class="cursor-pointer rounded-2xl border p-4 text-left transition-all hover:border-[var(--color-border-strong)] {completed ? 'border-[var(--color-error)]/20 bg-[var(--color-error)]/5 opacity-50' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)]'}"
 >
 	<div class="flex items-start gap-3">
 		<!-- Session number -->
@@ -118,11 +117,11 @@
 			class:bg-gradient-to-br={!completed}
 			class:from-[var(--color-primary-500)]={!completed}
 			class:to-[var(--color-accent-500)]={!completed}
-			class:bg-[var(--color-success)]={completed}
+			class:bg-[var(--color-error)]={completed}
 		>
 			{#if completed}
 				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
 				</svg>
 			{:else}
 				{sessionNumber}
@@ -134,14 +133,11 @@
 			<p class="text-sm font-semibold text-[var(--color-text-primary)]" class:line-through={completed}>
 				Session {sessionNumber} — {week.theme || `Week ${week.week_number}`}
 			</p>
-			<div class="mt-1 flex flex-wrap items-center gap-1.5">
-				<span class="text-xs text-[var(--color-text-tertiary)]">{formatDateLong(day.date)}</span>
-				{#if week.focus_areas?.length > 0}
-					<span class="text-xs text-[var(--color-text-secondary)]">
-						&middot; {week.focus_areas.join(', ')}
-					</span>
-				{/if}
-			</div>
+			{#if week.focus_areas?.length > 0}
+				<p class="mt-1 text-xs text-[var(--color-text-secondary)]" class:line-through={completed}>
+					{week.focus_areas.join(', ')}
+				</p>
+			{/if}
 		</div>
 
 		<!-- X button -->

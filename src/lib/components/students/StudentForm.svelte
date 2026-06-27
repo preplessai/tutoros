@@ -34,12 +34,12 @@
 
 	// ── Plan fields (only for new student onboarding) ──
 	let goal = $state('');
-	let sessionsPerWeek = $state(2);
-	let timePerSession = $state(60);
+	let sessionsPerWeek = $state(0);
+	let timePerSession = $state(0);
 	let duration = $state('');
 	let customEndDate = $state('');
 
-	let step = $state(1);
+	let step = $state(0);
 	let saving = $state(false);
 	let errors = $state<string[]>([]);
 
@@ -73,16 +73,22 @@
 		return d.toISOString().split('T')[0];
 	}
 
-	function validateStep1(): boolean {
+	function validateStep0(): boolean {
 		errors = [];
 		if (!name.trim()) errors = [...errors, 'Student name is required.'];
 		return errors.length === 0;
 	}
 
+	function goToStep1() {
+		if (validateStep0()) step = 1;
+	}
+
 	function goToStep2() {
-		if (validateStep1()) {
-			step = 2;
-		}
+		errors = [];
+		if (!grade) errors = [...errors, 'Grade is required.'];
+		if (selectedSubjects.length === 0) errors = [...errors, 'Select at least one subject.'];
+		if (!goal.trim()) errors = [...errors, 'Goal is required.'];
+		if (errors.length === 0) step = 2;
 	}
 
 	async function handleSubmit(e: SubmitEvent) {
@@ -172,25 +178,30 @@
 
 	<!-- Step indicators -->
 	{#if !isEdit}
-		<div class="flex items-center gap-2">
-			<div class="flex items-center gap-1.5 {step === 1 ? '' : 'opacity-50'}">
-				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">1</span>
-				<span class="text-sm font-medium text-[var(--color-text-primary)]">Contact Info</span>
+		<div class="flex items-center gap-1.5">
+			<div class="flex items-center gap-1.5 {step === 0 ? '' : 'opacity-50'}">
+				<span class="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white {step >= 0 ? 'bg-[var(--color-primary-500)]' : ''}">0</span>
+				<span class="text-sm font-medium text-[var(--color-text-primary)]">Contact</span>
 			</div>
-			<div class="h-px w-8 bg-[var(--color-border)]"></div>
+			<div class="h-px w-6 bg-[var(--color-border)]"></div>
+			<div class="flex items-center gap-1.5 {step === 1 ? '' : 'opacity-50'}">
+				<span class="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white {step >= 1 ? 'bg-[var(--color-primary-500)]' : ''}">1</span>
+				<span class="text-sm font-medium text-[var(--color-text-primary)]">Plan</span>
+			</div>
+			<div class="h-px w-6 bg-[var(--color-border)]"></div>
 			<div class="flex items-center gap-1.5 {step === 2 ? '' : 'opacity-50'}">
-				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">2</span>
-				<span class="text-sm font-medium text-[var(--color-text-primary)]">Plan Info</span>
+				<span class="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white {step >= 2 ? 'bg-[var(--color-primary-500)]' : ''}">2</span>
+				<span class="text-sm font-medium text-[var(--color-text-primary)]">More</span>
 			</div>
 		</div>
 	{/if}
 
 	{#if !isEdit}
-		<!-- ═══ Step 1: Basic Student Info ═══ -->
-		{#if step === 1}
+		<!-- ═══ Screen 0: Contact Info ═══ -->
+		{#if step === 0}
 			<section class="space-y-5">
 				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
-					Basic Student Info
+					Contact Info
 				</h2>
 
 				<Input label="Student Name" name="name" placeholder="Full name" required bind:value={name} />
@@ -208,22 +219,21 @@
 					value={preferredContactMethod}
 					onchange={(e) => (preferredContactMethod = (e.target as HTMLSelectElement).value)}
 				/>
-
 			</section>
 
 			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
-				<Button type="button" variant="gradient" size="lg" onclick={goToStep2}>
-					Next: Plan Info
+				<Button type="button" variant="gradient" size="lg" onclick={goToStep1}>
+					Next: Plan Setup
 				</Button>
 				<Button variant="ghost" href="/dashboard">Cancel</Button>
 			</div>
 		{/if}
 
-		<!-- ═══ Step 2: Plan Info ═══ -->
-		{#if step === 2}
+		<!-- ═══ Screen 1: Plan Setup ═══ -->
+		{#if step === 1}
 			<section class="space-y-5">
 				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
-					Plan Info
+					Plan Setup
 				</h2>
 
 				<Select
@@ -250,26 +260,6 @@
 									: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
 							>
 								{subject}
-							</button>
-						{/each}
-					</div>
-				</div>
-
-				<div>
-					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
-						Preferred Learning Platforms
-					</label>
-					<div class="flex flex-wrap gap-2">
-						{#each LEARNING_PLATFORMS as platform}
-							<button
-								type="button"
-								onclick={() => togglePlatform(platform.name)}
-								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
-								${selectedPlatforms.includes(platform.name)
-									? 'border-[var(--color-accent-500)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]'
-									: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
-							>
-								{platform.name}
 							</button>
 						{/each}
 					</div>
@@ -321,6 +311,43 @@
 							/>
 						</div>
 					{/if}
+				</div>
+			</section>
+
+			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
+				<Button type="button" variant="gradient" size="lg" onclick={goToStep2}>
+					Next: Preferences
+				</Button>
+				<Button type="button" variant="ghost" onclick={() => (step = 0)}>Back</Button>
+				<Button variant="ghost" href="/dashboard">Cancel</Button>
+			</div>
+		{/if}
+
+		<!-- ═══ Screen 2: Preferences & Context ═══ -->
+		{#if step === 2}
+			<section class="space-y-5">
+				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
+					Preferences & Context
+				</h2>
+
+				<div>
+					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
+						Preferred Learning Platforms
+					</label>
+					<div class="flex flex-wrap gap-2">
+						{#each LEARNING_PLATFORMS as platform}
+							<button
+								type="button"
+								onclick={() => togglePlatform(platform.name)}
+								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
+								${selectedPlatforms.includes(platform.name)
+									? 'border-[var(--color-accent-500)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]'
+									: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
+							>
+								{platform.name}
+							</button>
+						{/each}
+					</div>
 				</div>
 
 				<Textarea

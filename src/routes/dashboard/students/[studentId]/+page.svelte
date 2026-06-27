@@ -281,27 +281,8 @@
 					action={{ label: 'Create Plan', href: `/dashboard/plans/new?studentId=${s.id}` }}
 				/>
 			{:else}
-				<!-- Plan selector -->
-				<div class="flex flex-wrap items-center gap-3">
-					<label class="text-sm text-[var(--color-text-secondary)]">Plan:</label>
-					<select
-						class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 py-1.5 text-sm text-[var(--color-text-primary)]"
-						bind:value={selectedPlanId}
-						onchange={() => {
-							if (selectedPlanId) planStore.fetchOne(selectedPlanId);
-						}}
-					>
-						{#each studentPlans as plan}
-							<option value={plan.id}
-								>{plan.title} — {plan.grade} • {plan.subjects.join(', ')}</option
-							>
-						{/each}
-					</select>
-				</div>
 
-				<div class="mt-4">
-					<PlanTimeline />
-				</div>
+				<PlanTimeline />
 		{/if}
 		{/if}
 

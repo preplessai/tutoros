@@ -228,15 +228,10 @@ export interface AiGeneratedPlan {
 			theme: string;
 			focusAreas: string[];
 			notes: string;
-			days: {
-				date: string;
-				dayOfWeek: DayOfWeek;
-				tasks: {
-					section: TaskSection;
-					title: string;
-					description: string;
-					durationMinutes: number;
-				}[];
+			homework: {
+				title: string;
+				description: string;
+				url: string;
 			}[];
 		}[];
 	};
@@ -245,8 +240,17 @@ export interface AiGeneratedPlan {
 
 export interface AiGeneratedDayPlan {
 	dayPlan: {
+		lastWeekRecap?: {
+			homeworkAssigned: string[];
+			completed: string[];
+			struggles: string;
+		};
+		thisWeekPreview?: {
+			upcomingHomework: string[];
+			prepNotes: string;
+		};
 		tasks: {
-			section: TaskSection;
+			section: string;
 			title: string;
 			description: string;
 			durationMinutes: number;

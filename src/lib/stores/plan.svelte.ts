@@ -168,31 +168,16 @@ export const planStore = {
 					.select()
 					.single();
 
-				if (weekRow) {
-					for (const day of week.days) {
-						const { data: dayRow } = await supabase
-							.from('plan_days')
-							.insert({
-								week_id: weekRow.id,
-								date: day.date,
-								day_of_week: day.dayOfWeek,
-								sort_order: week.days.indexOf(day)
-							})
-							.select()
-							.single();
-
-						if (dayRow) {
-							for (const task of day.tasks) {
-								await supabase.from('plan_tasks').insert({
-									day_id: dayRow.id,
-									section: task.section,
-									sort_order: day.tasks.indexOf(task),
-									title: task.title,
-									description: task.description,
-									duration_minutes: task.durationMinutes
-								});
-							}
-						}
+				if (weekRow && week.homework) {
+					for (const hw of week.homework) {
+						await supabase.from('plan_week_homework').insert({
+							week_id: weekRow.id,
+							title: hw.title,
+							description: hw.description,
+							url: hw.url,
+							completed: false,
+							sort_order: week.homework.indexOf(hw)
+						});
 					}
 				}
 			}
@@ -244,16 +229,7 @@ export const planStore = {
 			if (oldWeeks) {
 				const weekIds = oldWeeks.map((w) => w.id);
 				for (const wid of weekIds) {
-					const { data: oldDays } = await supabase
-						.from('plan_days')
-						.select('id')
-						.eq('week_id', wid);
-					if (oldDays) {
-						for (const did of oldDays) {
-							await supabase.from('plan_tasks').delete().eq('day_id', did.id);
-						}
-						await supabase.from('plan_days').delete().eq('week_id', wid);
-					}
+					await supabase.from('plan_week_homework').delete().eq('week_id', wid);
 				}
 				await supabase.from('plan_weeks').delete().eq('plan_id', planId);
 			}
@@ -275,31 +251,16 @@ export const planStore = {
 					.select()
 					.single();
 
-				if (weekRow) {
-					for (const day of week.days) {
-						const { data: dayRow } = await supabase
-							.from('plan_days')
-							.insert({
-								week_id: weekRow.id,
-								date: day.date,
-								day_of_week: day.dayOfWeek,
-								sort_order: week.days.indexOf(day)
-							})
-							.select()
-							.single();
-
-						if (dayRow) {
-							for (const task of day.tasks) {
-								await supabase.from('plan_tasks').insert({
-									day_id: dayRow.id,
-									section: task.section,
-									sort_order: day.tasks.indexOf(task),
-									title: task.title,
-									description: task.description,
-									duration_minutes: task.durationMinutes
-								});
-							}
-						}
+				if (weekRow && week.homework) {
+					for (const hw of week.homework) {
+						await supabase.from('plan_week_homework').insert({
+							week_id: weekRow.id,
+							title: hw.title,
+							description: hw.description,
+							url: hw.url,
+							completed: false,
+							sort_order: week.homework.indexOf(hw)
+						});
 					}
 				}
 			}
@@ -398,33 +359,15 @@ export const planStore = {
 
 			if (weekErr) throw weekErr;
 
-			for (const day of data.days) {
-				const { data: dayRow, error: dayErr } = await supabase
-					.from('plan_days')
-					.insert({
+			if (data.homework) {
+				for (const hw of data.homework) {
+					await supabase.from('plan_week_homework').insert({
 						week_id: weekRow.id,
-						date: day.date,
-						day_of_week: day.day_of_week,
-						energy_level: day.energy_level,
-						recent_progress: day.recent_progress,
-						struggle_areas: day.struggle_areas,
-						grades_context: day.grades_context,
-						ai_generated: false,
-						sort_order: data.days.indexOf(day)
-					})
-					.select()
-					.single();
-
-				if (dayErr) throw dayErr;
-
-				for (const task of day.tasks) {
-					await supabase.from('plan_tasks').insert({
-						day_id: dayRow.id,
-						section: task.section,
-						sort_order: day.tasks.indexOf(task),
-						title: task.title,
-						description: task.description,
-						duration_minutes: task.duration_minutes
+						title: hw.title,
+						description: hw.description,
+						url: hw.url,
+						completed: false,
+						sort_order: data.homework.indexOf(hw)
 					});
 				}
 			}
