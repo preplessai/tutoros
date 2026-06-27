@@ -185,11 +185,8 @@ export const planStore = {
 			toast.success('Plan generated successfully');
 			return plan.id;
 		} catch (err: any) {
-			if (creditsDeducted) {
-				toast.error('Credits were deducted but plan generation failed. Contact support for a refund.');
-			} else {
-				toast.error('Failed to generate plan: ' + err.message);
-			}
+			console.error('[generateAndSave]', err);
+			toast.error('Plan generation failed: ' + (err.message || err));
 			return null;
 		} finally {
 			generating = false;
@@ -271,11 +268,8 @@ export const planStore = {
 			toast.success('Plan adjusted');
 			return true;
 		} catch (err: any) {
-			if (creditsDeducted) {
-				toast.error('Credits were deducted but plan adjustment failed. Contact support for a refund.');
-			} else {
-				toast.error('Failed to adjust plan: ' + err.message);
-			}
+			console.error('[adjustPlan]', err);
+			toast.error('Plan adjustment failed: ' + (err.message || err));
 			return false;
 		} finally {
 			generating = false;
