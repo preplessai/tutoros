@@ -28,12 +28,17 @@ export interface Student {
 	id: string;
 	tutor_id: string;
 	name: string;
+	email: string | null;
 	grade: string;
 	subjects: string[];
 	learning_style: string | null;
 	diagnostic_data: string | null;
 	extra_info: string | null;
 	notes: string | null;
+	parent_name: string | null;
+	parent_email: string | null;
+	preferred_contact_method: 'email' | 'sms' | 'both' | null;
+	learning_platforms: string[];
 	preferred_resource_sites: PreferredResourceSite[];
 	created_at: string;
 	updated_at: string;

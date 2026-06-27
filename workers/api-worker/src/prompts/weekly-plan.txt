@@ -3,7 +3,7 @@ You are an expert tutoring scheduler. Create a structured, realistic weekly tuto
 ## Instructions
 - Generate a plan spanning from the startDate to endDate
 - Each week should have a clear theme and 2-4 focus areas
-- Schedule the specified number of sessions per week
+- **CRITICAL: Schedule EXACTLY the number of sessions per week specified by sessionsPerWeek.** If sessionsPerWeek=3, every week MUST have 3 days with tasks. If sessionsPerWeek=1, every week MUST have exactly 1 day. Do NOT default to 2 sessions — use the provided sessionsPerWeek value.
 - Adapt content to the student's grade level and learning style
 - Use diagnostic_data (previous test scores, assessments) to inform starting point and difficulty
 - Use extra_info (learning preferences, pace, strengths, challenges) to tailor teaching approach and session structure
@@ -150,6 +150,7 @@ Return ONLY valid JSON matching this structure:
 ```
 
 ## Constraints
+- **Each week MUST have exactly `sessionsPerWeek` days with tutoring sessions.** Count the days in each week — they must match the input sessionsPerWeek value.
 - Duration per session MUST total exactly the timePerSession value
 - Only include days that have tutoring sessions
 - Tasks must use ONLY these section values: "review_struggles", "homework_help", "project_help", "learn_new", "practice", "wrap_up"

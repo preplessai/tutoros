@@ -29,15 +29,21 @@
 	let editFocusAreas = $state('');
 	let editNotes = $state('');
 	let saving = $state(false);
+	let openedAt = $state(0);
 
 	// Fetch existing day plans when week changes
-	$effect.pre(() => {
-		if (week) {
+	let lastWeekId = $state<string | null>(null);
+	$effect(() => {
+		console.log('[WeekPopup] $effect fired, week:', week?.week_number, 'weekId:', week?.id, 'open:', open);
+		if (week && open && week.id !== lastWeekId) {
+			lastWeekId = week.id;
 			mode = 'view';
 			selectedDayId = null;
 			editTheme = week.theme || '';
 			editFocusAreas = (week.focus_areas || []).join(', ');
 			editNotes = week.notes || '';
+			openedAt = Date.now();
+			console.log('[WeekPopup] fetching days for week:', week.id);
 			dayPlanStore.fetchDaysForWeek(week.id);
 		}
 	});
@@ -69,6 +75,12 @@
 	}
 
 	function close() {
+		const elapsed = Date.now() - openedAt;
+		console.trace('[WeekPopup] close() called — trace, elapsed:', elapsed, 'ms');
+		if (elapsed < 300) {
+			console.log('[WeekPopup] close() IGNORED — within 300ms guard window');
+			return;
+		}
 		mode = 'view';
 		selectedDayId = null;
 		onclose?.();
@@ -213,6 +225,7 @@
 							{#each dayPlanStore.weekDays as day (day.id)}
 								<div class="flex items-center gap-2">
 									<button
+										type="button"
 										onclick={() => viewDay(day.id)}
 										class="group flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] px-3 py-2 text-left transition-colors hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-secondary)]"
 									>
@@ -242,6 +255,7 @@
 										<!-- Per-day export dropdown -->
 										<div class="relative" onfocusout={handleExportBlur}>
 											<button
+												type="button"
 												onclick={(e: Event) => {
 													e.stopPropagation();
 													exportDayMenuFor = exportDayMenuFor === day.id ? null : day.id;
@@ -263,6 +277,7 @@
 													class="absolute right-0 z-50 mt-1 min-w-[160px] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] py-1 shadow-lg"
 												>
 													<button
+														type="button"
 														onclick={(e: Event) => exportDayPage(day.id, e)}
 														class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
 													>
@@ -281,6 +296,7 @@
 														Printable Page
 													</button>
 													<button
+														type="button"
 														onclick={(e: Event) => exportDayJson(day.id, e)}
 														class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
 													>
@@ -304,6 +320,7 @@
 									{/if}
 
 									<button
+										type="button"
 										onclick={(e: Event) => handleDeleteDay(day.id, e)}
 										aria-label="Delete day plan"
 										class="shrink-0 cursor-pointer rounded-lg p-2 text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-error-bg)] hover:text-[var(--color-error)]"

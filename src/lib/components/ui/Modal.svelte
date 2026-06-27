@@ -23,11 +23,14 @@
 	};
 
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape' && onclose) onclose();
+		if (e.key === "Escape" && onclose) { console.log("['Modal] Escape key pressed — closing"); onclose(); }
 	}
 
 	function handleBackdropClick(e: MouseEvent) {
-		if ((e.target as HTMLElement).dataset.backdrop === 'true' && onclose) onclose();
+		e.stopPropagation();
+		const isBackdrop = (e.target as HTMLElement).dataset.backdrop === "true";
+		console.log("['Modal] Backdrop clicked. target:", (e.target as HTMLElement).tagName, "isBackdrop:", isBackdrop);
+		if (isBackdrop && onclose) onclose();
 	}
 </script>
 
@@ -47,6 +50,7 @@
 	>
 		<div
 			class={`${sizes[size]} shadow-clay-xl flex max-h-[85vh] w-full animate-scale-in flex-col clay-card`}
+			onclick={(e: MouseEvent) => e.stopPropagation()}
 		>
 			{#if title || onclose}
 				<div

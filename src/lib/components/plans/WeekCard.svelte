@@ -18,12 +18,19 @@
 		'var(--color-warning)'
 	];
 	let accentColor = $derived(colors[(week.week_number - 1) % colors.length]);
+
+	function handleClick(e: MouseEvent) {
+		e.preventDefault();
+		e.stopPropagation();
+		onclick?.();
+	}
 </script>
 
-<Card {onclick} hover padding={false}>
+<Card hover padding={false}>
 	<button
-		{onclick}
-		class={`w-full cursor-pointer rounded-[inherit] p-5 text-left transition-all ${active ? 'ring-2 ring-[var(--color-primary-500)] ring-offset-2 ring-offset-[var(--color-surface)]' : ''}`}
+		type="button"
+		onclick={handleClick}
+		class="w-full cursor-pointer rounded-[inherit] p-5 text-left transition-all"
 	>
 		<div class="mb-3 flex items-start justify-between">
 			<div class="flex items-center gap-2">

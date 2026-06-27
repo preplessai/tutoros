@@ -78,6 +78,23 @@ export const SUBJECTS = [
 	'Music'
 ];
 
+export const CONTACT_METHODS = [
+	{ value: 'email', label: 'Email' },
+	{ value: 'sms', label: 'SMS / Text' },
+	{ value: 'both', label: 'Both Email & SMS' }
+] as const;
+
+export const LEARNING_PLATFORMS = [
+	{ name: 'Khan Academy', url: 'https://www.khanacademy.org' },
+	{ name: 'IXL', url: 'https://www.ixl.com' },
+	{ name: 'W3Schools', url: 'https://www.w3schools.com' },
+	{ name: 'Quizlet', url: 'https://quizlet.com' },
+	{ name: 'CK-12', url: 'https://www.ck12.org' },
+	{ name: 'Desmos', url: 'https://www.desmos.com' },
+	{ name: 'Brilliant', url: 'https://brilliant.org' },
+	{ name: 'Wolfram Alpha', url: 'https://www.wolframalpha.com' }
+];
+
 export const RESOURCE_SITES = [
 	{ name: 'Khan Academy', url: 'https://www.khanacademy.org' },
 	{ name: 'W3Schools', url: 'https://www.w3schools.com' },
@@ -88,6 +105,15 @@ export const RESOURCE_SITES = [
 	{ name: 'Brilliant', url: 'https://brilliant.org' },
 	{ name: 'Wolfram Alpha', url: 'https://www.wolframalpha.com' }
 ];
+
+export const DURATIONS = [
+	{ value: '3 months', label: '3 months' },
+	{ value: '6 months', label: '6 months' },
+	{ value: '1 year', label: '1 year' },
+	{ value: 'custom', label: 'Custom' }
+] as const;
+
+export const SESSION_MINUTES_OPTIONS = [30, 45, 60, 75, 90, 120, 180] as const;
 
 export const SUBSCRIPTION_TIERS = {
 	free: {

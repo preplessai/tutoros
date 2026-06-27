@@ -17,13 +17,22 @@
 
 	let activeWeek = $state<PlanWeek | null>(null);
 	let popupOpen = $state(false);
+	let popupOpenedAt = $state(0);
 
 	function openPopup(week: PlanWeek) {
+		console.log('[PlanTimeline] openPopup called for week:', week.week_number, 'id:', week.id);
 		activeWeek = week;
 		popupOpen = true;
+		popupOpenedAt = Date.now();
 	}
 
 	function closePopup() {
+		const elapsed = Date.now() - popupOpenedAt;
+		console.log('[PlanTimeline] closePopup called, elapsed:', elapsed, 'ms');
+		if (elapsed < 300) {
+			console.log('[PlanTimeline] closePopup IGNORED — within 300ms guard window');
+			return;
+		}
 		popupOpen = false;
 		activeWeek = null;
 	}
