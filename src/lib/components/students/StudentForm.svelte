@@ -1,12 +1,11 @@
 <script lang="ts">
-	import type { Student, PreferredResourceSite } from '$lib/lib/types';
+	import type { Student } from '$lib/lib/types';
 	import {
 		GRADES,
 		SUBJECTS,
 		LEARNING_PLATFORMS,
 		DURATIONS,
-		SESSION_MINUTES_OPTIONS,
-		RESOURCE_SITES
+		SESSION_MINUTES_OPTIONS
 	} from '$lib/lib/constants';
 	import { studentStore } from '$lib/stores/student.svelte';
 	import { planStore } from '$lib/stores/plan.svelte';
@@ -25,23 +24,19 @@
 	let studentEmail = $state(editStudent?.email || '');
 	let parentName = $state(editStudent?.parent_name || '');
 	let parentEmail = $state(editStudent?.parent_email || '');
-	let preferredContactMethod = $state(editStudent?.preferred_contact_method || 'student_email');
+	let preferredContactMethod = $state(editStudent?.preferred_contact_method || '');
 	let grade = $state(editStudent?.grade || '');
 	let selectedSubjects = $state<string[]>(editStudent?.subjects || []);
 	let selectedPlatforms = $state<string[]>(editStudent?.learning_platforms || []);
 	let diagnosticData = $state(editStudent?.diagnostic_data || '');
 	let extraInfo = $state(editStudent?.extra_info || '');
 	let notes = $state(editStudent?.notes || '');
-	let preferredSites = $state<PreferredResourceSite[]>(
-		editStudent?.preferred_resource_sites ||
-			RESOURCE_SITES.map((s) => ({ name: s.name, url: s.url, enabled: true }))
-	);
 
 	// ── Plan fields (only for new student onboarding) ──
 	let goal = $state('');
 	let sessionsPerWeek = $state(2);
 	let timePerSession = $state(60);
-	let duration = $state('1 session');
+	let duration = $state('');
 	let customEndDate = $state('');
 
 	let step = $state(1);
@@ -70,7 +65,7 @@
 	}
 
 	function computeEndDate(): string {
-		if (duration === 'custom') return customEndDate;
+		if (!duration || duration === 'custom') return customEndDate;
 		if (duration === '1 session') return new Date().toISOString().split('T')[0];
 		const days = duration === '3 months' ? 90 : duration === '6 months' ? 180 : 365;
 		const d = new Date();
@@ -81,8 +76,6 @@
 	function validateStep1(): boolean {
 		errors = [];
 		if (!name.trim()) errors = [...errors, 'Student name is required.'];
-		if (!grade) errors = [...errors, 'Grade is required.'];
-		if (selectedSubjects.length === 0) errors = [...errors, 'Select at least one subject.'];
 		return errors.length === 0;
 	}
 
@@ -114,9 +107,9 @@
 				notes: notes.trim() || null,
 				parent_name: parentName.trim() || null,
 				parent_email: parentEmail.trim() || null,
-				preferred_contact_method: preferredContactMethod as 'student_email' | 'parent_email',
+				preferred_contact_method: (preferredContactMethod || 'student_email') as 'student_email' | 'parent_email',
 				learning_platforms: selectedPlatforms,
-				preferred_resource_sites: preferredSites,
+				preferred_resource_sites: [],
 				learning_style: null
 			};
 
@@ -146,7 +139,7 @@
 					goals: goal.trim(),
 					diagnosticData: diagnosticData.trim() || undefined,
 					extraInfo: extraInfo.trim() || undefined,
-					preferredResourceSites: preferredSites.filter((s) => s.enabled)
+					preferredResourceSites: []
 				});
 
 				if (planId) {
@@ -178,17 +171,19 @@
 	{/if}
 
 	<!-- Step indicators -->
-	<div class="flex items-center gap-2">
-		<div class="flex items-center gap-1.5 {step === 1 ? '' : 'opacity-50'}">
-			<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">1</span>
-			<span class="text-sm font-medium text-[var(--color-text-primary)]">Basic Info</span>
+	{#if !isEdit}
+		<div class="flex items-center gap-2">
+			<div class="flex items-center gap-1.5 {step === 1 ? '' : 'opacity-50'}">
+				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">1</span>
+				<span class="text-sm font-medium text-[var(--color-text-primary)]">Contact Info</span>
+			</div>
+			<div class="h-px w-8 bg-[var(--color-border)]"></div>
+			<div class="flex items-center gap-1.5 {step === 2 ? '' : 'opacity-50'}">
+				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">2</span>
+				<span class="text-sm font-medium text-[var(--color-text-primary)]">Plan Info</span>
+			</div>
 		</div>
-		<div class="h-px w-8 bg-[var(--color-border)]"></div>
-		<div class="flex items-center gap-1.5 {step === 2 ? '' : 'opacity-50'}">
-			<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">2</span>
-			<span class="text-sm font-medium text-[var(--color-text-primary)]">Plan Info</span>
-		</div>
-	</div>
+	{/if}
 
 	{#if !isEdit}
 		<!-- ═══ Step 1: Basic Student Info ═══ -->
@@ -213,6 +208,23 @@
 					value={preferredContactMethod}
 					onchange={(e) => (preferredContactMethod = (e.target as HTMLSelectElement).value)}
 				/>
+
+			</section>
+
+			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
+				<Button type="button" variant="gradient" size="lg" onclick={goToStep2}>
+					Next: Plan Info
+				</Button>
+				<Button variant="ghost" href="/dashboard">Cancel</Button>
+			</div>
+		{/if}
+
+		<!-- ═══ Step 2: Plan Info ═══ -->
+		{#if step === 2}
+			<section class="space-y-5">
+				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
+					Plan Info
+				</h2>
 
 				<Select
 					label="Grade Level"
@@ -245,7 +257,7 @@
 
 				<div>
 					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
-						Learning Platforms
+						Preferred Learning Platforms
 					</label>
 					<div class="flex flex-wrap gap-2">
 						{#each LEARNING_PLATFORMS as platform}
@@ -262,42 +274,6 @@
 						{/each}
 					</div>
 				</div>
-
-				<div>
-					<label class="mb-3 block text-sm font-medium text-[var(--color-text-secondary)]">
-						Preferred Resource Sites
-					</label>
-					<div class="flex flex-wrap gap-2">
-						{#each preferredSites as site, i}
-							<button
-								type="button"
-								onclick={() => (preferredSites[i].enabled = !preferredSites[i].enabled)}
-								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
-								${preferredSites[i].enabled
-									? 'border-[var(--color-primary-500)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'
-									: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-tertiary)] hover:border-[var(--color-border-strong)]'}`}
-							>
-								{site.name}
-							</button>
-						{/each}
-					</div>
-				</div>
-			</section>
-
-			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
-				<Button type="button" variant="gradient" size="lg" onclick={goToStep2}>
-					Next: Plan Info
-				</Button>
-				<Button variant="ghost" href="/dashboard">Cancel</Button>
-			</div>
-		{/if}
-
-		<!-- ═══ Step 2: Plan Info ═══ -->
-		{#if step === 2}
-			<section class="space-y-5">
-				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
-					Plan Info
-				</h2>
 
 				<Textarea
 					label="Goal"
@@ -376,7 +352,7 @@
 		<!-- ═══ Edit mode: all fields in one page ═══ -->
 		<section class="space-y-5">
 			<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">
-				Basic Student Info
+				Basic Contact Info
 			</h2>
 
 			<Input label="Student Name" name="name" placeholder="Full name" required bind:value={name} />
@@ -426,7 +402,7 @@
 
 			<div>
 				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">
-					Learning Platforms
+					Preferred Learning Platforms
 				</label>
 				<div class="flex flex-wrap gap-2">
 					{#each LEARNING_PLATFORMS as platform}
@@ -467,26 +443,6 @@
 				bind:value={notes}
 				rows={3}
 			/>
-
-			<div>
-				<label class="mb-3 block text-sm font-medium text-[var(--color-text-secondary)]">
-					Preferred Resource Sites
-				</label>
-				<div class="flex flex-wrap gap-2">
-					{#each preferredSites as site, i}
-						<button
-							type="button"
-							onclick={() => (preferredSites[i].enabled = !preferredSites[i].enabled)}
-							class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all
-							${preferredSites[i].enabled
-								? 'border-[var(--color-primary-500)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'
-								: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-tertiary)] hover:border-[var(--color-border-strong)]'}`}
-						>
-							{site.name}
-						</button>
-					{/each}
-				</div>
-			</div>
 		</section>
 
 		<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
