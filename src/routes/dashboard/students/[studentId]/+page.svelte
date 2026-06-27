@@ -488,4 +488,28 @@
 			<PreplessChat studentId={s.id} planId={selectedPlanId ?? undefined} />
 		{/if}
 	</div>
+
+	<!-- Floating Edit Pencil → Prepless AI -->
+	{#if tab !== 'prepless-ai'}
+		<button
+			onclick={() => setTab('prepless-ai')}
+			class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-success)] text-white shadow-lg transition-all hover:scale-110 hover:shadow-xl active:scale-95"
+			aria-label="Edit plan with Prepless AI"
+			title="Edit plan with Prepless AI"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="22"
+				height="22"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+			</svg>
+		</button>
+	{/if}
 {/if}
