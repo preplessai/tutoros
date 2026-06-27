@@ -8,7 +8,8 @@
 		error = '',
 		hint = '',
 		required = false,
-		disabled = false
+		disabled = false,
+		onchange
 	}: {
 		label?: string;
 		name: string;
@@ -19,7 +20,13 @@
 		hint?: string;
 		required?: boolean;
 		disabled?: boolean;
+		onchange?: (e: Event) => void;
 	} = $props();
+
+	function handleChange(e: Event) {
+		value = (e.target as HTMLSelectElement).value;
+		onchange?.(e);
+	}
 </script>
 
 <div class="space-y-1.5">
@@ -32,7 +39,8 @@
 	<select
 		{name}
 		id={name}
-		bind:value
+		value={value}
+		onchange={handleChange}
 		{disabled}
 		{required}
 		class="w-full appearance-none clay-input bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%238B7E74%22%20d%3D%22M6%208L1%203h10z%22%2F%3E%3C%2Fsvg%3E')]
