@@ -1,1 +1,0 @@
-import"./wABp3jbM.js";import{r as e}from"./dXV4-XUE.js";var t=()=>{let t=e;return{page:{subscribe:t.page.subscribe},navigating:{subscribe:t.navigating.subscribe},updated:t.updated}},n={subscribe(e){return t().page.subscribe(e)}};export{n as t};
