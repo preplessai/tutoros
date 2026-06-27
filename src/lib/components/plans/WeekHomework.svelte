@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { supabase } from '$lib/lib/supabase';
 	import { api } from '$lib/lib/api';
 	import { creditStore } from '$lib/stores/credits.svelte';
@@ -21,8 +22,7 @@
 	let newDescription = $state('');
 	let newUrl = $state('');
 
-	// Reactive load — runs on mount AND whenever weekId changes
-	$effect(() => {
+	onMount(() => {
 		creditStore.fetch();
 		loadHomework();
 	});
