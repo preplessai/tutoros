@@ -16,7 +16,8 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	import PreplessChat from '$lib/components/chat/PreplessChat.svelte';
-		import EmailTab from '$lib/components/emails/EmailTab.svelte';
+	import EmailTab from '$lib/components/emails/EmailTab.svelte';
+	import StudentForm from '$lib/components/students/StudentForm.svelte';
 	import type { PlanDay, WeeklyPlan } from '$lib/lib/types';
 
 	let tab = $state('timeline');
@@ -35,6 +36,7 @@
 		struggleAreas: string[];
 	} | null>(null);
 	let progressLoading = $state(false);
+	let settingsSaved = $state(false);
 
 	const tier = $derived(auth.profile?.subscription_tier || 'free');
 
@@ -43,7 +45,8 @@
 		{ value: 'dayplans', label: 'Day Plans' },
 		{ value: 'progress', label: 'Progress' },
 		{ value: 'emails', label: 'Emails' },
-		{ value: 'prepless-ai', label: 'Prepless AI' }
+		{ value: 'prepless-ai', label: 'Prepless AI' },
+		{ value: 'settings', label: 'Settings' }
 	];
 
 	onMount(() => {
@@ -220,6 +223,14 @@
 				progressData = result;
 				progressLoading = false;
 			})();
+		}
+	});
+
+	// Reload student after settings save
+	$effect(() => {
+		if (settingsSaved) {
+			studentStore.fetchOne($page.params.studentId);
+			settingsSaved = false;
 		}
 	});
 </script>
@@ -487,10 +498,20 @@
 		{#if tab === 'prepless-ai'}
 			<PreplessChat studentId={s.id} planId={selectedPlanId ?? undefined} />
 		{/if}
+
+		<!-- ═══ Settings Tab ═══ -->
+		{#if tab === 'settings'}
+			<div class="max-w-2xl rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-6">
+				<h2 class="mb-6 text-lg font-semibold text-[var(--color-text-primary)]">
+					Edit {s.name}'s Profile
+				</h2>
+				<StudentForm editStudent={s} onsave={() => (settingsSaved = true)} />
+			</div>
+		{/if}
 	</div>
 
 	<!-- Floating Edit Pencil → Prepless AI -->
-	{#if tab !== 'prepless-ai'}
+	{#if tab !== 'prepless-ai' && tab !== 'settings'}
 		<button
 			onclick={() => setTab('prepless-ai')}
 			class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-success)] text-white shadow-lg transition-all hover:scale-110 hover:shadow-xl active:scale-95"

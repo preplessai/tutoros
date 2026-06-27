@@ -9,7 +9,7 @@
 	import Textarea from '$lib/components/ui/Textarea.svelte';
 	import Toggle from '$lib/components/ui/Toggle.svelte';
 
-	let { editStudent }: { editStudent?: Student | null } = $props();
+	let { editStudent, onsave }: { editStudent?: Student | null; onsave?: () => void } = $props();
 
 	let name = $state(editStudent?.name || '');
 	let grade = $state(editStudent?.grade || '');
@@ -75,7 +75,7 @@
 
 			if (editStudent) {
 				await studentStore.update(editStudent.id, data);
-				goto('/dashboard/students');
+				onsave?.();
 			} else {
 				const created = await studentStore.create(data);
 				console.log('[StudentForm] studentStore.create returned:', created);

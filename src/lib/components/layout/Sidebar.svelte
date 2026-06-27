@@ -6,8 +6,6 @@
 	import Avatar from '$lib/components/ui/Avatar.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 
-	let studentsExpanded = $state(false);
-
 	const isStudentRoute = $derived($page.url.pathname.startsWith('/dashboard/students/'));
 
 	const overviewActive = $derived($page.url.pathname === '/dashboard');
@@ -67,9 +65,9 @@
 			{/if}
 		</a>
 
-		<!-- Students (expandable) -->
-		<button
-			onclick={() => (studentsExpanded = !studentsExpanded)}
+		<!-- Students (always expanded) -->
+		<a
+			href="/dashboard/students"
 			class={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 font-[family-name:var(--font-body)] text-sm font-medium no-underline transition-all duration-200 ${
 				studentsActive
 					? 'shadow-clay-sm bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'
@@ -93,42 +91,40 @@
 			</svg>
 			<span class="flex-1 text-left">Students</span>
 			<svg
-				class="h-4 w-4 transition-transform duration-200 {studentsExpanded || isStudentRoute
-					? 'rotate-0'
-					: '-rotate-90'}"
+				class="h-4 w-4"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"
 			>
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 			</svg>
-		</button>
+		</a>
 
-		<!-- Student children -->
-		{#if studentsExpanded || isStudentRoute}
-			{#if studentStore.loading}
-				<div class="px-10 py-1.5 text-xs text-[var(--color-text-tertiary)]">
-					Loading students...
-				</div>
-			{:else if studentStore.students.length === 0}
-				<div class="px-10 py-1.5 text-xs text-[var(--color-text-tertiary)]">No students yet</div>
-			{:else}
-				{#each studentStore.students as student}
-					{@const studentActive = $page.url.pathname === `/dashboard/students/${student.id}`}
-					<a
-						href={`/dashboard/students/${student.id}`}
-						class={`group flex items-center gap-2 rounded-xl px-10 py-1.5 text-sm font-medium no-underline transition-all duration-200 ${
-							studentActive
-								? 'text-[var(--color-primary-700)]'
-								: 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-						}`}
-					>
-						<Avatar name={student.name} size="xs" />
-						<span class="min-w-0 flex-1 truncate">{student.name}</span>
-						<Badge variant="primary">{student.grade}</Badge>
-					</a>
-				{/each}
-			{/if}
+		<!-- Student children (always visible) -->
+		{#if studentStore.loading}
+			<div class="px-10 py-1.5 text-xs text-[var(--color-text-tertiary)]">
+				Loading students...
+			</div>
+		{:else if studentStore.students.length === 0}
+			<div class="px-10 py-1.5 text-xs text-[var(--color-text-tertiary)]">
+				No students yet — add one below
+			</div>
+		{:else}
+			{#each studentStore.students as student}
+				{@const studentActive = $page.url.pathname === `/dashboard/students/${student.id}`}
+				<a
+					href={`/dashboard/students/${student.id}`}
+					class={`group flex items-center gap-2 rounded-xl px-10 py-1.5 text-sm font-medium no-underline transition-all duration-200 ${
+						studentActive
+							? 'text-[var(--color-primary-700)]'
+							: 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+					}`}
+				>
+					<Avatar name={student.name} size="xs" />
+					<span class="min-w-0 flex-1 truncate">{student.name}</span>
+					<Badge variant="primary">{student.grade}</Badge>
+				</a>
+			{/each}
 		{/if}
 
 		<!-- Settings -->
