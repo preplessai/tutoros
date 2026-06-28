@@ -59,8 +59,8 @@
 
 <form onsubmit={handleSubmit} class="space-y-5">
 	<p class="text-sm text-[var(--color-text-secondary)]">
-		Generating day plan for {weekContext ? `Week ${weekContext.weekNumber}` : 'a week'}.
-		Select the date for this tutoring session.
+		Generating day plan for {weekContext ? `Week ${weekContext.weekNumber}` : 'a week'}. Select the
+		date for this tutoring session.
 	</p>
 
 	<DatePicker

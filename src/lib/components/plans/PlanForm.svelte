@@ -49,7 +49,9 @@
 	function canProceed(): boolean {
 		if (step === 0) return !!studentId;
 		if (step === 1)
-			return timePerSession > 0 && sessionsPerWeek > 0 && (duration !== 'custom' || !!customEndDate);
+			return (
+				timePerSession > 0 && sessionsPerWeek > 0 && (duration !== 'custom' || !!customEndDate)
+			);
 		return true;
 	}
 
@@ -115,18 +117,30 @@
 						>
 							{#if i < step}
 								<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-									><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+									><path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2.5"
+										d="M5 13l4 4L19 7"
+									/></svg
+								>
 							{:else}
 								{i + 1}
 							{/if}
 						</div>
-						<span class={`text-xs font-medium transition-colors ${i === step ? 'text-[var(--color-primary-600)]' : i < step ? 'text-[var(--color-success)]' : 'text-[var(--color-text-tertiary)]'}`}>
+						<span
+							class={`text-xs font-medium transition-colors ${i === step ? 'text-[var(--color-primary-600)]' : i < step ? 'text-[var(--color-success)]' : 'text-[var(--color-text-tertiary)]'}`}
+						>
 							{label}
 						</span>
 					</button>
 
 					{#if i < steps.length - 1 && !(i === 0 && studentId)}
-						<div class="mx-3 h-0.5 flex-1 rounded-full transition-colors duration-300 {i < step ? 'bg-[var(--color-success)]' : 'bg-[var(--color-surface-tertiary)]'}"></div>
+						<div
+							class="mx-3 h-0.5 flex-1 rounded-full transition-colors duration-300 {i < step
+								? 'bg-[var(--color-success)]'
+								: 'bg-[var(--color-surface-tertiary)]'}"
+						></div>
 					{/if}
 				{/if}
 			{/each}
@@ -136,11 +150,16 @@
 	<!-- Step 0: Student -->
 	{#if step === 0}
 		<div class="animate-fade-in-up space-y-6">
-			<h2 class="font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]">
+			<h2
+				class="font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]"
+			>
 				Who are you planning for?
 			</h2>
 			<p class="text-sm text-[var(--color-text-secondary)]">
-				Select an existing student or <a href="/dashboard/students/new" class="font-medium text-[var(--color-primary-500)]">add a new one</a> first.
+				Select an existing student or <a
+					href="/dashboard/students/new"
+					class="font-medium text-[var(--color-primary-500)]">add a new one</a
+				> first.
 			</p>
 
 			<div class="grid gap-4 sm:grid-cols-2">
@@ -156,18 +175,31 @@
 						${studentId === s.id ? 'shadow-clay-sm border-[var(--color-primary-500)] bg-[var(--color-primary-100)]' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] hover:border-[var(--color-border-strong)]'}`}
 					>
 						<div class="flex items-center gap-3">
-							<div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-primary-400)] to-[var(--color-accent-400)] text-sm font-bold text-white">
+							<div
+								class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-primary-400)] to-[var(--color-accent-400)] text-sm font-bold text-white"
+							>
 								{s.name[0]}
 							</div>
 							<div>
 								<p class="text-sm font-semibold text-[var(--color-text-primary)]">{s.name}</p>
 								<p class="text-xs text-[var(--color-text-secondary)]">
-									{s.grade}{#if s.subjects?.length} · {s.subjects.slice(0, 2).join(', ')}{/if}
+									{s.grade}{#if s.subjects?.length}
+										· {s.subjects.slice(0, 2).join(', ')}{/if}
 								</p>
 							</div>
 							{#if studentId === s.id}
-								<svg class="ml-auto h-5 w-5 text-[var(--color-primary-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-									><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+								<svg
+									class="ml-auto h-5 w-5 text-[var(--color-primary-500)]"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									><path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2.5"
+										d="M5 13l4 4L19 7"
+									/></svg
+								>
 							{/if}
 						</div>
 					</button>
@@ -176,11 +208,25 @@
 
 			{#if studentStore.students.length === 0}
 				<div class="py-10 text-center">
-					<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-surface-tertiary)]">
-						<svg class="h-8 w-8 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-							><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+					<div
+						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-surface-tertiary)]"
+					>
+						<svg
+							class="h-8 w-8 text-[var(--color-text-tertiary)]"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							><path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="1.5"
+								d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+							/></svg
+						>
 					</div>
-					<p class="text-sm text-[var(--color-text-secondary)]">No students yet. Create one first.</p>
+					<p class="text-sm text-[var(--color-text-secondary)]">
+						No students yet. Create one first.
+					</p>
 					<div class="mt-4">
 						<Button variant="gradient" size="sm" href="/dashboard/students/new">Add Student</Button>
 					</div>
@@ -192,8 +238,14 @@
 	<!-- Step 1: Schedule -->
 	{#if step === 1}
 		<div class="animate-fade-in-up space-y-6">
-			<h2 class="font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]">What subjects to cover?</h2>
-			<p class="text-sm text-[var(--color-text-secondary)]">Pick the subjects for this tutoring plan.</p>
+			<h2
+				class="font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]"
+			>
+				What subjects to cover?
+			</h2>
+			<p class="text-sm text-[var(--color-text-secondary)]">
+				Pick the subjects for this tutoring plan.
+			</p>
 
 			<div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
 				{#each SUBJECTS as subject}
@@ -208,7 +260,11 @@
 				{/each}
 			</div>
 
-			<h2 class="pt-4 font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]">Set the schedule</h2>
+			<h2
+				class="pt-4 font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]"
+			>
+				Set the schedule
+			</h2>
 			<p class="text-sm text-[var(--color-text-secondary)]">How often and for how long?</p>
 
 			<div class="grid gap-4 md:grid-cols-3">
@@ -235,7 +291,12 @@
 				/>
 			</div>
 			{#if duration === 'custom'}
-				<Input label="Custom End Date" name="customEndDate" type="date" bind:value={customEndDate} />
+				<Input
+					label="Custom End Date"
+					name="customEndDate"
+					type="date"
+					bind:value={customEndDate}
+				/>
 			{/if}
 		</div>
 	{/if}
@@ -243,8 +304,14 @@
 	<!-- Step 2: Goals & Summary -->
 	{#if step === 2}
 		<div class="animate-fade-in-up space-y-6">
-			<h2 class="font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]">What are the goals?</h2>
-			<p class="text-sm text-[var(--color-text-secondary)]">Tell the AI what this student needs to achieve. Be specific for best results.</p>
+			<h2
+				class="font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--color-text-primary)]"
+			>
+				What are the goals?
+			</h2>
+			<p class="text-sm text-[var(--color-text-secondary)]">
+				Tell the AI what this student needs to achieve. Be specific for best results.
+			</p>
 
 			<Textarea
 				label="Goals & Target Outcomes"
@@ -256,11 +323,17 @@
 			/>
 
 			<Card>
-				<h4 class="mb-3 font-[family-name:var(--font-heading)] text-sm font-semibold text-[var(--color-text-primary)]">Plan Summary</h4>
+				<h4
+					class="mb-3 font-[family-name:var(--font-heading)] text-sm font-semibold text-[var(--color-text-primary)]"
+				>
+					Plan Summary
+				</h4>
 				<div class="grid grid-cols-2 gap-3 text-sm">
 					<div>
 						<span class="text-[var(--color-text-tertiary)]">Student:</span>
-						<span class="font-medium text-[var(--color-text-primary)]">{selectedStudent?.name || '—'}</span>
+						<span class="font-medium text-[var(--color-text-primary)]"
+							>{selectedStudent?.name || '—'}</span
+						>
 					</div>
 					<div>
 						<span class="text-[var(--color-text-tertiary)]">Grade:</span>
@@ -268,21 +341,32 @@
 					</div>
 					<div>
 						<span class="text-[var(--color-text-tertiary)]">Subjects:</span>
-						<span class="font-medium text-[var(--color-text-primary)]">{selectedSubjects.join(', ') || '—'}</span>
+						<span class="font-medium text-[var(--color-text-primary)]"
+							>{selectedSubjects.join(', ') || '—'}</span
+						>
 					</div>
 					<div>
 						<span class="text-[var(--color-text-tertiary)]">Schedule:</span>
-						<span class="font-medium text-[var(--color-text-primary)]">{sessionsPerWeek}×/wk · {timePerSession}min</span>
+						<span class="font-medium text-[var(--color-text-primary)]"
+							>{sessionsPerWeek}×/wk · {timePerSession}min</span
+						>
 					</div>
 					<div class="col-span-2">
 						<span class="text-[var(--color-text-tertiary)]">Duration:</span>
-						<span class="font-medium text-[var(--color-text-primary)]">{duration === 'custom' ? customEndDate : duration}</span>
+						<span class="font-medium text-[var(--color-text-primary)]"
+							>{duration === 'custom' ? customEndDate : duration}</span
+						>
 					</div>
 				</div>
 				{#if selectedStudent?.extra_info}
 					<div class="mt-3 border-t border-[var(--color-border)] pt-3">
-						<span class="text-xs font-medium tracking-wider text-[var(--color-text-tertiary)] uppercase">About this student</span>
-						<p class="mt-1 text-sm text-[var(--color-text-secondary)]">{selectedStudent.extra_info}</p>
+						<span
+							class="text-xs font-medium tracking-wider text-[var(--color-text-tertiary)] uppercase"
+							>About this student</span
+						>
+						<p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+							{selectedStudent.extra_info}
+						</p>
 					</div>
 				{/if}
 			</Card>
@@ -300,9 +384,16 @@
 		</button>
 
 		<div class="flex items-center gap-3">
-			<span class="text-xs text-[var(--color-text-tertiary)]">Step {step + 1} of {steps.length}</span>
+			<span class="text-xs text-[var(--color-text-tertiary)]"
+				>Step {step + 1} of {steps.length}</span
+			>
 			{#if step < steps.length - 1}
-				<Button type="button" variant="primary" onclick={() => (step = Math.min(steps.length - 1, step + 1))} disabled={!canProceed()}>
+				<Button
+					type="button"
+					variant="primary"
+					onclick={() => (step = Math.min(steps.length - 1, step + 1))}
+					disabled={!canProceed()}
+				>
 					Continue
 				</Button>
 			{:else}

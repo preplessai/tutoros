@@ -44,7 +44,9 @@
 			<!-- Content -->
 			<div class="min-w-0 flex-1">
 				<div class="flex items-center gap-2">
-					<h3 class="truncate font-[family-name:var(--font-heading)] text-base font-semibold text-[var(--color-text-primary)]">
+					<h3
+						class="truncate font-[family-name:var(--font-heading)] text-base font-semibold text-[var(--color-text-primary)]"
+					>
 						{week.theme || `Week ${week.week_number}`}
 					</h3>
 					{#if !week.ai_generated}
@@ -65,8 +67,18 @@
 			</div>
 
 			<!-- Chevron -->
-			<svg class="h-5 w-5 shrink-0 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-				><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+			<svg
+				class="h-5 w-5 shrink-0 text-[var(--color-text-tertiary)]"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				><path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M9 5l7 7-7 7"
+				/></svg
+			>
 		</div>
 	</button>
 </Card>

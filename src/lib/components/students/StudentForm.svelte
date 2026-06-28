@@ -116,7 +116,9 @@
 				notes: notes.trim() || null,
 				parent_name: parentName.trim() || null,
 				parent_email: parentEmail.trim() || null,
-				preferred_contact_method: (preferredContactMethod || 'student_email') as 'student_email' | 'parent_email',
+				preferred_contact_method: (preferredContactMethod || 'student_email') as
+					| 'student_email'
+					| 'parent_email',
 				learning_platforms: selectedPlatforms,
 				preferred_resource_sites: [],
 				learning_style: null
@@ -166,11 +168,17 @@
 
 <form onsubmit={handleSubmit} class="space-y-8">
 	{#if errors.length > 0}
-		<div class="space-y-1 rounded-xl border border-[var(--color-error)]/30 bg-[var(--color-error-bg)] p-4">
+		<div
+			class="space-y-1 rounded-xl border border-[var(--color-error)]/30 bg-[var(--color-error-bg)] p-4"
+		>
 			{#each errors as err}
 				<p class="flex items-start gap-2 text-sm text-[var(--color-error)]">
 					<svg class="mt-0.5 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-						><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
 						/></svg
 					>
 					{err}
@@ -182,17 +190,26 @@
 	{#if !isEdit}
 		<div class="flex items-center gap-1.5">
 			<div class="flex items-center gap-1.5 {step === 0 ? '' : 'opacity-50'}">
-				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">0</span>
+				<span
+					class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white"
+					>0</span
+				>
 				<span class="text-sm font-medium text-[var(--color-text-primary)]">Contact</span>
 			</div>
 			<div class="h-px w-6 bg-[var(--color-border)]"></div>
 			<div class="flex items-center gap-1.5 {step === 1 ? '' : 'opacity-50'}">
-				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">1</span>
+				<span
+					class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white"
+					>1</span
+				>
 				<span class="text-sm font-medium text-[var(--color-text-primary)]">Plan</span>
 			</div>
 			<div class="h-px w-6 bg-[var(--color-border)]"></div>
 			<div class="flex items-center gap-1.5 {step === 2 ? '' : 'opacity-50'}">
-				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white">2</span>
+				<span
+					class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary-500)] text-xs font-bold text-white"
+					>2</span
+				>
 				<span class="text-sm font-medium text-[var(--color-text-primary)]">More</span>
 			</div>
 		</div>
@@ -200,12 +217,39 @@
 		<!-- Screen 0: Contact Info -->
 		{#if step === 0}
 			<section class="space-y-5">
-				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">Contact Info</h2>
+				<h2
+					class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]"
+				>
+					Contact Info
+				</h2>
 
-				<Input label="Student Name" name="name" placeholder="Full name" required bind:value={name} />
-				<Input label="Student Email / Contact" name="studentEmail" type="email" placeholder="student@example.com" bind:value={studentEmail} />
-				<Input label="Parent / Guardian Name" name="parentName" placeholder="Parent full name" bind:value={parentName} />
-				<Input label="Parent Email / Contact" name="parentEmail" type="email" placeholder="parent@example.com" bind:value={parentEmail} />
+				<Input
+					label="Student Name"
+					name="name"
+					placeholder="Full name"
+					required
+					bind:value={name}
+				/>
+				<Input
+					label="Student Email / Contact"
+					name="studentEmail"
+					type="email"
+					placeholder="student@example.com"
+					bind:value={studentEmail}
+				/>
+				<Input
+					label="Parent / Guardian Name"
+					name="parentName"
+					placeholder="Parent full name"
+					bind:value={parentName}
+				/>
+				<Input
+					label="Parent Email / Contact"
+					name="parentEmail"
+					type="email"
+					placeholder="parent@example.com"
+					bind:value={parentEmail}
+				/>
 
 				<Select
 					label="Preferred Contact Method (for updates, progress reports, homework)"
@@ -215,8 +259,10 @@
 				/>
 			</section>
 
-			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
-				<Button type="button" variant="gradient" size="lg" onclick={goToStep1}>Next: Plan Setup</Button>
+			<div class="flex gap-3 border-t border-[var(--color-border)] pt-4">
+				<Button type="button" variant="gradient" size="lg" onclick={goToStep1}
+					>Next: Plan Setup</Button
+				>
 				<Button variant="ghost" href="/dashboard">Cancel</Button>
 			</div>
 		{/if}
@@ -224,7 +270,11 @@
 		<!-- Screen 1: Plan Setup -->
 		{#if step === 1}
 			<section class="space-y-5">
-				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">Plan Setup</h2>
+				<h2
+					class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]"
+				>
+					Plan Setup
+				</h2>
 
 				<Select
 					label="Grade Level"
@@ -240,32 +290,72 @@
 					</label>
 					<div class="flex flex-wrap gap-2">
 						{#each SUBJECTS as subject}
-							<button type="button" onclick={() => toggleSubject(subject)}
+							<button
+								type="button"
+								onclick={() => toggleSubject(subject)}
 								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all ${selectedSubjects.includes(subject) ? 'border-[var(--color-primary-500)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)]' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
-							>{subject}</button>
+								>{subject}</button
+							>
 						{/each}
 					</div>
 				</div>
 
-				<Textarea label="Goal" name="goal" placeholder="e.g., Improve Algebra grade from B to A by semester end..." bind:value={goal} rows={3} required />
+				<Textarea
+					label="Goal"
+					name="goal"
+					placeholder="e.g., Improve Algebra grade from B to A by semester end..."
+					bind:value={goal}
+					rows={3}
+					required
+				/>
 
 				<div>
-					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">Timeframe</label>
+					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]"
+						>Timeframe</label
+					>
 					<div class="grid gap-4 sm:grid-cols-3">
-						<Select label="Duration" name="duration" options={DURATIONS.map((d) => ({ value: d.value, label: d.label }))} bind:value={duration} />
-						<Select label="Sessions / Week" name="sessionsPerWeek" options={[1,2,3,4,5,6,7].map((n) => ({ value: n.toString(), label: n.toString() }))} bind:value={sessionsPerWeekStr} />
-						<Select label="Minutes / Session" name="timePerSession" options={SESSION_MINUTES_OPTIONS.map((n) => ({ value: n.toString(), label: `${n} min` }))} bind:value={timePerSessionStr} />
+						<Select
+							label="Duration"
+							name="duration"
+							options={DURATIONS.map((d) => ({ value: d.value, label: d.label }))}
+							bind:value={duration}
+						/>
+						<Select
+							label="Sessions / Week"
+							name="sessionsPerWeek"
+							options={[1, 2, 3, 4, 5, 6, 7].map((n) => ({
+								value: n.toString(),
+								label: n.toString()
+							}))}
+							bind:value={sessionsPerWeekStr}
+						/>
+						<Select
+							label="Minutes / Session"
+							name="timePerSession"
+							options={SESSION_MINUTES_OPTIONS.map((n) => ({
+								value: n.toString(),
+								label: `${n} min`
+							}))}
+							bind:value={timePerSessionStr}
+						/>
 					</div>
 					{#if duration === 'custom'}
 						<div class="mt-3">
-							<Input label="Custom End Date" name="customEndDate" type="date" bind:value={customEndDate} />
+							<Input
+								label="Custom End Date"
+								name="customEndDate"
+								type="date"
+								bind:value={customEndDate}
+							/>
 						</div>
 					{/if}
 				</div>
 			</section>
 
-			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
-				<Button type="button" variant="gradient" size="lg" onclick={goToStep2}>Next: Preferences</Button>
+			<div class="flex gap-3 border-t border-[var(--color-border)] pt-4">
+				<Button type="button" variant="gradient" size="lg" onclick={goToStep2}
+					>Next: Preferences</Button
+				>
 				<Button type="button" variant="ghost" onclick={() => (step = 0)}>Back</Button>
 				<Button variant="ghost" href="/dashboard">Cancel</Button>
 			</div>
@@ -274,24 +364,45 @@
 		<!-- Screen 2: Preferences & Context -->
 		{#if step === 2}
 			<section class="space-y-5">
-				<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">Preferences & Context</h2>
+				<h2
+					class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]"
+				>
+					Preferences & Context
+				</h2>
 
 				<div>
-					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">Preferred Learning Platforms</label>
+					<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]"
+						>Preferred Learning Platforms</label
+					>
 					<div class="flex flex-wrap gap-2">
 						{#each LEARNING_PLATFORMS as platform}
-							<button type="button" onclick={() => togglePlatform(platform.name)}
+							<button
+								type="button"
+								onclick={() => togglePlatform(platform.name)}
 								class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all ${selectedPlatforms.includes(platform.name) ? 'border-[var(--color-accent-500)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
-							>{platform.name}</button>
+								>{platform.name}</button
+							>
 						{/each}
 					</div>
 				</div>
 
-				<Textarea label="Student Diagnostic Results (if any)" name="diagnosticData" placeholder="e.g., PSAT score 1150 (Math: 580, Reading: 570)..." bind:value={diagnosticData} rows={3} />
-				<Textarea label="Anything else I need to know about this student?" name="extraInfo" placeholder="Learning style, pace, preferences, strengths, challenges..." bind:value={extraInfo} rows={3} />
+				<Textarea
+					label="Student Diagnostic Results (if any)"
+					name="diagnosticData"
+					placeholder="e.g., PSAT score 1150 (Math: 580, Reading: 570)..."
+					bind:value={diagnosticData}
+					rows={3}
+				/>
+				<Textarea
+					label="Anything else I need to know about this student?"
+					name="extraInfo"
+					placeholder="Learning style, pace, preferences, strengths, challenges..."
+					bind:value={extraInfo}
+					rows={3}
+				/>
 			</section>
 
-			<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
+			<div class="flex gap-3 border-t border-[var(--color-border)] pt-4">
 				<Button type="submit" variant="gradient" size="lg" loading={saving} disabled={saving}>
 					{saving ? 'Creating Student & Plan...' : 'Create Student & Generate Plan'}
 				</Button>
@@ -302,46 +413,110 @@
 	{:else}
 		<!-- Edit mode -->
 		<section class="space-y-5">
-			<h2 class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]">Basic Contact Info</h2>
+			<h2
+				class="font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--color-text-primary)]"
+			>
+				Basic Contact Info
+			</h2>
 
 			<Input label="Student Name" name="name" placeholder="Full name" required bind:value={name} />
-			<Input label="Student Email / Contact" name="studentEmail" type="email" placeholder="student@example.com" bind:value={studentEmail} />
-			<Input label="Parent / Guardian Name" name="parentName" placeholder="Parent full name" bind:value={parentName} />
-			<Input label="Parent Email / Contact" name="parentEmail" type="email" placeholder="parent@example.com" bind:value={parentEmail} />
+			<Input
+				label="Student Email / Contact"
+				name="studentEmail"
+				type="email"
+				placeholder="student@example.com"
+				bind:value={studentEmail}
+			/>
+			<Input
+				label="Parent / Guardian Name"
+				name="parentName"
+				placeholder="Parent full name"
+				bind:value={parentName}
+			/>
+			<Input
+				label="Parent Email / Contact"
+				name="parentEmail"
+				type="email"
+				placeholder="parent@example.com"
+				bind:value={parentEmail}
+			/>
 
-			<Select label="Preferred Contact Method (for updates, progress reports, homework)" name="preferredContactMethod" options={contactMethodOptions} bind:value={preferredContactMethod} />
-			<Select label="Grade Level" name="grade" options={GRADES.map((g) => ({ value: g, label: g }))} bind:value={grade} required />
+			<Select
+				label="Preferred Contact Method (for updates, progress reports, homework)"
+				name="preferredContactMethod"
+				options={contactMethodOptions}
+				bind:value={preferredContactMethod}
+			/>
+			<Select
+				label="Grade Level"
+				name="grade"
+				options={GRADES.map((g) => ({ value: g, label: g }))}
+				bind:value={grade}
+				required
+			/>
 
 			<div>
-				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">Subjects <span class="text-[var(--color-error)]">*</span></label>
+				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]"
+					>Subjects <span class="text-[var(--color-error)]">*</span></label
+				>
 				<div class="flex flex-wrap gap-2">
 					{#each SUBJECTS as subject}
-						<button type="button" onclick={() => toggleSubject(subject)}
+						<button
+							type="button"
+							onclick={() => toggleSubject(subject)}
 							class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all ${selectedSubjects.includes(subject) ? 'border-[var(--color-primary-500)] bg-[var(--color-primary-100)] text-[var(--color-primary-700)]' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
-						>{subject}</button>
+							>{subject}</button
+						>
 					{/each}
 				</div>
 			</div>
 
 			<div>
-				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]">Preferred Learning Platforms</label>
+				<label class="mb-2 block text-sm font-medium text-[var(--color-text-secondary)]"
+					>Preferred Learning Platforms</label
+				>
 				<div class="flex flex-wrap gap-2">
 					{#each LEARNING_PLATFORMS as platform}
-						<button type="button" onclick={() => togglePlatform(platform.name)}
+						<button
+							type="button"
+							onclick={() => togglePlatform(platform.name)}
 							class={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-all ${selectedPlatforms.includes(platform.name) ? 'border-[var(--color-accent-500)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'}`}
-						>{platform.name}</button>
+							>{platform.name}</button
+						>
 					{/each}
 				</div>
 			</div>
 
-			<Textarea label="Previous Diagnostic Data (if any)" name="diagnosticData" placeholder="Any previous test scores, assessments, or diagnostic results..." bind:value={diagnosticData} rows={3} />
-			<Textarea label="Anything else I should know about this student?" name="extraInfo" placeholder="Learning style, pace, preferences, strengths, challenges..." bind:value={extraInfo} rows={3} />
-			<Textarea label="Notes" name="notes" placeholder="Any notes about this student..." bind:value={notes} rows={3} />
+			<Textarea
+				label="Previous Diagnostic Data (if any)"
+				name="diagnosticData"
+				placeholder="Any previous test scores, assessments, or diagnostic results..."
+				bind:value={diagnosticData}
+				rows={3}
+			/>
+			<Textarea
+				label="Anything else I should know about this student?"
+				name="extraInfo"
+				placeholder="Learning style, pace, preferences, strengths, challenges..."
+				bind:value={extraInfo}
+				rows={3}
+			/>
+			<Textarea
+				label="Notes"
+				name="notes"
+				placeholder="Any notes about this student..."
+				bind:value={notes}
+				rows={3}
+			/>
 		</section>
 
-		<div class="flex gap-3 pt-4 border-t border-[var(--color-border)]">
+		<div class="flex gap-3 border-t border-[var(--color-border)] pt-4">
 			<Button type="submit" variant="gradient" size="lg" loading={saving} disabled={saving}>
-				{isEdit ? 'Save Changes' : saving ? 'Creating Student & Plan...' : 'Create Student & Generate Plan'}
+				{isEdit
+					? 'Save Changes'
+					: saving
+						? 'Creating Student & Plan...'
+						: 'Create Student & Generate Plan'}
 			</Button>
 			<Button variant="ghost" href="/dashboard">Cancel</Button>
 		</div>

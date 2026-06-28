@@ -94,7 +94,10 @@
 		const { data: resources } = await supabase
 			.from('resources')
 			.select('*')
-			.in('task_id', tasks.map((t) => t.id));
+			.in(
+				'task_id',
+				tasks.map((t) => t.id)
+			);
 		openExport(exportDayPlan(day, tasks, (resources || []) as any));
 		exportDayMenuFor = null;
 	}
@@ -108,7 +111,10 @@
 		const { data: resources } = await supabase
 			.from('resources')
 			.select('*')
-			.in('task_id', tasks.map((t) => t.id));
+			.in(
+				'task_id',
+				tasks.map((t) => t.id)
+			);
 		const json = JSON.stringify(exportDayPlanJson(day, tasks, (resources || []) as any), null, 2);
 		downloadJson(json, `day-plan-${day.date}.json`);
 		exportDayMenuFor = null;
@@ -158,7 +164,11 @@
 	<Modal
 		{open}
 		onclose={close}
-		title={mode === 'edit' ? 'Edit Week' : mode === 'dayplan' ? 'Generate Day Plan' : `Week ${week.week_number}`}
+		title={mode === 'edit'
+			? 'Edit Week'
+			: mode === 'dayplan'
+				? 'Generate Day Plan'
+				: `Week ${week.week_number}`}
 		size={sizes[mode]}
 	>
 		{#if mode === 'view'}
@@ -184,7 +194,9 @@
 				<!-- Existing Day Plans -->
 				{#if dayPlanStore.weekDays.length > 0}
 					<div class="border-t border-[var(--color-border)] pt-4">
-						<h4 class="mb-2 text-sm font-semibold tracking-wider text-[var(--color-text-secondary)] uppercase">
+						<h4
+							class="mb-2 text-sm font-semibold tracking-wider text-[var(--color-text-secondary)] uppercase"
+						>
 							Day Plans
 						</h4>
 						<div class="space-y-1.5">
@@ -192,16 +204,27 @@
 								<div class="flex items-center gap-2">
 									<a
 										href="/dashboard/day-plans/{day.id}"
-										class="group flex-1 rounded-lg border border-[var(--color-border)] px-3 py-2 no-underline text-left transition-colors hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-secondary)]"
+										class="group flex-1 rounded-lg border border-[var(--color-border)] px-3 py-2 text-left no-underline transition-colors hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-secondary)]"
 									>
 										<div class="flex items-center gap-2">
 											<svg
 												class="h-4 w-4 shrink-0 text-[var(--color-text-tertiary)] transition-colors group-hover:text-[var(--color-primary-500)]"
-												fill="none" viewBox="0 0 24 24" stroke="currentColor"
-												><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
-												/></svg>
-											<span class="text-sm font-medium text-[var(--color-text-primary)] capitalize">{day.day_of_week}</span>
-											<span class="text-xs text-[var(--color-text-tertiary)]">{formatDateLong(day.date)}</span>
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+												><path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+												/></svg
+											>
+											<span class="text-sm font-medium text-[var(--color-text-primary)] capitalize"
+												>{day.day_of_week}</span
+											>
+											<span class="text-xs text-[var(--color-text-tertiary)]"
+												>{formatDateLong(day.date)}</span
+											>
 										</div>
 									</a>
 
@@ -218,19 +241,54 @@
 												class="shrink-0 cursor-pointer rounded-lg p-2 text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-primary-500)]"
 											>
 												<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-													><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-												/></svg>
+													><path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="2"
+														d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+													/></svg
+												>
 											</button>
 											{#if exportDayMenuFor === day.id}
-												<div class="absolute right-0 z-50 mt-1 min-w-[160px] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] py-1 shadow-lg">
-													<button type="button" onclick={(e: Event) => exportDayPage(day.id, e)} class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]">
-														<svg class="h-4 w-4 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-															><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+												<div
+													class="absolute right-0 z-50 mt-1 min-w-[160px] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] py-1 shadow-lg"
+												>
+													<button
+														type="button"
+														onclick={(e: Event) => exportDayPage(day.id, e)}
+														class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
+													>
+														<svg
+															class="h-4 w-4 text-[var(--color-text-tertiary)]"
+															fill="none"
+															viewBox="0 0 24 24"
+															stroke="currentColor"
+															><path
+																stroke-linecap="round"
+																stroke-linejoin="round"
+																stroke-width="2"
+																d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+															/></svg
+														>
 														Printable Page
 													</button>
-													<button type="button" onclick={(e: Event) => exportDayJson(day.id, e)} class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]">
-														<svg class="h-4 w-4 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-															><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+													<button
+														type="button"
+														onclick={(e: Event) => exportDayJson(day.id, e)}
+														class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-secondary)]"
+													>
+														<svg
+															class="h-4 w-4 text-[var(--color-text-tertiary)]"
+															fill="none"
+															viewBox="0 0 24 24"
+															stroke="currentColor"
+															><path
+																stroke-linecap="round"
+																stroke-linejoin="round"
+																stroke-width="2"
+																d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+															/></svg
+														>
 														JSON File
 													</button>
 												</div>
@@ -245,8 +303,13 @@
 										class="shrink-0 cursor-pointer rounded-lg p-2 text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-error-bg)] hover:text-[var(--color-error)]"
 									>
 										<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-											><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-										/></svg>
+											><path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+											/></svg
+										>
 									</button>
 								</div>
 							{/each}
@@ -257,26 +320,62 @@
 				<div class="flex flex-col gap-2 border-t border-[var(--color-border)] pt-2">
 					<Button variant="secondary" onclick={() => (mode = 'edit')} fullWidth>
 						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-							><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+							><path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+							/></svg
+						>
 						Edit Details
 					</Button>
 					<Button variant="gradient" onclick={() => (mode = 'dayplan')} fullWidth>
 						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-							><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+							><path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 6v6l4 2m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+							/></svg
+						>
 						Generate Day Plan
 					</Button>
 
 					{#if (auth.profile?.subscription_tier || 'free') !== 'free'}
-						<Button variant="ghost" size="sm" onclick={triggerImportDay} loading={importingDay} fullWidth>
+						<Button
+							variant="ghost"
+							size="sm"
+							onclick={triggerImportDay}
+							loading={importingDay}
+							fullWidth
+						>
 							<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-								><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+								><path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+								/></svg
+							>
 							Import Day Plan
 						</Button>
-						<input type="file" accept=".json" bind:this={importDayInput} onchange={handleImportDay} class="hidden" />
+						<input
+							type="file"
+							accept=".json"
+							bind:this={importDayInput}
+							onchange={handleImportDay}
+							class="hidden"
+						/>
 					{:else}
 						<Button variant="ghost" size="sm" href="/pricing" fullWidth>
 							<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-								><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+								><path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+								/></svg
+							>
 							Upgrade to Import
 						</Button>
 					{/if}
@@ -284,9 +383,28 @@
 			</div>
 		{:else if mode === 'edit'}
 			<div class="space-y-4">
-				<Input label="Theme" name="theme" value={editTheme} oninput={(e) => (editTheme = (e.target as HTMLInputElement).value)} placeholder="e.g., Algebra Foundations" />
-				<Textarea label="Focus Areas" name="focusAreas" value={editFocusAreas} oninput={(e) => (editFocusAreas = (e.target as HTMLTextAreaElement).value)} placeholder="Comma-separated areas" rows={2} />
-				<Textarea label="Notes" name="notes" value={editNotes} oninput={(e) => (editNotes = (e.target as HTMLTextAreaElement).value)} rows={3} />
+				<Input
+					label="Theme"
+					name="theme"
+					value={editTheme}
+					oninput={(e) => (editTheme = (e.target as HTMLInputElement).value)}
+					placeholder="e.g., Algebra Foundations"
+				/>
+				<Textarea
+					label="Focus Areas"
+					name="focusAreas"
+					value={editFocusAreas}
+					oninput={(e) => (editFocusAreas = (e.target as HTMLTextAreaElement).value)}
+					placeholder="Comma-separated areas"
+					rows={2}
+				/>
+				<Textarea
+					label="Notes"
+					name="notes"
+					value={editNotes}
+					oninput={(e) => (editNotes = (e.target as HTMLTextAreaElement).value)}
+					rows={3}
+				/>
 				<div class="flex gap-3 pt-2">
 					<Button variant="gradient" onclick={saveEdit} loading={saving}>Save</Button>
 					<Button variant="ghost" onclick={() => (mode = 'view')}>Cancel</Button>

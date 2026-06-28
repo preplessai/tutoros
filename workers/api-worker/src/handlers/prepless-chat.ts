@@ -58,9 +58,18 @@ function extractBalancedJSON(text: string): string {
 	for (let i = 0; i < text.length; i++) {
 		const ch = text[i];
 
-		if (escaped) { escaped = false; continue; }
-		if (ch === '\\' && inString) { escaped = true; continue; }
-		if (ch === '"') { inString = !inString; continue; }
+		if (escaped) {
+			escaped = false;
+			continue;
+		}
+		if (ch === '\\' && inString) {
+			escaped = true;
+			continue;
+		}
+		if (ch === '"') {
+			inString = !inString;
+			continue;
+		}
 		if (inString) continue;
 
 		if (ch === openChar) {
@@ -81,7 +90,7 @@ export async function handlePreplessChat(
 	console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 	console.log('🔮 [prepless-chat] Request received');
 	try {
-		const body = await request.json() as Record<string, unknown>;
+		const body = (await request.json()) as Record<string, unknown>;
 		console.log('📥 [prepless-chat] Request parsed successfully');
 		console.log('  messages count:', (body.messages as unknown[] | undefined)?.length);
 		console.log('  studentContext present:', !!body.studentContext);
@@ -95,7 +104,10 @@ export async function handlePreplessChat(
 		const parsed = preplessChatSchema.safeParse(body);
 
 		if (!parsed.success) {
-			console.error('❌ [prepless-chat] Request validation failed:', JSON.stringify(parsed.error.flatten(), null, 2));
+			console.error(
+				'❌ [prepless-chat] Request validation failed:',
+				JSON.stringify(parsed.error.flatten(), null, 2)
+			);
 			return Response.json(
 				{ error: 'Invalid request', details: parsed.error.flatten() },
 				{ status: 400 }
@@ -104,7 +116,11 @@ export async function handlePreplessChat(
 
 		const input = parsed.data;
 		const userMessage = JSON.stringify(
-			{ messages: input.messages, studentContext: input.studentContext, planContext: input.planContext },
+			{
+				messages: input.messages,
+				studentContext: input.studentContext,
+				planContext: input.planContext
+			},
 			null,
 			2
 		);
@@ -142,7 +158,11 @@ export async function handlePreplessChat(
 			const beforeBalanced = jsonStr;
 			jsonStr = extractBalancedJSON(jsonStr);
 			if (jsonStr.length !== beforeBalanced.length) {
-				console.log('  ✅ Balanced extraction trimmed', beforeBalanced.length - jsonStr.length, 'trailing chars');
+				console.log(
+					'  ✅ Balanced extraction trimmed',
+					beforeBalanced.length - jsonStr.length,
+					'trailing chars'
+				);
 			} else {
 				console.log('  ✅ Text starts with', jsonStr[0], '— no trailing content to trim');
 			}
@@ -157,17 +177,27 @@ export async function handlePreplessChat(
 			responseData = JSON.parse(jsonStr);
 			console.log('✅ [prepless-chat] JSON.parse succeeded');
 			console.log('  Parsed type:', Array.isArray(responseData) ? 'array' : typeof responseData);
-			if (typeof responseData === 'object' && responseData !== null && !Array.isArray(responseData)) {
+			if (
+				typeof responseData === 'object' &&
+				responseData !== null &&
+				!Array.isArray(responseData)
+			) {
 				const obj = responseData as Record<string, unknown>;
 				console.log('  Top-level keys:', Object.keys(obj));
 				console.log('  intent:', obj.intent);
 				console.log('  message present:', typeof obj.message === 'string');
-				console.log('  proposedChanges present:', obj.proposedChanges !== undefined && obj.proposedChanges !== null);
+				console.log(
+					'  proposedChanges present:',
+					obj.proposedChanges !== undefined && obj.proposedChanges !== null
+				);
 				if (obj.proposedChanges && typeof obj.proposedChanges === 'object') {
 					const pc = obj.proposedChanges as Record<string, unknown>;
 					console.log('  proposedChanges.type:', pc.type);
 					console.log('  proposedChanges.description:', pc.description);
-					console.log('  proposedChanges.mutations count:', Array.isArray(pc.mutations) ? pc.mutations.length : 'not an array');
+					console.log(
+						'  proposedChanges.mutations count:',
+						Array.isArray(pc.mutations) ? pc.mutations.length : 'not an array'
+					);
 				}
 			}
 		} catch (parseErr) {

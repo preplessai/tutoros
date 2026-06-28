@@ -64,13 +64,9 @@
 
 		<!-- Student list -->
 		{#if studentStore.loading}
-			<div class="px-3 py-1.5 text-xs text-[var(--color-text-tertiary)]">
-				Loading students...
-			</div>
+			<div class="px-3 py-1.5 text-xs text-[var(--color-text-tertiary)]">Loading students...</div>
 		{:else if studentStore.students.length === 0}
-			<div class="px-3 py-1.5 text-xs text-[var(--color-text-tertiary)]">
-				No students yet
-			</div>
+			<div class="px-3 py-1.5 text-xs text-[var(--color-text-tertiary)]">No students yet</div>
 		{:else}
 			{#each studentStore.students as student}
 				{@const studentActive = $page.url.pathname === `/dashboard/students/${student.id}`}

@@ -232,7 +232,10 @@
 				studentContext: studentContext,
 				planContext: planContext || undefined
 			};
-			console.log('📦 Request body (first 3000 chars):', JSON.stringify(requestBody, null, 2).slice(0, 3000));
+			console.log(
+				'📦 Request body (first 3000 chars):',
+				JSON.stringify(requestBody, null, 2).slice(0, 3000)
+			);
 
 			const response = await api.preplessChat(requestBody);
 
@@ -244,11 +247,11 @@
 			if (response.proposedChanges) {
 				console.log('  proposedChanges.type:', response.proposedChanges.type);
 				console.log('  proposedChanges.description:', response.proposedChanges.description);
-				console.log('  proposedChanges.mutations count:', response.proposedChanges.mutations?.length);
 				console.log(
-					'  proposedChanges (full):',
-					JSON.stringify(response.proposedChanges, null, 2)
+					'  proposedChanges.mutations count:',
+					response.proposedChanges.mutations?.length
 				);
+				console.log('  proposedChanges (full):', JSON.stringify(response.proposedChanges, null, 2));
 			}
 
 			if (response.intent === 'info' || response.intent === 'unknown') {
@@ -325,7 +328,9 @@
 					const { error } = await supabase.from(mutation.table).update(mutation.data).eq('id', id);
 					if (error) {
 						console.error(`  ❌ Supabase error:`, error);
-						console.error(`     code: ${error.code}, message: ${error.message}, details: ${error.details}`);
+						console.error(
+							`     code: ${error.code}, message: ${error.message}, details: ${error.details}`
+						);
 						failed.push(`${mutation.table}(${id}): ${error.message}`);
 					} else {
 						console.log(`  ✅ Updated ${mutation.table} row ${id}`);
@@ -343,7 +348,9 @@
 					const { error } = await supabase.from(mutation.table).insert(mutation.data);
 					if (error) {
 						console.error(`  ❌ Supabase insert error:`, error);
-						console.error(`     code: ${error.code}, message: ${error.message}, details: ${error.details}`);
+						console.error(
+							`     code: ${error.code}, message: ${error.message}, details: ${error.details}`
+						);
 						failed.push(`Insert into ${mutation.table}: ${error.message}`);
 					} else {
 						console.log(`  ✅ Inserted into ${mutation.table}`);
@@ -412,7 +419,10 @@
 		console.log('🚫 Changes rejected by user');
 		messages = [
 			...messages,
-			{ role: 'assistant', content: "Changes rejected. Let me know if you'd like to try something else." }
+			{
+				role: 'assistant',
+				content: "Changes rejected. Let me know if you'd like to try something else."
+			}
 		];
 		pendingProposal = null;
 	}
@@ -440,7 +450,7 @@
 			<select
 				value={selectedOption}
 				onchange={handlePlanChange}
-				class="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 py-1.5 text-xs text-[var(--color-text-primary)] focus:border-[var(--color-primary-400)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-400)]"
+				class="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 py-1.5 text-xs text-[var(--color-text-primary)] focus:border-[var(--color-primary-400)] focus:ring-1 focus:ring-[var(--color-primary-400)] focus:outline-none"
 			>
 				<option value="all">All Plans ({availablePlans.length})</option>
 				{#each availablePlans as plan}
@@ -475,8 +485,19 @@
 		{#if loading}
 			<div class="flex items-center gap-2 text-sm text-[var(--color-text-tertiary)]">
 				<svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-					<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+					<circle
+						class="opacity-25"
+						cx="12"
+						cy="12"
+						r="10"
+						stroke="currentColor"
+						stroke-width="4"
+					/>
+					<path
+						class="opacity-75"
+						fill="currentColor"
+						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+					/>
 				</svg>
 				Prepless AI is thinking...
 			</div>

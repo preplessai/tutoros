@@ -281,9 +281,8 @@
 					action={{ label: 'Create Plan', href: `/dashboard/plans/new?studentId=${s.id}` }}
 				/>
 			{:else}
-
 				<PlanTimeline />
-		{/if}
+			{/if}
 		{/if}
 
 		<!-- ═══ Day Plans Tab ═══ -->
@@ -362,7 +361,7 @@
 						{/if}
 					</div>
 				{/each}
-		{/if}
+			{/if}
 		{/if}
 
 		<!-- ═══ Progress Tab ═══ -->
@@ -467,7 +466,7 @@
 						</div>
 					</div>
 				</Card>
-		{/if}
+			{/if}
 		{/if}
 
 		<!-- ═══ Emails Tab ═══ -->
@@ -482,7 +481,9 @@
 
 		<!-- ═══ Settings Tab ═══ -->
 		{#if tab === 'settings'}
-			<div class="max-w-2xl rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-6">
+			<div
+				class="max-w-2xl rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-6"
+			>
 				<h2 class="mb-6 text-lg font-semibold text-[var(--color-text-primary)]">
 					Edit {s.name}'s Profile
 				</h2>
@@ -495,7 +496,7 @@
 	{#if tab !== 'prepless-ai' && tab !== 'settings'}
 		<button
 			onclick={() => setTab('prepless-ai')}
-			class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-success)] text-white shadow-lg transition-all hover:scale-110 hover:shadow-xl active:scale-95"
+			class="fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-success)] text-white shadow-lg transition-all hover:scale-110 hover:shadow-xl active:scale-95"
 			aria-label="Edit plan with Prepless AI"
 			title="Edit plan with Prepless AI"
 		>

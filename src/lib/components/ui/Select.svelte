@@ -39,7 +39,7 @@
 	<select
 		{name}
 		id={name}
-		value={value}
+		{value}
 		onchange={handleChange}
 		{disabled}
 		{required}

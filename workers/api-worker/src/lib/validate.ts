@@ -44,15 +44,16 @@ export const adjustPlanSchema = z.object({
 	currentPlan: z.unknown(),
 	changes: z.object({
 		unavailableDates: z.array(z.string()).optional(),
-		newTargetDates: z
-			.array(z.object({ subject: z.string(), targetDate: z.string() }))
-			.optional(),
+		newTargetDates: z.array(z.object({ subject: z.string(), targetDate: z.string() })).optional(),
 		newSubjects: z.array(z.string()).optional(),
 		removedSubjects: z.array(z.string()).optional(),
 		gradeChange: z.string().optional(),
 		goalUpdates: z.string().optional(),
 		scheduleChanges: z
-			.object({ timePerSession: z.number().int().positive().optional(), sessionsPerWeek: z.number().int().positive().optional() })
+			.object({
+				timePerSession: z.number().int().positive().optional(),
+				sessionsPerWeek: z.number().int().positive().optional()
+			})
 			.optional(),
 		focusAreaUpdates: z.string().optional(),
 		contextUpdates: z.string().optional()
@@ -160,7 +161,13 @@ export const chatResponseSchema = z.object({
 			description: z.string(),
 			mutations: z.array(
 				z.object({
-					table: z.enum(['plan_weeks', 'plan_days', 'plan_tasks', 'resources', 'plan_week_homework']),
+					table: z.enum([
+						'plan_weeks',
+						'plan_days',
+						'plan_tasks',
+						'resources',
+						'plan_week_homework'
+					]),
 					action: z.enum(['update', 'insert']),
 					data: z.record(z.unknown())
 				})

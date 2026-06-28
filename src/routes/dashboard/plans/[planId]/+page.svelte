@@ -7,7 +7,9 @@
 	import PlanTimeline from '$lib/components/plans/PlanTimeline.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 
-	let allPlans = $state<Array<{ id: string; title: string; grade: string; subjects: string[] }>>([]);
+	let allPlans = $state<Array<{ id: string; title: string; grade: string; subjects: string[] }>>(
+		[]
+	);
 
 	onMount(async () => {
 		planStore.fetchOne($page.params.planId);
@@ -31,7 +33,9 @@
 <div class="space-y-6">
 	{#if allPlans.length > 1}
 		<div class="flex flex-wrap items-center gap-3">
-			<label for="plan-select" class="text-sm font-medium text-[var(--color-text-secondary)]">Plan:</label>
+			<label for="plan-select" class="text-sm font-medium text-[var(--color-text-secondary)]"
+				>Plan:</label
+			>
 			<select
 				id="plan-select"
 				class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 py-1.5 text-sm text-[var(--color-text-primary)]"

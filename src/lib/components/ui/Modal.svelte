@@ -23,13 +23,21 @@
 	};
 
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === "Escape" && onclose) { console.log("['Modal] Escape key pressed — closing"); onclose(); }
+		if (e.key === 'Escape' && onclose) {
+			console.log("['Modal] Escape key pressed — closing");
+			onclose();
+		}
 	}
 
 	function handleBackdropClick(e: MouseEvent) {
 		e.stopPropagation();
-		const isBackdrop = (e.target as HTMLElement).dataset.backdrop === "true";
-		console.log("['Modal] Backdrop clicked. target:", (e.target as HTMLElement).tagName, "isBackdrop:", isBackdrop);
+		const isBackdrop = (e.target as HTMLElement).dataset.backdrop === 'true';
+		console.log(
+			"['Modal] Backdrop clicked. target:",
+			(e.target as HTMLElement).tagName,
+			'isBackdrop:',
+			isBackdrop
+		);
 		if (isBackdrop && onclose) onclose();
 	}
 </script>

@@ -106,14 +106,19 @@
 
 <div
 	onclick={toggleExpanded}
-	onkeydown={(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') toggleExpanded(); }}
+	onkeydown={(e: KeyboardEvent) => {
+		if (e.key === 'Enter' || e.key === ' ') toggleExpanded();
+	}}
 	role="button"
 	tabindex="0"
-	class="cursor-pointer rounded-2xl border p-4 text-left transition-all hover:border-[var(--color-border-strong)] {completed ? 'border-[var(--color-error)]/20 bg-[var(--color-error)]/5 opacity-50' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)]'}"
+	class="cursor-pointer rounded-2xl border p-4 text-left transition-all hover:border-[var(--color-border-strong)] {completed
+		? 'border-[var(--color-error)]/20 bg-[var(--color-error)]/5 opacity-50'
+		: 'border-[var(--color-border)] bg-[var(--color-surface-elevated)]'}"
 >
 	<div class="flex items-start gap-3">
 		<!-- Session number -->
-		<div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
+		<div
+			class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
 			class:bg-gradient-to-br={!completed}
 			class:from-[var(--color-primary-500)]={!completed}
 			class:to-[var(--color-accent-500)]={!completed}
@@ -121,7 +126,12 @@
 		>
 			{#if completed}
 				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2.5"
+						d="M6 18L18 6M6 6l12 12"
+					/>
 				</svg>
 			{:else}
 				{sessionNumber}
@@ -130,7 +140,10 @@
 
 		<!-- Info -->
 		<div class="min-w-0 flex-1">
-			<p class="text-sm font-semibold text-[var(--color-text-primary)]" class:line-through={completed}>
+			<p
+				class="text-sm font-semibold text-[var(--color-text-primary)]"
+				class:line-through={completed}
+			>
 				Session {sessionNumber} — {week.theme || `Week ${week.week_number}`}
 			</p>
 			{#if week.focus_areas?.length > 0}
@@ -149,19 +162,29 @@
 			title="Cross out session"
 		>
 			<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M6 18L18 6M6 6l12 12"
+				/>
 			</svg>
 		</button>
 	</div>
 
 	<!-- Expanded: Tasks & Resources -->
 	{#if expanded}
-		<div class="mt-4 space-y-2 border-t border-[var(--color-border)] pt-4" onclick={(e: Event) => e.stopPropagation()}>
+		<div
+			class="mt-4 space-y-2 border-t border-[var(--color-border)] pt-4"
+			onclick={(e: Event) => e.stopPropagation()}
+		>
 			{#if tasks.length === 0}
 				<p class="text-sm text-[var(--color-text-tertiary)]">No tasks assigned yet.</p>
 			{:else}
 				{#each tasks as task (task.id)}
-					<div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-secondary)] p-3">
+					<div
+						class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-secondary)] p-3"
+					>
 						<!-- Task header with checkbox -->
 						<div class="flex items-start gap-2.5">
 							<button
@@ -170,8 +193,14 @@
 								class="mt-0.5 shrink-0 cursor-pointer"
 							>
 								{#if task.completed}
-									<svg class="h-4 w-4 text-[var(--color-success)]" fill="currentColor" viewBox="0 0 24 24">
-										<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+									<svg
+										class="h-4 w-4 text-[var(--color-success)]"
+										fill="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+										/>
 									</svg>
 								{:else}
 									<div class="h-4 w-4 rounded border border-[var(--color-border-strong)]"></div>
@@ -189,17 +218,31 @@
 								{/if}
 							</div>
 							{#if task.duration_minutes}
-								<span class="shrink-0 text-xs text-[var(--color-text-tertiary)]">{task.duration_minutes} min</span>
+								<span class="shrink-0 text-xs text-[var(--color-text-tertiary)]"
+									>{task.duration_minutes} min</span
+								>
 							{/if}
 						</div>
 
 						<!-- Resources for this task -->
 						{#if resourcesByTask[task.id]?.length > 0}
-							<div class="ml-7 mt-2 space-y-1">
+							<div class="mt-2 ml-7 space-y-1">
 								{#each resourcesByTask[task.id] as res (res.id)}
-									<div class="flex items-center gap-2 rounded-md bg-[var(--color-surface)] px-2.5 py-1.5">
-										<svg class="h-3.5 w-3.5 shrink-0 text-[var(--color-text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+									<div
+										class="flex items-center gap-2 rounded-md bg-[var(--color-surface)] px-2.5 py-1.5"
+									>
+										<svg
+											class="h-3.5 w-3.5 shrink-0 text-[var(--color-text-tertiary)]"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+											/>
 										</svg>
 										<a
 											href={res.url}
@@ -216,7 +259,12 @@
 											aria-label="Remove resource"
 										>
 											<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M6 18L18 6M6 6l12 12"
+												/>
 											</svg>
 										</button>
 									</div>
@@ -228,10 +276,15 @@
 						<button
 							type="button"
 							onclick={() => handleAddResource(task.id)}
-							class="ml-7 mt-1.5 flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-xs text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-surface-tertiary)] hover:text-[var(--color-primary-500)]"
+							class="mt-1.5 ml-7 flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-xs text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-surface-tertiary)] hover:text-[var(--color-primary-500)]"
 						>
 							<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M12 4v16m8-8H4"
+								/>
 							</svg>
 							Add link
 						</button>
@@ -239,11 +292,9 @@
 				{/each}
 			{/if}
 		</div>
-	{:else}
-		{#if !loaded}
-			<div class="mt-2" onclick={(e: Event) => e.stopPropagation()}>
-				<span class="text-xs text-[var(--color-text-tertiary)]">Click to expand</span>
-			</div>
-		{/if}
+	{:else if !loaded}
+		<div class="mt-2" onclick={(e: Event) => e.stopPropagation()}>
+			<span class="text-xs text-[var(--color-text-tertiary)]">Click to expand</span>
+		</div>
 	{/if}
 </div>

@@ -204,7 +204,9 @@ export const dayPlanStore = {
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : 'Unknown error';
 			if (creditsDeducted) {
-				toast.error('Credits were deducted but day plan generation failed. Contact support for a refund.');
+				toast.error(
+					'Credits were deducted but day plan generation failed. Contact support for a refund.'
+				);
 			} else {
 				toast.error('Failed to generate day plan: ' + message);
 			}
