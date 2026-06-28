@@ -274,7 +274,8 @@
 				<EmptyState
 					icon="calendar"
 					title="No plans yet"
-					description="Plans are created automatically during student onboarding."
+					description="Finish setting up this student to generate their learning plan."
+					action={{ label: 'Continue Onboarding', href: `/dashboard/students/${$page.params.studentId}/complete-plan` }}
 				/>
 			{:else}
 				<PlanTimeline />
