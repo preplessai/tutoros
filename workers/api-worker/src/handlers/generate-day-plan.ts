@@ -4,6 +4,24 @@ import { callAI } from '../lib/ai';
 // @ts-expect-error - wrangler raw text import
 import systemPrompt from '../prompts/day-plan.txt';
 
+function extractJson(text: string): string {
+	const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+	if (fence) return fence[1].trim();
+	const firstBrace = text.indexOf('{');
+	if (firstBrace === -1) return text.trim();
+	let depth = 0, inString = false, escaped = false;
+	for (let i = firstBrace; i < text.length; i++) {
+		const ch = text[i];
+		if (escaped) { escaped = false; continue; }
+		if (ch === '\\' && inString) { escaped = true; continue; }
+		if (ch === '"') { inString = !inString; continue; }
+		if (inString) continue;
+		if (ch === '{') depth++;
+		else if (ch === '}') { depth--; if (depth === 0) return text.slice(firstBrace, i + 1).trim(); }
+	}
+	return text.slice(firstBrace).trim();
+}
+
 export async function handleGenerateDayPlan(
 	request: Request,
 	env: Record<string, string>
@@ -30,9 +48,7 @@ export async function handleGenerateDayPlan(
 			env
 		});
 
-		const jsonMatch =
-			result.text.match(/```(?:json)?\s*([\s\S]*?)```/) || result.text.match(/(\{[\s\S]*\})/);
-		const jsonStr = jsonMatch ? jsonMatch[1].trim() : result.text.trim();
+		const jsonStr = extractJson(result.text);
 
 		let dayPlan;
 		try {
