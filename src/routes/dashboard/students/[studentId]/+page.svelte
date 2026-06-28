@@ -259,9 +259,6 @@
 				</div>
 			</div>
 			<div class="flex gap-2">
-				<Button variant="gradient" size="sm" href={`/dashboard/plans/new?studentId=${s.id}`}>
-					New Plan
-				</Button>
 				<Button variant="danger" size="sm" onclick={handleDelete} loading={deleting}>Delete</Button>
 			</div>
 		</div>
@@ -277,8 +274,7 @@
 				<EmptyState
 					icon="calendar"
 					title="No plans yet"
-					description="Create a learning plan for {s.name} to get started."
-					action={{ label: 'Create Plan', href: `/dashboard/plans/new?studentId=${s.id}` }}
+					description="Plans are created automatically during student onboarding."
 				/>
 			{:else}
 				<PlanTimeline />
@@ -293,11 +289,7 @@
 				<EmptyState
 					icon="calendar"
 					title="No plans yet"
-					description="Create a learning plan first, then generate day plans within each week."
-					action={{
-						label: 'Create Plan',
-						href: `/dashboard/plans/new?studentId=${$page.params.studentId}`
-					}}
+					description="Day plans are generated from within your learning plan."
 				/>
 			{:else}
 				{#each studentPlans as plan}

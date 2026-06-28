@@ -1,11 +1,12 @@
 <script lang="ts">
-	import PlanForm from '$lib/components/plans/PlanForm.svelte';
-	import Card from '$lib/components/ui/Card.svelte';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+
+	onMount(() => {
+		goto('/dashboard');
+	});
 </script>
 
-<svelte:head><title>Create Plan — Prepless AI</title></svelte:head>
-
-<div>
-	<h1 class="mb-6 text-2xl font-bold text-[var(--color-text-primary)]">Create Weekly Plan</h1>
-	<Card><PlanForm /></Card>
-</div>
+<p class="py-10 text-center text-sm text-[var(--color-text-tertiary)]">
+	Learning plans are created automatically during student onboarding.
+</p>

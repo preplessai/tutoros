@@ -20,7 +20,6 @@
 				{planStore.plans.length} plan{planStore.plans.length !== 1 ? 's' : ''}
 			</p>
 		</div>
-		<Button variant="gradient" href="/dashboard/plans/new">Create Plan</Button>
 	</div>
 
 	{#if planStore.loading}
@@ -29,8 +28,7 @@
 		<EmptyState
 			icon="calendar"
 			title="No plans yet"
-			description="Create your first AI-powered weekly plan to get started."
-			action={{ label: 'Create Plan', onclick: () => goto('/dashboard/plans/new') }}
+			description="Plans are created automatically during student onboarding."
 		/>
 	{:else}
 		<div class="space-y-3">
