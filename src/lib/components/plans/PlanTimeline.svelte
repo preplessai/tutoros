@@ -5,6 +5,7 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 
 	let homeworkByWeek = $state<Record<string, PlanWeekHomework[]>>({});
+	let crossedOutWeeks = $state<Set<string>>(new Set());
 	let loading = $state(true);
 	let lastPlanId = $state<string | null>(null);
 
@@ -19,6 +20,7 @@
 	async function fetchHomework() {
 		loading = true;
 		const map: Record<string, PlanWeekHomework[]> = {};
+		const crossed = new Set<string>();
 
 		for (const week of planStore.weeks) {
 			const { data } = await supabase
@@ -26,9 +28,16 @@
 				.select('*')
 				.eq('week_id', week.id)
 				.order('sort_order');
-			if (data) map[week.id] = data as PlanWeekHomework[];
+			if (data) {
+				const items = data as PlanWeekHomework[];
+				map[week.id] = items;
+				if (items.length > 0 && items.every((h) => h.completed)) {
+					crossed.add(week.id);
+				}
+			}
 		}
 		homeworkByWeek = map;
+		crossedOutWeeks = crossed;
 		loading = false;
 	}
 
@@ -38,6 +47,36 @@
 		homeworkByWeek[weekId] = homeworkByWeek[weekId].map((h) =>
 			h.id === item.id ? { ...h, completed: updated } : h
 		);
+		updateCrossedState(weekId);
+	}
+
+	async function toggleCrossOut(weekId: string) {
+		const items = homeworkByWeek[weekId] || [];
+		const complete = !crossedOutWeeks.has(weekId);
+
+		for (const item of items) {
+			await supabase.from('plan_week_homework').update({ completed: complete }).eq('id', item.id);
+		}
+		homeworkByWeek[weekId] = items.map((h) => ({ ...h, completed: complete }));
+
+		if (complete) {
+			crossedOutWeeks = new Set([...crossedOutWeeks, weekId]);
+		} else {
+			const next = new Set(crossedOutWeeks);
+			next.delete(weekId);
+			crossedOutWeeks = next;
+		}
+	}
+
+	function updateCrossedState(weekId: string) {
+		const items = homeworkByWeek[weekId] || [];
+		if (items.length > 0 && items.every((h) => h.completed)) {
+			crossedOutWeeks = new Set([...crossedOutWeeks, weekId]);
+		} else {
+			const next = new Set(crossedOutWeeks);
+			next.delete(weekId);
+			crossedOutWeeks = next;
+		}
 	}
 
 	const colors = [
@@ -59,21 +98,33 @@
 		{#each planStore.weeks as week, i (week.id)}
 			{@const accent = colors[i % colors.length]}
 			{@const hw = homeworkByWeek[week.id] || []}
-			<div style="animation: fade-in-up 0.4s ease-out {i * 60}ms both" class="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-5">
-				<div class="flex items-center gap-3">
-					<div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white" style="background:{accent}">
-						{week.week_number}
+			{@const crossed = crossedOutWeeks.has(week.id)}
+			<div style="animation: fade-in-up 0.4s ease-out {i * 60}ms both" class="rounded-2xl border p-5 {crossed ? 'border-[var(--color-error)]/20 bg-[var(--color-error)]/5 opacity-50' : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)]'}">
+				<div class="flex items-start gap-3">
+					<div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white {crossed ? 'bg-[var(--color-error)]' : ''}" style={crossed ? '' : `background:${accent}`}>
+						{#if crossed}
+							<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+							</svg>
+						{:else}
+							{week.week_number}
+						{/if}
 					</div>
 					<div class="min-w-0 flex-1">
-						<p class="text-sm font-semibold text-[var(--color-text-primary)]">
+						<p class="text-sm font-semibold text-[var(--color-text-primary)]" class:line-through={crossed}>
 							{week.theme || `Week ${week.week_number}`}
 						</p>
 						{#if week.focus_areas?.length > 0}
-							<p class="mt-0.5 text-xs text-[var(--color-text-secondary)]">
+							<p class="mt-0.5 text-xs text-[var(--color-text-secondary)]" class:line-through={crossed}>
 								{week.focus_areas.join(' &middot; ')}
 							</p>
 						{/if}
 					</div>
+					<button type="button" onclick={() => toggleCrossOut(week.id)} class="shrink-0 cursor-pointer rounded-lg p-1.5 text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-error-bg)] hover:text-[var(--color-error)]" aria-label="Cross out week" title="Cross out this week">
+						<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+						</svg>
+					</button>
 				</div>
 
 				<div class="mt-4 space-y-1.5 border-t border-[var(--color-border)] pt-4">
